@@ -1,0 +1,145 @@
+---
+---
+
+<section id="creditos-carbono" class="section creditos-carbono">
+  <div class="container">
+    <h2 class="section-title">Créditos de Carbono</h2>
+    <p class="section-subtitle">
+      [TEXTO TEMPORÁRIO] Entenda como funciona o mercado de créditos de carbono e suas oportunidades.
+    </p>
+    
+    <div class="creditos-content">
+      <div class="creditos-text">
+        <h3>[TEXTO TEMPORÁRIO] O que são Créditos de Carbono?</h3>
+        <p>
+          [TEXTO TEMPORÁRIO] Créditos de carbono são certificados que representam a redução ou remoção 
+          de uma tonelada de dióxido de carbono equivalente (tCO₂e) da atmosfera. Estes créditos podem 
+          ser negociados no mercado voluntário ou regulado, permitindo que empresas compensem suas 
+          emissões enquanto financiam projetos sustentáveis.
+        </p>
+        
+        <h3>[TEXTO TEMPORÁRIO] Como Funciona o Mercado?</h3>
+        <p>
+          [TEXTO TEMPORÁRIO] O mercado de créditos de carbono opera através de dois principais mecanismos:
+        </p>
+        <ul class="mercado-list">
+          <li>
+            <strong>[TEXTO TEMPORÁRIO] Mercado Regulado:</strong> Operado por governos e organizações 
+            internacionais, onde empresas têm obrigações legais de compensar suas emissões.
+          </li>
+          <li>
+            <strong>[TEXTO TEMPORÁRIO] Mercado Voluntário:</strong> Onde empresas e indivíduos compram 
+            créditos voluntariamente para compensar sua pegada de carbono e demonstrar compromisso 
+            com a sustentabilidade.
+          </li>
+        </ul>
+        
+        <h3>[TEXTO TEMPORÁRIO] Tipos de Projetos</h3>
+        <p>
+          [TEXTO TEMPORÁRIO] Os projetos de créditos de carbono podem ser classificados em diferentes 
+          categorias, incluindo:
+        </p>
+        <ul class="projetos-list">
+          <li>[TEXTO TEMPORÁRIO] Projetos de reflorestamento e restauração florestal</li>
+          <li>[TEXTO TEMPORÁRIO] Projetos agroflorestais</li>
+          <li>[TEXTO TEMPORÁRIO] Projetos de energia renovável</li>
+          <li>[TEXTO TEMPORÁRIO] Projetos de eficiência energética</li>
+          <li>[TEXTO TEMPORÁRIO] Projetos de conservação e manejo florestal</li>
+        </ul>
+        
+        <h3>[TEXTO TEMPORÁRIO] Benefícios dos Créditos de Carbono</h3>
+        <div class="beneficios-grid">
+          <div class="beneficio-item">
+            <h4>[TEXTO TEMPORÁRIO] Ambientais</h4>
+            <p>Redução de emissões de GEE e conservação da biodiversidade</p>
+          </div>
+          <div class="beneficio-item">
+            <h4>[TEXTO TEMPORÁRIO] Econômicos</h4>
+            <p>Geração de receita adicional através da venda de créditos</p>
+          </div>
+          <div class="beneficio-item">
+            <h4>[TEXTO TEMPORÁRIO] Sociais</h4>
+            <p>Criação de empregos e desenvolvimento de comunidades locais</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  .creditos-carbono {
+    background-color: var(--color-bg-secondary);
+  }
+
+  .creditos-text {
+    h3 {
+      color: var(--color-primary);
+      margin-top: var(--spacing-lg);
+      margin-bottom: var(--spacing-sm);
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+
+  .mercado-list,
+  .projetos-list {
+    list-style: none;
+    padding-left: 0;
+    margin: var(--spacing-md) 0;
+
+    li {
+      padding: var(--spacing-sm) 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--color-text-secondary);
+
+      &::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: var(--color-primary);
+        font-weight: bold;
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  .mercado-list {
+    strong {
+      color: var(--color-text-primary);
+    }
+  }
+
+  .beneficios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .beneficio-item {
+    background-color: var(--color-bg-primary);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+
+    h4 {
+      color: var(--color-primary);
+      margin-bottom: var(--spacing-sm);
+      font-size: 1.25rem;
+    }
+
+    p {
+      margin: 0;
+      color: var(--color-text-secondary);
+    }
+  }
+</style>
+

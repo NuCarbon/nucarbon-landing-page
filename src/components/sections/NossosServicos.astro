@@ -1,0 +1,99 @@
+---
+import Card from '../ui/Card.astro';
+---
+
+<section id="servicos" class="section nossos-servicos">
+  <div class="container">
+    <h2 class="section-title">Nossos Serviços</h2>
+    <p class="section-subtitle">
+      [TEXTO TEMPORÁRIO] Soluções completas em créditos de carbono e projetos agroflorestais.
+    </p>
+    
+    <div class="servicos-grid grid grid-3">
+      <Card 
+        title="Projetos Agroflorestais"
+        href="/servicos/projetos-agroflorestais"
+      >
+        <p>
+          [TEXTO TEMPORÁRIO] Desenvolvemos projetos agroflorestais que combinam produção agrícola 
+          com conservação florestal, gerando múltiplos benefícios econômicos e ambientais.
+        </p>
+        <p>
+          [TEXTO TEMPORÁRIO] Nossos projetos incluem análise de viabilidade, planejamento técnico, 
+          implementação e acompanhamento, além de previsão de lucro baseada nos produtos da agrofloresta.
+        </p>
+      </Card>
+      
+      <Card 
+        title="Treinamentos"
+        href="/servicos/treinamentos"
+      >
+        <p>
+          [TEXTO TEMPORÁRIO] Oferecemos treinamentos especializados em créditos de carbono, 
+          projetos agroflorestais e gestão sustentável.
+        </p>
+        <p>
+          [TEXTO TEMPORÁRIO] Nossos cursos são desenvolvidos por especialistas e adaptados às 
+          necessidades específicas de cada público, desde produtores rurais até profissionais técnicos.
+        </p>
+      </Card>
+      
+      <Card 
+        title="Projetos de Carbono"
+        href="/servicos/projetos-carbono"
+      >
+        <p>
+          [TEXTO TEMPORÁRIO] Serviços completos para desenvolvimento de projetos de créditos de carbono, 
+          desde a análise inicial até o monitoramento contínuo.
+        </p>
+        <p>
+          [TEXTO TEMPORÁRIO] Incluímos análise de viabilidade, inventários de GEE e carbono, 
+          elaboração de PDDs e MRV, além de monitoramento de emissões e gestão de riscos.
+        </p>
+      </Card>
+    </div>
+    
+    <div class="servicos-cta">
+      <a href="/servicos" class="btn btn-primary">Ver Todos os Serviços</a>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  .nossos-servicos {
+    background-color: var(--color-bg-primary);
+  }
+
+  .servicos-grid {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .servicos-cta {
+    text-align: center;
+    margin-top: var(--spacing-xl);
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+
+    &-primary {
+      background-color: var(--color-primary);
+      color: white;
+
+      &:hover {
+        background-color: var(--color-primary-dark);
+        transform: translateY(-2px);
+      }
+    }
+  }
+</style>
+

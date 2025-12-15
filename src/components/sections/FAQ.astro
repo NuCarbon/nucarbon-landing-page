@@ -1,0 +1,98 @@
+---
+import Accordion from '../ui/Accordion.astro';
+
+const faqItems = [
+  {
+    question: '[TEXTO TEMPORÁRIO] O que são créditos de carbono?',
+    answer: '[TEXTO TEMPORÁRIO] Créditos de carbono são certificados que representam a redução ou remoção de uma tonelada de dióxido de carbono equivalente da atmosfera. Eles podem ser negociados no mercado voluntário ou regulado para compensar emissões de gases de efeito estufa.'
+  },
+  {
+    question: '[TEXTO TEMPORÁRIO] Como posso participar de um projeto de créditos de carbono?',
+    answer: '[TEXTO TEMPORÁRIO] Para participar de um projeto de créditos de carbono, é necessário ter uma propriedade rural ou área adequada para implementação do projeto. Nossa equipe realiza uma análise de viabilidade inicial para avaliar o potencial da área e orientar sobre os próximos passos.'
+  },
+  {
+    question: '[TEXTO TEMPORÁRIO] Quanto tempo leva para um projeto gerar créditos de carbono?',
+    answer: '[TEXTO TEMPORÁRIO] O tempo varia conforme o tipo de projeto. Projetos agroflorestais geralmente começam a gerar créditos após alguns anos de implementação, enquanto projetos de reflorestamento podem levar mais tempo. Nossa equipe fornece uma estimativa detalhada durante a análise de viabilidade.'
+  },
+  {
+    question: '[TEXTO TEMPORÁRIO] Quais são os custos envolvidos em um projeto de carbono?',
+    answer: '[TEXTO TEMPORÁRIO] Os custos incluem análise de viabilidade, elaboração de documentação técnica (PDD), inventários, monitoramento e verificação. Oferecemos diferentes pacotes de serviços adaptados às necessidades de cada projeto. Entre em contato para uma avaliação personalizada.'
+  },
+  {
+    question: '[TEXTO TEMPORÁRIO] Como funciona a previsão de lucro em projetos agroflorestais?',
+    answer: '[TEXTO TEMPORÁRIO] A previsão de lucro é baseada na análise dos produtos que podem ser gerados pela agrofloresta ao longo do tempo, considerando diferentes espécies e seus ciclos de produção. Desenvolvemos modelos que consideram receitas tanto dos produtos agrícolas quanto dos créditos de carbono.'
+  },
+  {
+    question: '[TEXTO TEMPORÁRIO] Vocês oferecem treinamentos?',
+    answer: '[TEXTO TEMPORÁRIO] Sim, oferecemos treinamentos especializados em créditos de carbono, projetos agroflorestais e gestão sustentável. Nossos cursos são adaptados para diferentes públicos, desde produtores rurais até profissionais técnicos. Entre em contato para conhecer nossos programas de capacitação.'
+  },
+  {
+    question: '[TEXTO TEMPORÁRIO] Como é feito o monitoramento de um projeto?',
+    answer: '[TEXTO TEMPORÁRIO] O monitoramento é realizado através de inventários periódicos de carbono (solo e floresta), medição de emissões de GEE e acompanhamento contínuo do projeto. Utilizamos metodologias reconhecidas internacionalmente e sistemas de MRV (Monitoramento, Relatório e Verificação) para garantir a qualidade e transparência dos dados.'
+  }
+];
+---
+
+<section id="faq" class="section faq">
+  <div class="container">
+    <h2 class="section-title">Tire suas Dúvidas</h2>
+    <p class="section-subtitle">
+      [TEXTO TEMPORÁRIO] Encontre respostas para as principais dúvidas sobre créditos de carbono e nossos serviços.
+    </p>
+    
+    <div class="faq-content">
+      <Accordion items={faqItems} />
+    </div>
+    
+    <div class="faq-cta">
+      <p>[TEXTO TEMPORÁRIO] Não encontrou sua dúvida?</p>
+      <a href="#contato" class="btn btn-outline">Entre em Contato</a>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  .faq {
+    background-color: var(--color-bg-primary);
+  }
+
+  .faq-content {
+    max-width: 800px;
+    margin: 0 auto var(--spacing-xl);
+  }
+
+  .faq-cta {
+    text-align: center;
+    padding-top: var(--spacing-lg);
+
+    p {
+      margin-bottom: var(--spacing-md);
+      color: var(--color-text-secondary);
+    }
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+
+    &-outline {
+      background-color: transparent;
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+
+      &:hover {
+        background-color: var(--color-primary);
+        color: white;
+      }
+    }
+  }
+</style>
+

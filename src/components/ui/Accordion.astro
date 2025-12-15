@@ -1,0 +1,118 @@
+---
+interface Props {
+  items: Array<{
+    question: string;
+    answer: string;
+  }>;
+}
+
+const { items } = Astro.props;
+---
+
+<div class="accordion">
+  {items.map((item, index) => (
+    <div class="accordion-item">
+      <button
+        class="accordion-header"
+        aria-expanded="false"
+        aria-controls={`accordion-content-${index}`}
+        id={`accordion-header-${index}`}
+      >
+        <span class="accordion-question">{item.question}</span>
+        <span class="accordion-icon" aria-hidden="true">+</span>
+      </button>
+      <div
+        class="accordion-content"
+        id={`accordion-content-${index}`}
+        aria-labelledby={`accordion-header-${index}`}
+        hidden
+      >
+        <div class="accordion-answer">{item.answer}</div>
+      </div>
+    </div>
+  ))}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    
+    accordionHeaders.forEach((header) => {
+      header.addEventListener('click', () => {
+        const content = header.nextElementSibling as HTMLElement;
+        const icon = header.querySelector('.accordion-icon') as HTMLElement;
+        const isExpanded = header.getAttribute('aria-expanded') === 'true';
+        
+        // Close all other items
+        accordionHeaders.forEach((otherHeader) => {
+          if (otherHeader !== header) {
+            const otherContent = otherHeader.nextElementSibling as HTMLElement;
+            const otherIcon = otherHeader.querySelector('.accordion-icon') as HTMLElement;
+            otherHeader.setAttribute('aria-expanded', 'false');
+            otherContent.hidden = true;
+            if (otherIcon) otherIcon.textContent = '+';
+          }
+        });
+        
+        // Toggle current item
+        header.setAttribute('aria-expanded', String(!isExpanded));
+        content.hidden = isExpanded;
+        if (icon) icon.textContent = isExpanded ? '+' : '−';
+      });
+    });
+  });
+</script>
+
+<style lang="scss">
+  .accordion {
+    width: 100%;
+
+    &-item {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    &-header {
+      width: 100%;
+      padding: 1.5rem 0;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+
+    &-question {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      flex: 1;
+    }
+
+    &-icon {
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--color-primary);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    &-content {
+      padding-bottom: 1.5rem;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    &-answer {
+      padding-left: 0;
+    }
+  }
+</style>
+

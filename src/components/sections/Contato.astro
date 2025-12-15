@@ -1,0 +1,190 @@
+---
+---
+
+<section id="contato" class="section contato">
+  <div class="container">
+    <h2 class="section-title">Fale Conosco</h2>
+    <p class="section-subtitle">
+      [TEXTO TEMPORÁRIO] Entre em contato conosco para saber mais sobre nossos serviços ou tirar suas dúvidas.
+    </p>
+    
+    <div class="contato-content">
+      <div class="contato-info">
+        <h3>[TEXTO TEMPORÁRIO] Informações de Contato</h3>
+        
+        <div class="info-item">
+          <h4>Email</h4>
+          <a href="mailto:contato@nucarbon.com.br">contato@nucarbon.com.br</a>
+        </div>
+        
+        <div class="info-item">
+          <h4>Telefone</h4>
+          <a href="tel:+5511999999999">+55 (11) 99999-9999</a>
+        </div>
+        
+        <div class="info-item">
+          <h4>Endereço</h4>
+          <p>[TEXTO TEMPORÁRIO] São Paulo, SP, Brasil</p>
+        </div>
+        
+        <div class="info-item">
+          <h4>Horário de Atendimento</h4>
+          <p>[TEXTO TEMPORÁRIO] Segunda a Sexta: 9h às 18h</p>
+        </div>
+      </div>
+      
+      <div class="contato-form">
+        <h3>[TEXTO TEMPORÁRIO] Envie sua Mensagem</h3>
+        <form class="form" action="#" method="POST">
+          <div class="form-group">
+            <label for="nome">Nome Completo *</label>
+            <input type="text" id="nome" name="nome" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="telefone">Telefone</label>
+            <input type="tel" id="telefone" name="telefone" />
+          </div>
+          
+          <div class="form-group">
+            <label for="assunto">Assunto *</label>
+            <select id="assunto" name="assunto" required>
+              <option value="">Selecione um assunto</option>
+              <option value="projetos-agroflorestais">Projetos Agroflorestais</option>
+              <option value="projetos-carbono">Projetos de Carbono</option>
+              <option value="treinamentos">Treinamentos</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="mensagem">Mensagem *</label>
+            <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  .contato {
+    background-color: var(--color-bg-secondary);
+
+    &-content {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: var(--spacing-xl);
+      max-width: 1000px;
+      margin: 0 auto;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &-info,
+    &-form {
+      h3 {
+        color: var(--color-primary);
+        margin-bottom: var(--spacing-lg);
+      }
+    }
+  }
+
+  .info-item {
+    margin-bottom: var(--spacing-lg);
+
+    h4 {
+      font-size: 1rem;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-xs);
+      font-weight: 600;
+    }
+
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    p {
+      margin: 0;
+      color: var(--color-text-secondary);
+    }
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+
+    &-group {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        margin-bottom: var(--spacing-xs);
+        font-weight: 600;
+        color: var(--color-text-primary);
+      }
+
+      input,
+      select,
+      textarea {
+        padding: 0.75rem;
+        border: 2px solid var(--color-border);
+        border-radius: var(--border-radius-md);
+        font-family: inherit;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        background-color: var(--color-bg-primary);
+
+        &:focus {
+          outline: none;
+          border-color: var(--color-primary);
+        }
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+    }
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+
+    &-primary {
+      background-color: var(--color-primary);
+      color: white;
+      border: none;
+
+      &:hover {
+        background-color: var(--color-primary-dark);
+        transform: translateY(-2px);
+      }
+    }
+  }
+</style>
+

@@ -1,0 +1,122 @@
+---
+import { Image } from "astro:assets";
+
+---
+
+<section id="quem-somos" class="section quem-somos">
+  <div class="container">
+    <h2 class="section-title">Quem Somos</h2>
+    <p class="section-subtitle">
+      [TEXTO TEMPORÁRIO] Conheça a Nucarbon e nossa missão de promover soluções sustentáveis.
+    </p>
+    
+    <div class="quem-somos-content">
+      <div class="quem-somos-text">
+        <h3>[TEXTO TEMPORÁRIO] Nossa História</h3>
+        <p>
+          [TEXTO TEMPORÁRIO] A Nucarbon é uma empresa especializada em créditos de carbono e projetos agroflorestais. 
+          Nossa missão é conectar produtores rurais, empresas e investidores em soluções sustentáveis que geram valor 
+          econômico e ambiental.
+        </p>
+        <p>
+          [TEXTO TEMPORÁRIO] Com uma equipe multidisciplinar de especialistas em meio ambiente, agronomia e mercado 
+          de carbono, oferecemos serviços completos desde a análise de viabilidade até o monitoramento e gestão de 
+          projetos de carbono.
+        </p>
+        
+        <h3>[TEXTO TEMPORÁRIO] Nossa Visão</h3>
+        <p>
+          [TEXTO TEMPORÁRIO] Ser referência nacional em projetos de créditos de carbono e soluções agroflorestais, 
+          contribuindo para um futuro mais sustentável e rentável para todos os envolvidos.
+        </p>
+        
+        <h3>[TEXTO TEMPORÁRIO] Nossos Valores</h3>
+        <ul class="valores-list">
+          <li>[TEXTO TEMPORÁRIO] Sustentabilidade e respeito ao meio ambiente</li>
+          <li>[TEXTO TEMPORÁRIO] Transparência e ética em todas as operações</li>
+          <li>[TEXTO TEMPORÁRIO] Inovação e excelência técnica</li>
+          <li>[TEXTO TEMPORÁRIO] Compromisso com resultados mensuráveis</li>
+        </ul>
+      </div>
+      
+      <div class="quem-somos-image">
+        <Image 
+          src="/1.jpg"
+          alt="Imagem representativa da empresa"
+          width={500}
+          height={500}
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  .quem-somos {
+    background-color: var(--color-bg-secondary);
+
+    &-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xl);
+      align-items: center;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &-text {
+      h3 {
+        color: var(--color-primary);
+        margin-top: var(--spacing-lg);
+        margin-bottom: var(--spacing-sm);
+
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+    }
+
+    &-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .valores-list {
+    list-style: none;
+    padding-left: 0;
+
+    li {
+      padding: var(--spacing-sm) 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--color-text-secondary);
+
+      &::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--color-primary);
+        font-weight: bold;
+      }
+    }
+  }
+
+  .image-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background-color: var(--color-bg-accent);
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-light);
+    text-align: center;
+    padding: var(--spacing-lg);
+  }
+</style>
+

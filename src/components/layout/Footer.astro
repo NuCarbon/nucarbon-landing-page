@@ -1,0 +1,134 @@
+---
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3 class="footer-title">Nucarbon</h3>
+        <p class="footer-description">
+          [TEXTO TEMPORÁRIO] Soluções sustentáveis em créditos de carbono e projetos agroflorestais.
+        </p>
+      </div>
+      
+      <div class="footer-section">
+        <h4 class="footer-heading">Links Rápidos</h4>
+        <ul class="footer-links">
+          <li><a href="/#quem-somos">Quem Somos</a></li>
+          <li><a href="/#servicos">Nossos Serviços</a></li>
+          <li><a href="/#creditos-carbono">Créditos de Carbono</a></li>
+          <li><a href="/servicos">Todos os Serviços</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4 class="footer-heading">Contato</h4>
+        <ul class="footer-contact">
+          <li>
+            <strong>Email:</strong>
+            <a href="mailto:contato@nucarbon.com.br">contato@nucarbon.com.br</a>
+          </li>
+          <li>
+            <strong>Telefone:</strong>
+            <a href="tel:+5511999999999">+55 (11) 99999-9999</a>
+          </li>
+          <li>
+            <strong>Endereço:</strong>
+            <span>[TEXTO TEMPORÁRIO] São Paulo, SP, Brasil</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 Nucarbon. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<style lang="scss">
+  .footer {
+    background-color: var(--color-text-primary);
+    color: var(--color-bg-primary);
+    padding: var(--spacing-2xl) 0 var(--spacing-lg);
+    margin-top: var(--spacing-2xl);
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .footer-title {
+    font-size: 1.5rem;
+    color: var(--color-primary-light);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .footer-description {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+  }
+
+  .footer-heading {
+    font-size: 1.125rem;
+    color: var(--color-bg-primary);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .footer-links {
+    list-style: none;
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    a {
+      color: rgba(255, 255, 255, 0.8);
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--color-primary-light);
+      }
+    }
+  }
+
+  .footer-contact {
+    list-style: none;
+    color: rgba(255, 255, 255, 0.8);
+
+    li {
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+
+    strong {
+      display: block;
+      color: var(--color-bg-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    a {
+      color: rgba(255, 255, 255, 0.8);
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--color-primary-light);
+      }
+    }
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+  }
+</style>
+
