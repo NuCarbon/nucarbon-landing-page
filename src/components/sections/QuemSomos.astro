@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 
+import forestPortrait from "../../images/forest-portrait.jpg";
 ---
 
 <section id="quem-somos" class="section quem-somos">
@@ -41,10 +42,9 @@ import { Image } from "astro:assets";
       
       <div class="quem-somos-image">
         <Image 
-          src="/1.jpg"
-          alt="Imagem representativa da empresa"
-          width={500}
-          height={500}
+          src={forestPortrait}
+          alt="Floresta em uma montanha"
+          width={600}
         />
       </div>
     </div>
@@ -82,6 +82,13 @@ import { Image } from "astro:assets";
       display: flex;
       align-items: center;
       justify-content: center;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: var(--border-radius-lg);
+      }
     }
   }
 

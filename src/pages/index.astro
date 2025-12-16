@@ -5,8 +5,8 @@ import NossosServicos from '../components/sections/NossosServicos.astro';
 import CreditosCarbono from '../components/sections/CreditosCarbono.astro';
 import FAQ from '../components/sections/FAQ.astro';
 import Contato from '../components/sections/Contato.astro';
-
-import forestHero from "../images/forest-hero.jpg";
+import Hero from '../components/sections/Hero.astro';
+import forestHero from "../images/forest-hero-2.jpg";
 const backgroundUrl = `url(${forestHero.src})`;
 ---
 
@@ -14,95 +14,10 @@ const backgroundUrl = `url(${forestHero.src})`;
   title="Nucarbon - Soluções Sustentáveis em Créditos de Carbono"
   description="Nucarbon oferece soluções completas em créditos de carbono, projetos agroflorestais e treinamentos especializados. Conectamos produtores rurais, empresas e investidores em soluções sustentáveis."
 >
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container">
-      <h1 class="hero-title">Nucarbon</h1>
-      <p class="hero-subtitle">
-        [TEXTO TEMPORÁRIO] Soluções sustentáveis em créditos de carbono e projetos agroflorestais
-      </p>
-      <div class="hero-cta">
-        <a href="#servicos" class="btn btn-primary">Conheça Nossos Serviços</a>
-        <a href="#contato" class="btn btn-outline">Entre em Contato</a>
-      </div>
-    </div>
-  </section>
-
+  <Hero />
   <QuemSomos />
   <NossosServicos />
   <CreditosCarbono />
   <FAQ />
   <Contato />
 </BaseLayout>
-
-<style lang="scss" define:vars={{ backgroundUrl }}>
-  .hero {
-    background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-secondary) 100%), var(--backgroundUrl);
-    background-size: cover;
-	background-blend-mode: multiply;
-    color: white;
-    padding: calc(var(--spacing-2xl) + 80px) 0 var(--spacing-2xl);
-    text-align: center;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &-title {
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 700;
-      margin-bottom: var(--spacing-md);
-      color: white;
-    }
-
-    &-subtitle {
-      font-size: clamp(1.125rem, 2.5vw, 1.5rem);
-      margin-bottom: var(--spacing-xl);
-      color: rgba(255, 255, 255, 0.95);
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    &-cta {
-      display: flex;
-      gap: var(--spacing-md);
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 2px solid transparent;
-
-    &-primary {
-      background-color: white;
-      color: var(--color-primary);
-
-      &:hover {
-        background-color: var(--color-bg-accent);
-        transform: translateY(-2px);
-      }
-    }
-
-    &-outline {
-      background-color: transparent;
-      color: white;
-      border-color: white;
-
-      &:hover {
-        background-color: white;
-        color: var(--color-primary);
-      }
-    }
-  }
-</style>
