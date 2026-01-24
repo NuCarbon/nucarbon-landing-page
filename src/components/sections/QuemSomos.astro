@@ -1,106 +1,157 @@
 ---
 import { Image } from "astro:assets";
 
-import forestPortrait from "../../images/forest-portrait.jpg";
+import forestPortrait from "../../images/forest-portrait-2.jpg";
 ---
 
 <section id="quem-somos" class="section quem-somos">
+  <h2 class="section-title">Quem Somos</h2>
   <div class="container">
-    <h2 class="section-title">Quem Somos</h2>
-    <p class="section-subtitle">
-      [TEXTO TEMPORÁRIO] Conheça a Nucarbon e nossa missão de promover soluções sustentáveis.
-    </p>
-    
-    <div class="quem-somos-content">
-      <div class="quem-somos-text">
-        <h3>[TEXTO TEMPORÁRIO] Nossa História</h3>
-        <p>
-          [TEXTO TEMPORÁRIO] A Nucarbon é uma empresa especializada em créditos de carbono e projetos agroflorestais. 
-          Nossa missão é conectar produtores rurais, empresas e investidores em soluções sustentáveis que geram valor 
-          econômico e ambiental.
-        </p>
-        <p>
-          [TEXTO TEMPORÁRIO] Com uma equipe multidisciplinar de especialistas em meio ambiente, agronomia e mercado 
-          de carbono, oferecemos serviços completos desde a análise de viabilidade até o monitoramento e gestão de 
-          projetos de carbono.
-        </p>
-        
-        <h3>[TEXTO TEMPORÁRIO] Nossa Visão</h3>
-        <p>
-          [TEXTO TEMPORÁRIO] Ser referência nacional em projetos de créditos de carbono e soluções agroflorestais, 
-          contribuindo para um futuro mais sustentável e rentável para todos os envolvidos.
-        </p>
-        
-        <h3>[TEXTO TEMPORÁRIO] Nossos Valores</h3>
-        <ul class="valores-list">
-          <li>[TEXTO TEMPORÁRIO] Sustentabilidade e respeito ao meio ambiente</li>
-          <li>[TEXTO TEMPORÁRIO] Transparência e ética em todas as operações</li>
-          <li>[TEXTO TEMPORÁRIO] Inovação e excelência técnica</li>
-          <li>[TEXTO TEMPORÁRIO] Compromisso com resultados mensuráveis</li>
-        </ul>
+    <div class="container-main-content">
+      <div class="quem-somos-content">
+        <div class="quem-somos-text">
+          <p>
+            A Nucarbon atua na geração de créditos de carbono por meio de projetos agroflorestais, conectando produtores rurais, empresas e investidores em iniciativas que conciliam valor econômico, impacto social e benefícios ambientais mensuráveis. Nosso trabalho começa no campo e se estende ao mercado, sempre orientado por metodologias consistentes, critérios técnicos rigorosos e processos claros.
+          </p>
+          <p>
+            Contamos com uma equipe multidisciplinar, com experiência em meio ambiente, agronomia, inteligência artificial e mercado de carbono, o que nos permite acompanhar todo o ciclo dos projetos — da análise de viabilidade à gestão contínua. Adotamos práticas que priorizam rastreabilidade, métricas confiáveis e governança, sustentadas por monitoramento em tempo real, porque acreditamos que credibilidade e qualidade são essenciais para o avanço do setor.
+          </p>
+        </div>
+
+        <div class="quem-somos-content-image">
+          <Image 
+            src={forestPortrait}
+            alt="Agrofloresta em Poços de Caldas, Projeto café gato-mourisco"
+            width={1000}
+          />
+        </div>
       </div>
-      
-      <div class="quem-somos-image">
-        <Image 
-          src={forestPortrait}
-          alt="Floresta em uma montanha"
-          width={600}
-        />
+
+      <div class="quem-somos-subcontent">
+        <h3>Nossa História</h3>
+        <div class="quem-somos-subcontent-text">
+          <p>
+            A <b>Nucarbon</b> nasceu do propósito de contribuir para um mercado de crédito de carbono que opere de forma responsável, com critérios sólidos e resultados climáticos concretos. Desde o início, assumimos o compromisso de fortalecer um ecossistema mais confiável, inclusivo e eficaz.
+          </p>
+          <p>
+            Seguimos empenhados em contribuir para a descarbonização da economia por meio de soluções tecnológicas, transparentes e orientadas a resultados, apoiando a evolução do mercado de carbono e ampliando seu impacto positivo no longo prazo.
+          </p>
+        </div>
+        
+        <h3>Nossa Missão</h3>
+        <div class="quem-somos-subcontent-text">
+          <p>
+            Promover integridade e impacto climático real no mercado de crédito de carbono por meio de tecnologia, transparência e rigor técnico.
+          </p>
+        </div>
+          
+        <h3>Nossos Valores</h3>
+        <div class="quem-somos-subcontent-text">
+          <ul class="valores-list">
+            <li>Integridade ambiental</li>
+            <li>Transparência e ética</li>
+            <li>Rigor técnico e inovação</li>
+            <li>Resultados mensuráveis</li>
+          </ul>
+        </div>
       </div>
+    </div>
+
+    <div class="quem-somos-image">
+      <Image 
+        src={forestPortrait}
+        alt="Agrofloresta em Poços de Caldas, Projeto café gato-mourisco"
+        width={1200}
+      />
     </div>
   </div>
 </section>
 
-<style lang="scss">
-  .quem-somos {
-    background-color: var(--color-bg-secondary);
+<style lang="scss">  
+.quem-somos {
+  --bullet-size: 9px;
 
-    &-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--spacing-xl);
-      align-items: center;
+  background-color: var(--color-bg-secondary);
 
-      @media (max-width: 768px) {
-        grid-template-columns: 1fr;
-      }
-    }
+  h3 {
+    display: flex;
+    text-align: left;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
 
-    &-text {
-      h3 {
-        color: var(--color-primary);
-        margin-top: var(--spacing-lg);
-        margin-bottom: var(--spacing-sm);
+    &::before {
+      background-color: var(--color-primary);
+      width: var(--bullet-size);
+      height: var(--bullet-size);
+      border-radius: var(--bullet-size);
+      margin-right: var(--spacing-xs);
+      content: "";
 
-        &:first-child {
-          margin-top: 0;
-        }
-      }
-    }
-
-    &-image {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: var(--border-radius-lg);
-      }
+      box-shadow: 0 0 6px var(--color-primary-light);
     }
   }
 
+  &-content {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+
+    &-image {
+      display: none;
+    }
+  }
+  
+  &-subcontent {
+    position: relative;
+    margin-left: var(--);
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--color-primary);
+      width: 1px;
+      top: 16px;
+      height: calc(100% + var(--spacing-lg));
+      left: calc(var(--bullet-size) / 2 - 0.5px);
+    }
+
+    h3 {
+      color: var(--color-primary);
+      margin-top: var(--spacing-lg);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    &-text {
+      position: relative;
+      margin-left: calc(var(--bullet-size) + var(--spacing-xs));
+    }
+  }
+
+  &-image {
+    display: none;
+  }
+
+  img {
+    width: 100%;
+    height: -webkit-fill-available;
+    height: stretch;
+    object-fit: cover;
+    border-radius: var(--border-radius-lg);
+  }
+
   .valores-list {
+    display: flex;
+    flex-wrap: wrap;
     list-style: none;
     padding-left: 0;
+    max-width: 500px;
 
     li {
-      padding: var(--spacing-sm) 0;
+      padding: var(--spacing-sm);
       padding-left: 1.5rem;
       position: relative;
       color: var(--color-text-secondary);
+      flex-basis: 50%;
 
       &::before {
         content: '✓';
@@ -112,18 +163,74 @@ import forestPortrait from "../../images/forest-portrait.jpg";
     }
   }
 
-  .image-placeholder {
-    width: 100%;
-    aspect-ratio: 4/3;
-    background-color: var(--color-bg-accent);
-    border-radius: var(--border-radius-lg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-light);
-    text-align: center;
-    padding: var(--spacing-lg);
+  // .image-placeholder {
+  //   width: 100%;
+  //   aspect-ratio: 16/3;
+  //   background-color: var(--color-bg-accent);
+  //   border-radius: var(--border-radius-lg);
+  //   display: flex;
+  //   flex-direction: column;
+  //   align-items: center;
+  //   justify-content: center;
+  //   color: var(--color-text-light);
+  //   text-align: center;
+  //   padding: var(--spacing-lg);
+  // }
+
+  @media (min-width: 768px) {
+    .container {
+      display: flex;
+    }
+
+    &-content {
+      flex-direction: row-reverse;
+
+      &-image {
+        display: block;
+        height: stretch;
+        min-width: 40%;
+        height: 450px;
+      }
+    }
+
+    &-subcontent {
+      max-width: 800px;
+
+      &::before {
+        height: calc(100% + var(--spacing-lg) + 16px);
+      }
+    }
   }
+
+  @media (min-width: 920px) {
+    &-content {
+      &-image {
+        min-width: 50%;
+        height: 500px;
+      }
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      display: flex;
+      gap: var(--spacing-xl);
+
+      &-main-content {
+        max-width: 600px;
+      }
+    }
+
+    &-content {
+      &-image {
+        display: none;
+      }
+    }
+
+    &-image {
+      display: block;
+    }
+  }
+}
 </style>
 
