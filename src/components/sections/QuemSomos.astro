@@ -70,6 +70,7 @@ import forestPortrait from "../../images/forest-portrait-2.jpg";
 <style lang="scss">  
 .quem-somos {
   --bullet-size: 9px;
+  --bullet-spacing: var(--spacing-xs);
 
   background-color: var(--color-bg-secondary);
 
@@ -84,7 +85,7 @@ import forestPortrait from "../../images/forest-portrait-2.jpg";
       width: var(--bullet-size);
       height: var(--bullet-size);
       border-radius: var(--bullet-size);
-      margin-right: var(--spacing-xs);
+      margin-right: var(--bullet-spacing);
       content: "";
 
       box-shadow: 0 0 6px var(--color-primary-light);
@@ -103,7 +104,6 @@ import forestPortrait from "../../images/forest-portrait-2.jpg";
   
   &-subcontent {
     position: relative;
-    margin-left: var(--);
 
     &::before {
       content: "";
@@ -123,7 +123,7 @@ import forestPortrait from "../../images/forest-portrait-2.jpg";
 
     &-text {
       position: relative;
-      margin-left: calc(var(--bullet-size) + var(--spacing-xs));
+      margin-left: calc(var(--bullet-size) + var(--bullet-spacing));
     }
   }
 
@@ -212,6 +212,9 @@ import forestPortrait from "../../images/forest-portrait-2.jpg";
   }
 
   @media (min-width: 1024px) {
+    --bullet-size: 13px;
+    --bullet-spacing: var(--spacing-md);
+
     .container {
       display: flex;
       gap: var(--spacing-xl);
