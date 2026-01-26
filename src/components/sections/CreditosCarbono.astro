@@ -47,14 +47,15 @@ import Card from '../ui/Card.astro';
         
         <h3>Benefícios dos Créditos de Carbono</h3>
         <div class="beneficios-grid">
-          <Card class="card beneficio-item" title="Ambientais">
+          <Card class='test'>
+            <h4>Ambientais</h4>
             <p>Contribuem para a redução das emissões de gases de efeito estufa, a conservação da biodiversidade e a recuperação de ecossistemas.</p>
           </Card>
-          <Card class="card beneficio-item">
+          <Card>
             <h4>Econômicos</h4>
             <p>Podem gerar receita adicional para produtores e organizações por meio da venda de créditos, além de incentivar investimentos em práticas mais sustentáveis.</p>
           </Card>
-          <Card class="card beneficio-item">
+          <Card>
             <h4>Sociais</h4>
             <p>Apoiam a geração de empregos, o fortalecimento de comunidades locais e o desenvolvimento de atividades alinhadas à conservação ambiental.</p>
           </Card>
@@ -111,12 +112,13 @@ import Card from '../ui/Card.astro';
 
   .beneficios-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--spacing-lg);
     margin-top: var(--spacing-lg);
 
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
+    
+    @media (max-width: 800px) {
+      grid-template-columns: auto;
     }
   }
 }
