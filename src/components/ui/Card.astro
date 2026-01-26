@@ -3,13 +3,19 @@ interface Props {
   title?: string;
   href?: string;
   class?: string;
+  icon?: any;
 }
 
-const { title, href, class: className = '' } = Astro.props;
+const { title, href, class: className = '', icon: Icon } = Astro.props;
 ---
 
 <div class={`card ${className}`}>
-  {title && <h3 class="card-title">{title}</h3>}
+  {title && (
+    <h3 class="card-title">
+      {Icon && <Icon class="card-icon" />}
+      {title}
+    </h3>
+  )}
   <div class="card-content">
     <slot />
   </div>
@@ -21,50 +27,63 @@ const { title, href, class: className = '' } = Astro.props;
 </div>
 
 <style lang="scss">
-  .card {
-    background: white;
-    border-radius: 1rem;
-    padding: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
+.card {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
+    align-items: center;
 
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    &-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--color-text-primary);
-      margin-bottom: 1rem;
-    }
-
-    &-content {
-      flex: 1;
-      color: var(--color-text-secondary);
-      line-height: 1.6;
-    }
-
-    &-footer {
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--color-border);
-    }
-
-    &-link {
-      color: var(--color-primary);
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
-
-      &:hover {
-        color: var(--color-primary-dark);
-      }
+    :global(svg) {
+      width: 4rem;
+      height: 4rem;
+      margin-bottom: var(--spacing-sm);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--color-primary-accent);
+      padding: var(--spacing-sm);
+      fill: var(--color-primary-light);
     }
   }
+
+  &-content {
+    flex: 1;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  &-footer {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  &-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--color-primary-dark);
+    }
+  }
+}
 </style>
 

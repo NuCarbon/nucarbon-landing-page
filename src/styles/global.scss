@@ -5,6 +5,7 @@
   --color-primary-light: #3da870;
   --color-secondary: #4a7c59;
   --color-secondary-dark: #355d42;
+  --color-primary-accent: #e7f9f2;
   
   /* Cores de texto */
   --color-text-primary: #1a1a1a;
@@ -121,6 +122,16 @@ img {
   text-align: center;
   margin-bottom: var(--spacing-xl);
   color: var(--color-text-primary);
+
+  &::after {
+    content: '';
+    display: block;
+    width: 120px;
+    height: 4px;
+    background-color: var(--color-primary);
+    margin: var(--spacing-sm) auto 0;
+    border-radius: var(--border-radius-sm);
+  }
 }
 
 .section-subtitle {
@@ -161,3 +172,10 @@ img {
   }
 }
 
+.card {
+  background-color: var(--color-bg-primary);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}

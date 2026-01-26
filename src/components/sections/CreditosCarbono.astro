@@ -1,4 +1,5 @@
 ---
+import Card from '../ui/Card.astro';
 ---
 
 <section id="creditos-carbono" class="section creditos-carbono">
@@ -46,18 +47,17 @@
         
         <h3>Benefícios dos Créditos de Carbono</h3>
         <div class="beneficios-grid">
-          <div class="beneficio-item">
-            <h4>Ambientais</h4>
+          <Card class="card beneficio-item" title="Ambientais">
             <p>Contribuem para a redução das emissões de gases de efeito estufa, a conservação da biodiversidade e a recuperação de ecossistemas.</p>
-          </div>
-          <div class="beneficio-item">
+          </Card>
+          <Card class="card beneficio-item">
             <h4>Econômicos</h4>
             <p>Podem gerar receita adicional para produtores e organizações por meio da venda de créditos, além de incentivar investimentos em práticas mais sustentáveis.</p>
-          </div>
-          <div class="beneficio-item">
+          </Card>
+          <Card class="card beneficio-item">
             <h4>Sociais</h4>
             <p>Apoiam a geração de empregos, o fortalecimento de comunidades locais e o desenvolvimento de atividades alinhadas à conservação ambiental.</p>
-          </div>
+          </Card>
         </div>
       </div>
     </div>
@@ -65,9 +65,8 @@
 </section>
 
 <style lang="scss">
-  .creditos-carbono {
-    background-color: var(--color-bg-secondary);
-  }
+.creditos-carbono {
+  background-color: var(--color-bg-secondary);
 
   .creditos-text {
     h3 {
@@ -120,23 +119,6 @@
       grid-template-columns: 1fr;
     }
   }
-
-  .beneficio-item {
-    background-color: var(--color-bg-primary);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
-
-    h4 {
-      color: var(--color-primary);
-      margin-bottom: var(--spacing-sm);
-      font-size: 1.25rem;
-    }
-
-    p {
-      margin: 0;
-      color: var(--color-text-secondary);
-    }
-  }
+}
 </style>
 
