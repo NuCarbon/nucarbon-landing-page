@@ -1,16 +1,17 @@
 ---
+const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
 ---
 
 <section id="contato" class="section contato">
   <div class="container">
     <h2 class="section-title">Fale Conosco</h2>
     <p class="section-subtitle">
-      [TEXTO TEMPORÁRIO] Entre em contato conosco para saber mais sobre nossos serviços ou tirar suas dúvidas.
+      Entre em contato conosco para saber mais sobre nossos serviços ou tirar suas dúvidas.
     </p>
     
     <div class="contato-content">
       <div class="contato-info">
-        <h3>[TEXTO TEMPORÁRIO] Informações de Contato</h3>
+        <h3>Informações de Contato</h3>
         
         <div class="info-item">
           <h4>Email</h4>
@@ -19,23 +20,15 @@
         
         <div class="info-item">
           <h4>Telefone</h4>
-          <a href="tel:+5511999999999">+55 (11) 99999-9999</a>
-        </div>
-        
-        <div class="info-item">
-          <h4>Endereço</h4>
-          <p>[TEXTO TEMPORÁRIO] São Paulo, SP, Brasil</p>
-        </div>
-        
-        <div class="info-item">
-          <h4>Horário de Atendimento</h4>
-          <p>[TEXTO TEMPORÁRIO] Segunda a Sexta: 9h às 18h</p>
+          <a href="tel:+5519971598636">+55 (19) 97159-8636</a>
+          <a href="tel:+5511993960431">+55 (11) 99396-0431</a>
         </div>
       </div>
       
       <div class="contato-form">
-        <h3>[TEXTO TEMPORÁRIO] Envie sua Mensagem</h3>
-        <form class="form" action="#" method="POST">
+        <h3>Envie sua Mensagem</h3>
+        <div id="form-message" class="form-message" role="alert" aria-live="polite" hidden></div>
+        <form id="contato-form" class="form" action="#" method="POST">
           <div class="form-group">
             <label for="nome">Nome Completo *</label>
             <input type="text" id="nome" name="nome" required />
@@ -44,11 +37,6 @@
           <div class="form-group">
             <label for="email">Email *</label>
             <input type="email" id="email" name="email" required />
-          </div>
-          
-          <div class="form-group">
-            <label for="telefone">Telefone</label>
-            <input type="tel" id="telefone" name="telefone" />
           </div>
           
           <div class="form-group">
@@ -67,12 +55,76 @@
             <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
           </div>
           
-          <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
+          <button type="submit" class="btn btn-primary" id="submit-btn">Enviar Mensagem</button>
         </form>
       </div>
     </div>
   </div>
 </section>
+
+<script is:inline define:vars={{ scriptUrl }}>
+  const form = document.getElementById('contato-form');
+  const messageEl = document.getElementById('form-message');
+  const submitBtn = document.getElementById('submit-btn');
+  const submitBtnText = submitBtn.innerText;
+
+  function changeFormState(enabled) {
+    form.classList.toggle('disabled', !enabled);
+    submitBtn.disabled = !enabled;
+    submitBtn.innerText = enabled ? submitBtnText : '...';
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!messageEl || !submitBtn) return;
+
+    const get = (name) => form?.elements.namedItem(name)?.value?.trim() ?? '';
+    const formData = {
+      nome: get('nome'),
+      email: get('email'),
+      assunto: get('assunto'),
+      mensagem: get('mensagem'),
+    };
+
+    messageEl.hidden = true;
+    messageEl.className = 'form-message';
+    submitBtn.disabled = true;
+
+    try {
+      changeFormState(false);
+      const res = await fetch(scriptUrl, {
+        method: 'POST',
+        body: new URLSearchParams(formData),
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        data = { message: 'Resposta inválida do servidor.', statusCode: 500 };
+      }
+
+      const message = data.message ?? 'Erro inesperado.';
+      const statusCode = data.statusCode ?? 500;
+
+      const isSuccess = statusCode >= 200 && statusCode < 300;
+      messageEl.className = `form-message form-message--${isSuccess ? 'success' : 'error'}`;
+      messageEl.textContent = message;
+      messageEl.hidden = false;
+
+      if (isSuccess) {
+        form?.reset();
+      }
+    } catch {
+      messageEl.className = 'form-message form-message--error';
+      messageEl.textContent = 'Não foi possível enviar. Verifique sua conexão e tente novamente.';
+      messageEl.hidden = false;
+    } finally {
+      submitBtn.disabled = false;
+      changeFormState(true);
+    }
+  });
+</script>
 
 <style lang="scss">
   .contato {
@@ -112,6 +164,7 @@
     a {
       color: var(--color-primary);
       text-decoration: none;
+      display: block;
 
       &:hover {
         text-decoration: underline;
@@ -121,6 +174,25 @@
     p {
       margin: 0;
       color: var(--color-text-secondary);
+    }
+  }
+
+  .form-message {
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+    font-weight: 500;
+
+    &--success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    &--error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
     }
   }
 
@@ -159,6 +231,29 @@
       textarea {
         resize: vertical;
         min-height: 120px;
+      }
+    }
+
+    &.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      cursor: not-allowed;
+
+      .btn {
+        transform: translateY(-2px);
+        animation: pulse 2s infinite;
+        
+        @keyframes pulse {
+          0% {
+            opacity: 0.5;
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0.5;
+          }
+        }
       }
     }
   }
