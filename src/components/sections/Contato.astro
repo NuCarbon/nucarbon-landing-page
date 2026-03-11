@@ -1,42 +1,46 @@
 ---
+import EmailIcon from '../icons/Email.astro';
+import PhoneIcon from '../icons/Phone.astro';
+
 const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
 ---
 
 <section id="contato" class="section contato">
-  <div class="container">
-    <h2 class="section-title">Fale Conosco</h2>
-    <p class="section-subtitle">
-      Entre em contato conosco para saber mais sobre nossos serviços ou tirar suas dúvidas.
-    </p>
-    
+  <div class="container card">
     <div class="contato-content">
       <div class="contato-info">
-        <h3>Informações de Contato</h3>
+        <h2>Fale Conosco</h2>
+        <p>Entre em contato conosco para saber mais sobre nossos serviços ou tirar suas dúvidas.</p>
         
-        <div class="info-item">
-          <h4>Email</h4>
-          <a href="mailto:contato@nucarbon.com.br">contato@nucarbon.com.br</a>
-        </div>
-        
-        <div class="info-item">
-          <h4>Telefone</h4>
-          <a href="tel:+5519971598636">+55 (19) 97159-8636</a>
-          <a href="tel:+5511993960431">+55 (11) 99396-0431</a>
+        <div class="info-item-list">
+          <div class="info-item">
+            <EmailIcon/>
+            <a href="mailto:contato@nucarbon.com.br">contato@nucarbon.com.br</a>
+          </div>
+          
+          <div class="info-item">
+            <PhoneIcon/>
+            <p>
+              <a href="tel:+5519971598636">+55 (19) 97159-8636</a>
+              <a href="tel:+5511993960431">+55 (11) 99396-0431</a>
+            </p>
+          </div>
         </div>
       </div>
       
       <div class="contato-form">
-        <h3>Envie sua Mensagem</h3>
         <div id="form-message" class="form-message" role="alert" aria-live="polite" hidden></div>
         <form id="contato-form" class="form" action="#" method="POST">
-          <div class="form-group">
-            <label for="nome">Nome Completo *</label>
-            <input type="text" id="nome" name="nome" required />
-          </div>
-          
-          <div class="form-group">
-            <label for="email">Email *</label>
-            <input type="email" id="email" name="email" required />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nome">Nome Completo *</label>
+              <input type="text" id="nome" name="nome" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" required />
+            </div>
           </div>
           
           <div class="form-group">
@@ -127,32 +131,45 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
 </script>
 
 <style lang="scss">
-  .contato {
-    background-color: var(--color-bg-secondary);
+.contato {
+  background-color: var(--color-bg-secondary);
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
 
-    &-content {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr;
-      gap: var(--spacing-xl);
-      max-width: 1000px;
-      margin: 0 auto;
+  .container {
+    padding: var(--spacing-xl);
+    max-width: 1200px;
+  }
 
-      @media (max-width: 768px) {
-        grid-template-columns: 1fr;
-      }
-    }
+  &-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
 
-    &-info,
-    &-form {
-      h3 {
-        color: var(--color-primary);
-        margin-bottom: var(--spacing-lg);
-      }
+  &-info > p {
+    margin-bottom: var(--spacing-md);
+  }
+
+  &-info,
+  &-form {
+    h3 {
+      color: var(--color-primary);
+      margin-bottom: var(--spacing-lg);
     }
   }
 
   .info-item {
-    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+
+    &-list {
+      gap: var(--spacing-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      margin-bottom: var(--spacing-md);
+    }
 
     h4 {
       font-size: 1rem;
@@ -174,6 +191,16 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
     p {
       margin: 0;
       color: var(--color-text-secondary);
+    }
+
+    :global(svg) {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 2.5rem;
+      margin-right: var(--spacing-sm);
+      background-color: var(--color-primary-accent);
+      padding: var(--spacing-xs);
+      fill: var(--color-primary-light);
     }
   }
 
@@ -201,9 +228,16 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
     flex-direction: column;
     gap: var(--spacing-md);
 
+    &-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
     &-group {
       display: flex;
       flex-direction: column;
+      flex: 1;
 
       label {
         margin-bottom: var(--spacing-xs);
@@ -281,5 +315,50 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
       }
     }
   }
+
+  @media (min-width: 750px) {
+    &-info > p {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .info-item {
+      &-list {
+        flex-direction: row;
+        justify-content: space-evenly;
+        margin-bottom: var(--spacing-md);
+      }
+    }
+
+    .form-row {
+      flex-direction: row;
+    }
+  }
+
+  @media (min-width: 900px) {
+    &-content {
+      grid-template-columns: 1fr 2fr;
+      gap: var(--spacing-xl);
+    }
+
+    &-info {
+      & > p {
+        margin-bottom: var(--spacing-xl);
+      }
+
+      .info-item {
+        margin-bottom: 0;
+
+        &-list {
+          gap: var(--spacing-lg);
+          flex-direction: column;
+        }
+      }
+    }
+
+    .form-row {
+      flex-direction: row;
+    }
+  }
+}
 </style>
 
