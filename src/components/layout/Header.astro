@@ -18,7 +18,7 @@
         <li><a href="/#quem-somos">Quem Somos</a></li>
         <li><a href="/#servicos">Nossos Serviços</a></li>
         <li><a href="/#creditos-carbono">Créditos de Carbono</a></li>
-        <li><a href="/#faq">FAQ</a></li>
+        <li><a href="/#faq">Perguntas Frequentes</a></li>
         <li><a href="/#contato">Contato</a></li>
       </ul>
     </nav>
@@ -90,70 +90,27 @@
 </script>
 
 <style lang="scss">
-  .header {
+.header {
+  background-color: var(--color-bg-primary);
+  box-shadow: var(--shadow-lg);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  transform: translateY(0);
+
+  &.scrolled {
     background-color: var(--color-bg-primary);
-    box-shadow: var(--shadow-lg);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-    transform: translateY(0);
 
-    &.transparent {
-      background-color: transparent;
-      box-shadow: none;
-
-      .logo {
-        color: white;
-      }
-
-      .logo-text {
-        background: linear-gradient(135deg, white, rgba(255, 255, 255, 0.9));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      .nav-menu {
-        a {
-          color: white;
-
-          &:hover {
-            color: rgba(255, 255, 255, 0.8);
-          }
-        }
-
-        .nav-cta {
-          background-color: white;
-          color: var(--color-primary);
-        }
-      }
-
-      .hamburger {
-        background-color: white;
-      }
-
-      @media (max-width: 768px) {
-        .nav-menu {
-          background-color: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(10px);
-        }
-      }
+    .nav-cta {
+      color: white;
     }
+  }
 
-    &.scrolled {
-      background-color: var(--color-bg-primary);
-
-      .nav-cta {
-        color: white;
-      }
-    }
-
-    &.hidden {
-      transform: translateY(-100%);
-    }
+  &.hidden {
+    transform: translateY(-100%);
   }
 
   .nav {
@@ -222,7 +179,7 @@
     &.active {
       .hamburger {
         &:nth-child(1) {
-          transform: rotate(45deg) translate(8px, 8px);
+          transform: translateX(8px) rotate(45deg) translate(0, 10px);
         }
 
         &:nth-child(2) {
@@ -230,7 +187,7 @@
         }
 
         &:nth-child(3) {
-          transform: rotate(-45deg) translate(7px, -7px);
+          transform: translateX(8px) rotate(-45deg) translate(0, -10px);
         }
       }
     }
@@ -244,7 +201,7 @@
     border-radius: 2px;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 992px) {
     .mobile-menu-toggle {
       display: flex;
     }
@@ -271,5 +228,43 @@
       }
     }
   }
+
+  @media (min-width: 992px) {
+    &.transparent {
+      background-color: transparent;
+      box-shadow: none;
+
+      .logo {
+        color: white;
+      }
+
+      .logo-text {
+        background: linear-gradient(135deg, white, rgba(255, 255, 255, 0.9));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .nav-menu {
+        a {
+          color: white;
+
+          &:hover {
+            color: rgba(255, 255, 255, 0.8);
+          }
+        }
+
+        .nav-cta {
+          background-color: white;
+          color: var(--color-primary);
+        }
+      }
+
+      .hamburger {
+        background-color: white;
+      }
+    }
+  }
+}
 </style>
 
