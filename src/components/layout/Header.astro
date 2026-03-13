@@ -1,10 +1,13 @@
 ---
+import Image from "astro/components/Image.astro";
+import logo from "../../images/logo.png"
 ---
 
 <header class="header transparent">
   <div class="container">
     <nav class="nav" role="navigation" aria-label="Navegação principal">
       <a href="/" class="logo">
+        <Image src={logo} alt="Logo Nucarbon" width={28} height={28}/>
         <span class="logo-text">Nucarbon</span>
       </a>
       
@@ -121,11 +124,26 @@
   }
 
   .logo {
+    display: flex;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-primary);
     text-decoration: none;
     transition: color 0.3s ease;
+    align-items: center;
+
+    img {
+      margin-right: var(--spacing-xs);
+      filter:
+        drop-shadow( 0.5px  0px 0px var(--color-bg-primary)) 
+        drop-shadow(-0.5px  0px 0px var(--color-bg-primary))
+        drop-shadow( 0px  0.5px 0px var(--color-bg-primary)) 
+        drop-shadow( 0px -0.5px 0px var(--color-bg-primary));
+    }
+
+    span {
+      font-family: var(--font-logo);
+    }
   }
 
   .logo-text {

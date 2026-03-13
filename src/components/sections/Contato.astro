@@ -9,7 +9,7 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
   <div class="container card">
     <div class="contato-content">
       <div class="contato-info">
-        <h2>Fale Conosco</h2>
+        <h2 class="section-title">Fale Conosco</h2>
         <p>Entre em contato conosco para saber mais sobre nossos serviços ou tirar suas dúvidas.</p>
         
         <div class="info-item-list">
@@ -334,6 +334,13 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
   }
 
   @media (min-width: 900px) {
+    .section-title {
+      text-align: left;
+      &::after {
+        margin: var(--spacing-sm) 0 0;
+      }
+    }
+
     &-content {
       grid-template-columns: 1fr 2fr;
       gap: var(--spacing-xl);

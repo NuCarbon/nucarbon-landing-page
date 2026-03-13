@@ -1,4 +1,7 @@
 ---
+import Image from "astro/components/Image.astro";
+import logo from "../../images/logo.png"
+
 const year = new Date().getFullYear();
 ---
 
@@ -6,7 +9,10 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="footer-content">
       <div class="footer-section">
-        <h3 class="footer-title">Nucarbon</h3>
+        <div class="footer-logo">
+          <Image src={logo} alt="Logo Nucarbon" width={28} height={28}/>
+          <h3 class="footer-title">Nucarbon</h3>
+        </div>
         <p class="footer-description">
           Soluções sustentáveis em créditos de carbono e projetos agroflorestais.
         </p>
@@ -45,87 +51,98 @@ const year = new Date().getFullYear();
 </footer>
 
 <style lang="scss">
-  .footer {
-    background-color: var(--color-text-primary);
-    color: var(--color-bg-primary);
-    padding: var(--spacing-2xl) 0 var(--spacing-lg);
-  }
+.footer {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  padding: var(--spacing-2xl) 0 var(--spacing-lg);
 
-  .footer-content {
+  &-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
-
+  
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
     }
   }
 
-  .footer-title {
-    font-size: 1.5rem;
-    color: var(--color-primary-light);
+  &-logo {
+    display: flex;
+    align-items: center;
     margin-bottom: var(--spacing-sm);
-  }
 
-  .footer-description {
+    & > img {
+      margin-right: var(--spacing-xs);
+    }
+  }
+  
+  &-title {
+    font-size: 1.5rem;
+    font-family: var(--font-logo);
+    color: var(--color-primary-light);
+    margin-bottom: 0;
+  }
+  
+  &-description {
     color: rgba(255, 255, 255, 0.8);
     line-height: 1.6;
   }
-
-  .footer-heading {
+  
+  &-heading {
     font-size: 1.125rem;
     color: var(--color-bg-primary);
     margin-bottom: var(--spacing-sm);
   }
-
-  .footer-links {
+  
+  &-links {
     list-style: none;
-
+  
     li {
       margin-bottom: 0.5rem;
     }
-
+  
     a {
       color: rgba(255, 255, 255, 0.8);
       transition: color 0.3s ease;
-
+  
       &:hover {
         color: var(--color-primary-light);
       }
     }
   }
-
-  .footer-contact {
+  
+  &-contact {
     list-style: none;
     color: rgba(255, 255, 255, 0.8);
-
+  
     li {
       margin-bottom: 0.75rem;
       line-height: 1.6;
     }
-
+  
     strong {
       display: block;
       color: var(--color-bg-primary);
       margin-bottom: 0.25rem;
     }
-
+  
     a {
       color: rgba(255, 255, 255, 0.8);
       transition: color 0.3s ease;
-
+  
       &:hover {
         color: var(--color-primary-light);
       }
     }
   }
-
-  .footer-bottom {
+  
+  &-bottom {
     text-align: center;
     padding-top: var(--spacing-lg);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.6);
   }
+}
 </style>
 
