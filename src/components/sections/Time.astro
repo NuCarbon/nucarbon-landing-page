@@ -1,0 +1,58 @@
+---
+import TeamMember from "../ui/TeamMember.astro";
+
+import igor from "../../images/igor.jpeg";
+import Card from "../ui/Card.astro";
+---
+
+<section id="time" class="section team">
+  <div class="container">
+    <h2 class="section-title">Conheça o Time</h2>
+
+    <div class="team-grid">
+      <TeamMember
+        image={igor}
+        name="Marcio Magrini"
+        role="Founder"
+      />
+
+      <TeamMember
+        image={igor}
+        name="Gisele Corbanezi"
+        role="Head de Operações"
+      />
+
+      <TeamMember
+        image={igor}
+        name="Igor Mandello"
+        role="Head de Tecnologia"
+      />
+
+      <TeamMember
+        image={igor}
+        name="Gabriel Siqueira"
+        role="Head de Descarbonização"
+      />
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+.team {
+  background-color: var(--color-bg-secondary);
+  
+  &-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-md);
+  }
+
+  @media (min-width: 900px) {
+    &-grid {
+      gap: var(--spacing-xl);
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+</style>
