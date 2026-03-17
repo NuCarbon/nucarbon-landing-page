@@ -2,22 +2,23 @@
 interface Props {
   title?: string;
   smallTitle?: boolean;
+  centerText?: boolean;
   href?: string;
   class?: string;
   icon?: any;
 }
 
-const { title, href, class: className = '', icon: Icon } = Astro.props;
+const { title, href, class: className = '', smallTitle, centerText, icon: Icon } = Astro.props;
 ---
 
 <div class={`card ${className}`}>
   {title && (
-    <h4 class="card-title">
+    <h4 class={`card-title ${smallTitle ? "card-title-small" : ""}`}>
       {Icon && <Icon class="card-icon" />}
       {title}
     </h4>
   )}
-  <div class="card-content">
+  <div class={`card-content ${centerText ? "card-content-centered" : ""}`}>
     <slot />
   </div>
   {href && (
@@ -45,12 +46,17 @@ const { title, href, class: className = '', icon: Icon } = Astro.props;
   &-title {
     font-size: 1.5rem;
     font-weight: 700;
-    // color: var(--color-text-primary);
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+
+    &-small {
+      font-size: 1.2rem;
+      text-align: left;
+      align-items: flex-start;
+    }
 
     :global(svg) {
       width: 4rem;
@@ -67,6 +73,10 @@ const { title, href, class: className = '', icon: Icon } = Astro.props;
     flex: 1;
     color: var(--color-text-secondary);
     line-height: 1.6;
+
+    &-centered {
+      text-align: center;
+    }
   }
 
   &-footer {

@@ -40,7 +40,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </p>
         <div class="service-content">
           <h3>O que incluímos:</h3>
-          <ul class="service-list">
+          <ul class="serivce-list feature-list">
             <li>Avaliação da elegibilidade da área para projetos de carbono</li>
             <li>Análise de conformidade com padrões e metodologias reconhecidas</li>
             <li>Estimativa preliminar de potencial de geração de créditos</li>
@@ -60,7 +60,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </p>
         <div class="service-content">
           <h3>Nossos serviços incluem:</h3>
-          <ul class="service-list">
+          <ul class="serivce-list feature-list">
             <li>Identificação e quantificação de fontes de emissão</li>
             <li>Coleta e análise de dados de campo</li>
             <li>Aplicação de fatores de emissão apropriados</li>
@@ -80,7 +80,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </p>
         <div class="service-content">
           <h3>Metodologias utilizadas:</h3>
-          <ul class="service-list">
+          <ul class="serivce-list feature-list">
             <li>Medição de biomassa acima do solo</li>
             <li>Medição de biomassa abaixo do solo</li>
             <li>Análise de carbono no solo em diferentes profundidades</li>
@@ -104,7 +104,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </p>
         <div class="service-content">
           <h3>Elaboração de PDD:</h3>
-          <ul class="service-list">
+          <ul class="serivce-list feature-list">
             <li>Descrição detalhada do projeto e localização</li>
             <li>Justificativa da elegibilidade e adicionalidade</li>
             <li>Seleção e aplicação de metodologia apropriada</li>
@@ -115,7 +115,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           </ul>
           
           <h3>Sistema MRV:</h3>
-          <ul class="service-list">
+          <ul class="serivce-list feature-list">
             <li>Desenvolvimento de protocolos de monitoramento</li>
             <li>Coleta sistemática de dados de campo</li>
             <li>Processamento e análise de dados</li>
@@ -135,7 +135,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </p>
         <div class="service-content">
           <h3>Monitoramento de Emissões:</h3>
-          <ul class="service-list">
+          <ul class="service-list feature-list">
             <li>Monitoramento contínuo de fontes de emissão do projeto</li>
             <li>Acompanhamento de mudanças no uso do solo</li>
             <li>Medição de emissões de atividades relacionadas</li>
@@ -144,7 +144,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           </ul>
           
           <h3>Gerenciamento de Riscos de Vazamento:</h3>
-          <ul class="service-list">
+          <ul class="service-list feature-list">
             <li>Identificação de potenciais fontes de vazamento</li>
             <li>Avaliação de riscos de deslocamento de atividades</li>
             <li>Desenvolvimento de estratégias de mitigação</li>
@@ -191,30 +191,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
     h2 {
       color: var(--color-primary);
-    }
-  }
-
-  ul {
-    list-style: none;
-    padding-left: 0;
-
-    li {
-      padding-left: 1.5rem;
-      position: relative;
-      color: var(--color-text-secondary);
-      
-      padding-top: var(--spacing-xs);
-      padding-bottom: var(--spacing-xs);
-
-      &::before {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        align-content: center;
-        color: var(--color-primary);
-        font-weight: bold;
-      }
     }
   }
 

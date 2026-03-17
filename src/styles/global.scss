@@ -173,6 +173,30 @@ img {
   margin: var(--spacing-xl) 0;
 }
 
+ul.feature-list {
+  list-style: none;
+  padding-left: 0;
+
+  li {
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--color-text-secondary);
+    
+    padding-top: var(--spacing-xs);
+    padding-bottom: var(--spacing-xs);
+
+    &::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      align-content: center;
+      color: var(--color-primary);
+      font-weight: bold;
+    }
+  }
+}
+
 /* Grid utilities */
 .grid {
   display: grid;

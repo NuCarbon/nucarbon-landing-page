@@ -134,13 +134,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <div class="content-section">
         <h2>Benefícios dos Projetos Agroflorestais</h2>
         <div class="benefits-grid">
-          <Card title="Econômicos">
+          <Card title="Econômicos" centerText>
             Diversificação de fontes de renda e aumento da rentabilidade da propriedade
           </Card>
-          <Card title="Ambientais">
+          <Card title="Ambientais" centerText>
             Conservação do solo, água e biodiversidade, além de sequestro de carbono
           </Card>
-          <Card title="Sociais">
+          <Card title="Sociais" centerText>
             Melhoria da qualidade de vida e segurança alimentar das comunidades
           </Card>
         </div>
@@ -171,8 +171,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       margin-bottom: var(--spacing-sm);
     }
   }
-
-  
 
   .services-grid {
     display: grid;
@@ -244,12 +242,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     gap: var(--spacing-lg);
     margin-top: var(--spacing-lg);
 
-    :global(.card) {
-      text-align: center;
-
-      :global(.card-title) {
-        color: var(--color-primary);
-      }
+    :global(.card-title) {
+      color: var(--color-primary);
     }
   }
 
