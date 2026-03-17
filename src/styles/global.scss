@@ -144,6 +144,25 @@ img {
   margin: 0 auto var(--spacing-xl);
 }
 
+.services-page .page-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+  padding: var(--spacing-2xl) 0;
+  text-align: center;
+
+  h1 {
+    color: white;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .page-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+}
+
 /* Grid utilities */
 .grid {
   display: grid;

@@ -1,35 +1,43 @@
 ---
-import Accordion from '../ui/Accordion.astro';
+import Accordion from "../ui/Accordion.astro";
+import Button from "../ui/Button.astro";
 
 const faqItems = [
   {
-    question: 'O que são créditos de carbono?',
-    answer: 'Créditos de carbono representam a redução ou remoção de uma tonelada de CO₂ equivalente da atmosfera, gerada por projetos que seguem critérios técnicos, metodologias reconhecidas e processos de monitoramento e verificação.'
+    question: "O que são créditos de carbono?",
+    answer:
+      "Créditos de carbono representam a redução ou remoção de uma tonelada de CO₂ equivalente da atmosfera, gerada por projetos que seguem critérios técnicos, metodologias reconhecidas e processos de monitoramento e verificação.",
   },
   {
-    question: 'Como posso participar de um projeto de créditos de carbono?',
-    answer: 'Produtores rurais, empresas e organizações podem participar por meio do desenvolvimento ou apoio a projetos de crédito de carbono. A Nucarbon avalia a viabilidade técnica, ambiental e econômica de cada iniciativa.'
+    question: "Como posso participar de um projeto de créditos de carbono?",
+    answer:
+      "Produtores rurais, empresas e organizações podem participar por meio do desenvolvimento ou apoio a projetos de crédito de carbono. A Nucarbon avalia a viabilidade técnica, ambiental e econômica de cada iniciativa.",
   },
   {
-    question: 'Quanto tempo leva para um projeto gerar créditos de carbono?',
-    answer: 'O prazo varia conforme o tipo de projeto, a metodologia adotada e as etapas de estruturação, validação e monitoramento. Em projetos agroflorestais, há um período inicial antes da primeira emissão de créditos.'
+    question: "Quanto tempo leva para um projeto gerar créditos de carbono?",
+    answer:
+      "O prazo varia conforme o tipo de projeto, a metodologia adotada e as etapas de estruturação, validação e monitoramento. Em projetos agroflorestais, há um período inicial antes da primeira emissão de créditos.",
   },
   {
-    question: 'Quais são os custos envolvidos em um projeto de carbono?',
-    answer: 'Os custos dependem de fatores como área do projeto, metodologia aplicada, monitoramento, certificação e gestão. Cada iniciativa é analisada individualmente para garantir consistência técnica e viabilidade.'
+    question: "Quais são os custos envolvidos em um projeto de carbono?",
+    answer:
+      "Os custos dependem de fatores como área do projeto, metodologia aplicada, monitoramento, certificação e gestão. Cada iniciativa é analisada individualmente para garantir consistência técnica e viabilidade.",
   },
   {
-    question: 'Como funciona a previsão de retorno em projetos agroflorestais?',
-    answer: 'A previsão considera o potencial de sequestro de carbono, os custos envolvidos, as condições de mercado e os prazos de emissão. As estimativas são baseadas em premissas técnicas e cenários realistas, ajustados a cada projeto.'
+    question: "Como funciona a previsão de retorno em projetos agroflorestais?",
+    answer:
+      "A previsão considera o potencial de sequestro de carbono, os custos envolvidos, as condições de mercado e os prazos de emissão. As estimativas são baseadas em premissas técnicas e cenários realistas, ajustados a cada projeto.",
   },
   {
-    question: 'Vocês oferecem treinamentos?',
-    answer: 'Sim. A Nucarbon oferece treinamentos e ações de conscientização para empresas, escolas e comunidades, abordando temas ambientais, boas práticas e sustentabilidade de forma responsável.'
+    question: "Vocês oferecem treinamentos?",
+    answer:
+      "Sim. A Nucarbon oferece treinamentos e ações de conscientização para empresas, escolas e comunidades, abordando temas ambientais, boas práticas e sustentabilidade de forma responsável.",
   },
   {
-    question: 'Como é feito o monitoramento de um projeto?',
-    answer: 'O monitoramento é realizado por meio de indicadores técnicos, métricas ambientais e ferramentas tecnológicas que permitem acompanhar a evolução do projeto em tempo real, garantindo rastreabilidade e confiabilidade das informações.'
-  }
+    question: "Como é feito o monitoramento de um projeto?",
+    answer:
+      "O monitoramento é realizado por meio de indicadores técnicos, métricas ambientais e ferramentas tecnológicas que permitem acompanhar a evolução do projeto em tempo real, garantindo rastreabilidade e confiabilidade das informações.",
+  },
 ];
 ---
 
@@ -37,31 +45,31 @@ const faqItems = [
   <div class="container">
     <h2 class="section-title">Tire suas Dúvidas</h2>
     <p class="section-subtitle">
-      Encontre respostas para as principais dúvidas sobre créditos de carbono, projetos agroflorestais e a atuação da Nucarbon.
+      Encontre respostas para as principais dúvidas sobre créditos de carbono,
+      projetos agroflorestais e a atuação da Nucarbon.
     </p>
-    
+
     <div class="faq-content">
       <Accordion items={faqItems} />
     </div>
-    
+
     <div class="faq-cta">
       <p>Não encontrou sua dúvida?</p>
-      <a href="#contato" class="btn btn-outline">Entre em Contato</a>
+      <Button href="#contato" variant="outline">Entre em Contato</a>
     </div>
   </div>
 </section>
 
 <style lang="scss">
-  .faq {
-    background-color: var(--color-bg-primary);
-  }
+.faq {
+  background-color: var(--color-bg-primary);
 
-  .faq-content {
+  &-content {
     max-width: 800px;
     margin: 0 auto var(--spacing-xl);
   }
 
-  .faq-cta {
+  &-cta {
     text-align: center;
     padding-top: var(--spacing-lg);
 
@@ -70,29 +78,5 @@ const faqItems = [
       color: var(--color-text-secondary);
     }
   }
-
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 2px solid transparent;
-
-    &-outline {
-      background-color: transparent;
-      color: var(--color-primary);
-      border-color: var(--color-primary);
-
-      &:hover {
-        background-color: var(--color-primary);
-        color: white;
-      }
-    }
-  }
+}
 </style>
-

@@ -1,72 +1,99 @@
 ---
 interface Props {
+  id?: string;
   href?: string;
-  variant?: 'primary' | 'secondary' | 'outline';
+  type?: undefined | null | "submit" | "button" | "reset";
+  variant?: 'primary' | 'secondary' | 'outline' | 'primary-inverse' | 'outline-inverse';
   class?: string;
 }
 
-const { href, variant = 'primary', class: className = '' } = Astro.props;
+const { id, href, type, variant = 'primary', class: className = '' } = Astro.props;
 const baseClasses = 'btn';
 const variantClasses = {
   primary: 'btn-primary',
   secondary: 'btn-secondary',
-  outline: 'btn-outline'
+  outline: 'btn-outline',
+  'primary-inverse': 'btn-primary-inverse',
+  'outline-inverse': 'btn-outline-inverse',
 };
 ---
 
 {href ? (
-  <a href={href} class={`${baseClasses} ${variantClasses[variant]} ${className}`}>
+  <a id={id} href={href} class={`${baseClasses} ${variantClasses[variant]} ${className}`}>
     <slot />
   </a>
 ) : (
-  <button class={`${baseClasses} ${variantClasses[variant]} ${className}`}>
+  <button id={id} type={type} class={`${baseClasses} ${variantClasses[variant]} ${className}`}>
     <slot />
   </button>
 )}
 
 <style lang="scss">
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 2px solid transparent;
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
 
-    &-primary {
-      background-color: var(--color-primary);
-      color: white;
-
-      &:hover {
-        background-color: var(--color-primary-dark);
-        transform: translateY(-2px);
-      }
-    }
-
-    &-secondary {
-      background-color: var(--color-secondary);
-      color: white;
-
-      &:hover {
-        background-color: var(--color-secondary-dark);
-        transform: translateY(-2px);
-      }
-    }
-
-    &-outline {
-      background-color: transparent;
-      color: var(--color-primary);
-      border-color: var(--color-primary);
-
-      &:hover {
-        background-color: var(--color-primary);
-        color: white;
-      }
+  &-primary, &-secondary, &-primary-inverse {
+    &:hover {
+      transform: translateY(-2px);
     }
   }
+
+  &-primary {
+    background-color: var(--color-primary);
+    color: white;
+
+    &:hover {
+      background-color: var(--color-primary-dark);
+    }
+  }
+
+  &-secondary {
+    background-color: var(--color-secondary);
+    color: white;
+
+    &:hover {
+      background-color: var(--color-secondary-dark);
+    }
+  }
+
+  &-outline {
+    background-color: transparent;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+
+    &:hover {
+      background-color: var(--color-primary);
+      color: white;
+    }
+  }
+
+  &-primary-inverse {
+    background-color: white;
+    color: var(--color-primary);
+
+    &:hover {
+      background-color: var(--color-bg-accent);
+    }
+  }
+
+  &-outline-inverse {
+    color: white;
+    border-color: white;
+
+    &:hover {
+      background-color: white;
+      color: var(--color-primary);
+    }
+  }
+}
 </style>
 

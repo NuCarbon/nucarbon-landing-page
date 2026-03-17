@@ -7,9 +7,10 @@ import { Font } from 'astro:assets';
 interface Props {
   title: string;
   description?: string;
+  className?: string;
 }
 
-const { title, description = 'Nucarbon - Soluções sustentáveis em créditos de carbono e projetos agroflorestais' } = Astro.props;
+const { title, className, description = 'Nucarbon - Soluções sustentáveis em créditos de carbono e projetos agroflorestais' } = Astro.props;
 ---
 
 <!doctype html>
@@ -38,7 +39,7 @@ const { title, description = 'Nucarbon - Soluções sustentáveis em créditos d
   </head>
   <body>
     <Header />
-    <main>
+    <main class={className}>
       <slot />
     </main>
     <Footer />

@@ -1,5 +1,6 @@
 ---
 import forestHero from "../../images/forest-hero-2.jpg";
+import Button from "../ui/Button.astro";
 const backgroundUrl = `url(${forestHero.src})`;
 ---
 
@@ -10,8 +11,8 @@ const backgroundUrl = `url(${forestHero.src})`;
       Soluções sustentáveis em créditos de carbono e projetos agroflorestais
     </p>
     <div class="hero-cta">
-      <a href="#servicos" class="btn btn-primary">Conheça Nossos Serviços</a>
-      <a href="#contato" class="btn btn-outline">Entre em Contato</a>
+      <Button href="#servicos" variant="primary-inverse">Conheça Nossos Serviços</Button>
+      <Button href="#contato" variant="outline-inverse">Entre em Contato</Button>
     </div>
   </div>
 </section>
@@ -52,40 +53,6 @@ const backgroundUrl = `url(${forestHero.src})`;
     gap: var(--spacing-md);
     justify-content: center;
     flex-wrap: wrap;
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 2px solid transparent;
-
-    &-primary {
-      background-color: white;
-      color: var(--color-primary);
-
-      &:hover {
-        background-color: var(--color-bg-accent);
-        transform: translateY(-2px);
-      }
-    }
-
-    &-outline {
-      background-color: transparent;
-      color: white;
-      border-color: white;
-
-      &:hover {
-        background-color: white;
-        color: var(--color-primary);
-      }
-    }
   }
 
   @media (min-width: 700px) {

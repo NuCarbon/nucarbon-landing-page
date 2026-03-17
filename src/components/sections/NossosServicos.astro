@@ -3,6 +3,7 @@ import Card from '../ui/Card.astro';
 import ForestIcon from '../icons/Forest.astro';
 import EducationIcon from '../icons/School.astro';
 import AnalyticsIcon from '../icons/Analytics.astro';
+import Button from '../ui/Button.astro';
 ---
 
 <section id="servicos" class="section nossos-servicos">
@@ -45,46 +46,23 @@ import AnalyticsIcon from '../icons/Analytics.astro';
     </div>
     
     <div class="servicos-cta">
-      <a href="/#contato" class="btn btn-primary">Entre em contato</a>
+      <Button href="/#contato">Entre em contato</Button>
     </div>
   </div>
 </section>
 
 <style lang="scss">
-  .nossos-servicos {
-    background-color: var(--color-bg-secondary);
-  }
+.nossos-servicos {
+  background-color: var(--color-bg-secondary);
+}
 
-  .servicos-grid {
-    margin-bottom: var(--spacing-xl);
-  }
+.servicos-grid {
+  margin-bottom: var(--spacing-xl);
+}
 
-  .servicos-cta {
-    text-align: center;
-    margin-top: var(--spacing-xl);
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 2px solid transparent;
-
-    &-primary {
-      background-color: var(--color-primary);
-      color: white;
-
-      &:hover {
-        background-color: var(--color-primary-dark);
-        transform: translateY(-2px);
-      }
-    }
-  }
+.servicos-cta {
+  text-align: center;
+  margin-top: var(--spacing-xl);
+}
 </style>
 

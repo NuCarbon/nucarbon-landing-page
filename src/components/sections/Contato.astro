@@ -1,6 +1,7 @@
 ---
 import EmailIcon from '../icons/Email.astro';
 import PhoneIcon from '../icons/Phone.astro';
+import Button from '../ui/Button.astro';
 
 const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
 ---
@@ -59,7 +60,7 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
             <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
           </div>
           
-          <button type="submit" class="btn btn-primary" id="submit-btn">Enviar Mensagem</button>
+          <Button type="submit" id="submit-btn">Enviar Mensagem</Button>
         </form>
       </div>
     </div>
@@ -77,6 +78,8 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
     submitBtn.disabled = !enabled;
     submitBtn.innerText = enabled ? submitBtnText : '...';
   }
+
+  changeFormState(false)
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -272,7 +275,7 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
       pointer-events: none;
       cursor: not-allowed;
 
-      .btn {
+      :global(.btn) {
         transform: translateY(-2px);
         animation: pulse 2s infinite;
         
@@ -287,30 +290,6 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
             opacity: 0.5;
           }
         }
-      }
-    }
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 2px solid transparent;
-
-    &-primary {
-      background-color: var(--color-primary);
-      color: white;
-      border: none;
-
-      &:hover {
-        background-color: var(--color-primary-dark);
-        transform: translateY(-2px);
       }
     }
   }

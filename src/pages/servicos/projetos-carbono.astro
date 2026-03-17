@@ -1,4 +1,5 @@
 ---
+import Button from '../../components/ui/Button.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
@@ -175,7 +176,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <div class="cta-section">
         <h2>[TEXTO TEMPORÁRIO] Pronto para Desenvolver seu Projeto de Carbono?</h2>
         <p>[TEXTO TEMPORÁRIO] Entre em contato conosco para uma consulta inicial e análise de viabilidade.</p>
-        <a href="/#contato" class="btn btn-primary">Solicitar Consulta</a>
+        <Button href="/#contato">Solicitar Consulta</Button>
       </div>
     </div>
   </section>
@@ -292,29 +293,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     background-color: var(--color-bg-secondary);
     border-radius: var(--border-radius-lg);
     margin-top: var(--spacing-xl);
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 2px solid transparent;
-  }
-
-  .btn-primary {
-    background-color: var(--color-primary);
-    color: white;
-  }
-
-  .btn-primary:hover {
-    background-color: var(--color-primary-dark);
-    transform: translateY(-2px);
   }
 </style>
 
