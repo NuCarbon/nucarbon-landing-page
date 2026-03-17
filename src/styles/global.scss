@@ -145,10 +145,13 @@ img {
 }
 
 .services-page .page-header {
+  display: flex;
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
   color: white;
   padding: var(--spacing-2xl) 0;
   text-align: center;
+  min-height: 28rem;
+  align-items: center;
 
   h1 {
     color: white;
@@ -161,6 +164,13 @@ img {
     max-width: 800px;
     margin: 0 auto;
   }
+}
+
+.section-highlight {
+  background-color: var(--color-bg-secondary);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  margin: var(--spacing-xl) 0;
 }
 
 /* Grid utilities */

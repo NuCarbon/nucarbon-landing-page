@@ -1,5 +1,7 @@
 ---
 import Button from '../../components/ui/Button.astro';
+import Card from '../../components/ui/Card.astro';
+import CTA from '../../components/ui/CTA.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
@@ -37,37 +39,34 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <div class="content-section">
         <h2>Nossos Serviços em Projetos Agroflorestais</h2>
         <div class="services-grid">
-          <div class="service-item">
-            <h3>Análise e Planejamento</h3>
+          <Card title="Análise e Planejamento">
             <p>
               Realizamos análise completa da propriedade, incluindo 
               caracterização do solo, clima, topografia e recursos disponíveis. Com base 
               nesses dados, desenvolvemos um plano técnico detalhado para implementação 
               do sistema agroflorestal.
             </p>
-          </div>
+          </Card>
           
-          <div class="service-item">
-            <h3>Implementação</h3>
+          <Card title="Implementação">
             <p>
               Acompanhamos a implementação do projeto, fornecendo 
               orientação técnica sobre seleção de espécies, espaçamento, manejo e 
               práticas de conservação do solo.
             </p>
-          </div>
+          </Card>
           
-          <div class="service-item">
-            <h3>Acompanhamento Técnico</h3>
+          <Card title="Acompanhamento Técnico">
             <p>
               Oferecemos acompanhamento contínuo para garantir o 
               sucesso do projeto, incluindo monitoramento do desenvolvimento das espécies, 
               manejo integrado de pragas e doenças, e ajustes necessários ao longo do tempo.
             </p>
-          </div>
+          </Card>
         </div>
       </div>
 
-      <div class="content-section highlight-section">
+      <div class="content-section section-highlight">
         <h2>Previsão de Renda</h2>
         <p>
           Uma das grandes vantagens dos sistemas agroflorestais é a 
@@ -135,26 +134,23 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <div class="content-section">
         <h2>Benefícios dos Projetos Agroflorestais</h2>
         <div class="benefits-grid">
-          <div class="benefit-card">
-            <h4>Econômicos</h4>
-            <p>Diversificação de fontes de renda e aumento da rentabilidade da propriedade</p>
-          </div>
-          <div class="benefit-card">
-            <h4>Ambientais</h4>
-            <p>Conservação do solo, água e biodiversidade, além de sequestro de carbono</p>
-          </div>
-          <div class="benefit-card">
-            <h4>Sociais</h4>
-            <p>Melhoria da qualidade de vida e segurança alimentar das comunidades</p>
-          </div>
+          <Card title="Econômicos">
+            Diversificação de fontes de renda e aumento da rentabilidade da propriedade
+          </Card>
+          <Card title="Ambientais">
+            Conservação do solo, água e biodiversidade, além de sequestro de carbono
+          </Card>
+          <Card title="Sociais">
+            Melhoria da qualidade de vida e segurança alimentar das comunidades
+          </Card>
         </div>
       </div>
 
-      <div class="cta-section">
-        <h2>Interessado em Desenvolver um Projeto?</h2>
-        <p>Entre em contato conosco para uma análise inicial sem compromisso.</p>
-        <Button href="/#contato">Solicitar Análise</Button>
-      </div>
+      <CTA
+        title="Interessado em Desenvolver um Projeto?"
+        subtitle="Entre em contato conosco para uma análise inicial sem compromisso."
+        cta="Solicitar Análise"
+      />
     </div>
   </section>
 </BaseLayout>
@@ -163,25 +159,20 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 .projetos-agroflorestais {
   .content-section {
     margin-bottom: var(--spacing-2xl);
+
+    h2 {
+      color: var(--color-primary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    h3 {
+      color: var(--color-primary);
+      margin-top: var(--spacing-lg);
+      margin-bottom: var(--spacing-sm);
+    }
   }
 
-  .content-section h2 {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-md);
-  }
-
-  .content-section h3 {
-    color: var(--color-primary);
-    margin-top: var(--spacing-lg);
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .highlight-section {
-    background-color: var(--color-bg-secondary);
-    padding: var(--spacing-xl);
-    border-radius: var(--border-radius-lg);
-    margin: var(--spacing-xl) 0;
-  }
+  
 
   .services-grid {
     display: grid;
@@ -190,38 +181,25 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     margin-top: var(--spacing-lg);
   }
 
-  .service-item {
-    background-color: var(--color-bg-primary);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
-  }
-
-  .service-item h3 {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-sm);
-    font-size: 1.25rem;
-  }
-
   .feature-list {
     list-style: none;
     padding-left: 0;
     margin: var(--spacing-md) 0;
-  }
 
-  .feature-list li {
-    padding: var(--spacing-sm) 0;
-    padding-left: 1.5rem;
-    position: relative;
-    color: var(--color-text-secondary);
-  }
+    & > li {
+      padding: var(--spacing-sm) 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--color-text-secondary);
 
-  .feature-list li::before {
-    content: '✓';
-    position: absolute;
-    left: 0;
-    color: var(--color-primary);
-    font-weight: bold;
+      &::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--color-primary);
+        font-weight: bold;
+      }
+    }
   }
 
   .profit-calculation {
@@ -235,21 +213,21 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     list-style: none;
     padding-left: 0;
     margin: var(--spacing-md) 0;
-  }
 
-  .profit-timeline li {
-    padding: var(--spacing-sm) 0;
-    padding-left: 1.5rem;
-    position: relative;
-    color: var(--color-text-secondary);
-  }
+    & > li {
+      padding: var(--spacing-sm) 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--color-text-secondary);
 
-  .profit-timeline li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--color-primary);
-    font-weight: bold;
+      &::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--color-primary);
+        font-weight: bold;
+      }
+    }
   }
 
   .note {
@@ -265,27 +243,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: var(--spacing-lg);
     margin-top: var(--spacing-lg);
-  }
 
-  .benefit-card {
-    background-color: var(--color-bg-primary);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
-    text-align: center;
-  }
+    :global(.card) {
+      text-align: center;
 
-  .benefit-card h4 {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .cta-section {
-    text-align: center;
-    padding: var(--spacing-xl);
-    background-color: var(--color-bg-secondary);
-    border-radius: var(--border-radius-lg);
-    margin-top: var(--spacing-xl);
+      :global(.card-title) {
+        color: var(--color-primary);
+      }
+    }
   }
 
   @media (max-width: 768px) {

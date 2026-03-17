@@ -1,0 +1,23 @@
+---
+import Button from "./Button.astro";
+
+interface Props {
+  title: string;
+  subtitle: string;
+  cta: string;
+}
+
+const { title, subtitle, cta } = Astro.props
+---
+
+<div class="cta-section section-highlight">
+  <h2>{title}</h2>
+  <p>{subtitle}</p>
+  <Button href="/#contato">{cta}</Button>
+</div>
+
+<style lang="scss">
+.cta-section {
+  text-align: center;
+}
+</style>

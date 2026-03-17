@@ -1,27 +1,29 @@
 ---
 import Button from '../../components/ui/Button.astro';
+import CTA from '../../components/ui/CTA.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout 
   title="Projetos de Carbono - Nucarbon"
   description="Serviços completos para desenvolvimento de projetos de créditos de carbono, desde a análise inicial até o monitoramento contínuo. Incluímos análise de viabilidade, inventários, elaboração de PDDs e MRV."
+  className="services-page"
 >
   <section class="page-header">
     <div class="container">
       <h1>Projetos de Carbono</h1>
       <p class="page-subtitle">
-        [TEXTO TEMPORÁRIO] Soluções completas para desenvolvimento de projetos de créditos de carbono
+        Soluções completas para desenvolvimento de projetos de créditos de carbono
       </p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section projetos-carbono">
     <div class="container">
       <div class="content-section">
-        <h2>[TEXTO TEMPORÁRIO] Nossos Serviços em Projetos de Carbono</h2>
+        <h2>Nossos Serviços em Projetos de Carbono</h2>
         <p>
-          [TEXTO TEMPORÁRIO] Oferecemos um conjunto completo de serviços para desenvolvimento de 
+          Oferecemos um conjunto completo de serviços para desenvolvimento de 
           projetos de créditos de carbono, desde a análise inicial de viabilidade até o 
           monitoramento contínuo e gestão de riscos. Nossa equipe multidisciplinar garante que 
           cada etapa do processo seja executada com excelência técnica e seguindo as melhores 
@@ -29,15 +31,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </p>
       </div>
 
-      <div id="analise-viabilidade" class="content-section service-detail">
-        <h2>[TEXTO TEMPORÁRIO] Análise de Viabilidade</h2>
+      <div id="analise-viabilidade" class="content-section section-highlight">
+        <h2>Análise de Viabilidade</h2>
         <p>
-          [TEXTO TEMPORÁRIO] A primeira etapa no desenvolvimento de um projeto de créditos de 
+          A primeira etapa no desenvolvimento de um projeto de créditos de 
           carbono é a análise de viabilidade, que avalia o potencial técnico, econômico e 
           regulatório do projeto.
         </p>
         <div class="service-content">
-          <h3>[TEXTO TEMPORÁRIO] O que incluímos:</h3>
+          <h3>O que incluímos:</h3>
           <ul class="service-list">
             <li>Avaliação da elegibilidade da área para projetos de carbono</li>
             <li>Análise de conformidade com padrões e metodologias reconhecidas</li>
@@ -49,15 +51,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </div>
       </div>
 
-      <div id="inventario-gee" class="content-section service-detail">
-        <h2>[TEXTO TEMPORÁRIO] Inventário de GEE (Gases de Efeito Estufa)</h2>
+      <div id="inventario-gee" class="content-section section-highlight">
+        <h2>Inventário de GEE (Gases de Efeito Estufa)</h2>
         <p>
-          [TEXTO TEMPORÁRIO] O inventário de GEE é fundamental para quantificar as emissões 
+          O inventário de GEE é fundamental para quantificar as emissões 
           de gases de efeito estufa associadas ao projeto e estabelecer a linha de base para 
           cálculo dos créditos de carbono.
         </p>
         <div class="service-content">
-          <h3>[TEXTO TEMPORÁRIO] Nossos serviços incluem:</h3>
+          <h3>Nossos serviços incluem:</h3>
           <ul class="service-list">
             <li>Identificação e quantificação de fontes de emissão</li>
             <li>Coleta e análise de dados de campo</li>
@@ -69,39 +71,39 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </div>
       </div>
 
-      <div id="inventario-carbono" class="content-section service-detail">
-        <h2>[TEXTO TEMPORÁRIO] Inventário de Carbono (Solo e Floresta)</h2>
+      <div id="inventario-carbono" class="content-section section-highlight">
+        <h2>Inventário de Carbono</h2>
         <p>
-          [TEXTO TEMPORÁRIO] O inventário de carbono quantifica o estoque de carbono presente 
+          O inventário de carbono quantifica o estoque de carbono presente 
           na biomassa florestal e no solo, essencial para projetos de reflorestamento, 
           restauração e manejo florestal.
         </p>
         <div class="service-content">
-          <h3>[TEXTO TEMPORÁRIO] Metodologias utilizadas:</h3>
+          <h3>Metodologias utilizadas:</h3>
           <ul class="service-list">
-            <li>Medição de biomassa acima do solo (árvores, arbustos, etc.)</li>
-            <li>Medição de biomassa abaixo do solo (raízes)</li>
+            <li>Medição de biomassa acima do solo</li>
+            <li>Medição de biomassa abaixo do solo</li>
             <li>Análise de carbono no solo em diferentes profundidades</li>
             <li>Uso de equações alométricas e modelos de crescimento</li>
             <li>Amostragem estatística representativa</li>
             <li>Cálculo de incerteza e intervalos de confiança</li>
           </ul>
           <p>
-            [TEXTO TEMPORÁRIO] Realizamos inventários iniciais (linha de base) e periódicos 
+            Realizamos inventários iniciais (linha de base) e periódicos 
             para monitorar as mudanças no estoque de carbono ao longo do tempo.
           </p>
         </div>
       </div>
 
-      <div id="pdd-mrv" class="content-section service-detail">
-        <h2>[TEXTO TEMPORÁRIO] Elaboração de PDDs e MRV</h2>
+      <div id="pdd-mrv" class="content-section section-highlight">
+        <h2>Elaboração de PDDs e MRV</h2>
         <p>
-          [TEXTO TEMPORÁRIO] O Documento de Concepção de Projeto (PDD) é o documento técnico 
+          O Documento de Concepção de Projeto (PDD) é o documento técnico 
           que descreve o projeto em detalhes, enquanto o sistema MRV (Monitoramento, Relatório 
           e Verificação) garante a qualidade e transparência dos dados.
         </p>
         <div class="service-content">
-          <h3>[TEXTO TEMPORÁRIO] Elaboração de PDD:</h3>
+          <h3>Elaboração de PDD:</h3>
           <ul class="service-list">
             <li>Descrição detalhada do projeto e localização</li>
             <li>Justificativa da elegibilidade e adicionalidade</li>
@@ -112,7 +114,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
             <li>Documentação de benefícios sociais e ambientais</li>
           </ul>
           
-          <h3>[TEXTO TEMPORÁRIO] Sistema MRV:</h3>
+          <h3>Sistema MRV:</h3>
           <ul class="service-list">
             <li>Desenvolvimento de protocolos de monitoramento</li>
             <li>Coleta sistemática de dados de campo</li>
@@ -124,15 +126,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </div>
       </div>
 
-      <div id="monitoramento-emissoes" class="content-section service-detail">
-        <h2>[TEXTO TEMPORÁRIO] Monitoramento de Emissões e Gerenciamento de Riscos de Vazamentos (Leakage)</h2>
+      <div id="monitoramento-emissoes" class="content-section section-highlight">
+        <h2>Monitoramento de Emissões e Gerenciamento de Riscos de Vazamentos (Leakage)</h2>
         <p>
-          [TEXTO TEMPORÁRIO] O monitoramento contínuo de emissões e a gestão de riscos de 
+          O monitoramento contínuo de emissões e a gestão de riscos de 
           vazamento são essenciais para garantir a integridade ambiental dos projetos e a 
           qualidade dos créditos gerados.
         </p>
         <div class="service-content">
-          <h3>[TEXTO TEMPORÁRIO] Monitoramento de Emissões:</h3>
+          <h3>Monitoramento de Emissões:</h3>
           <ul class="service-list">
             <li>Monitoramento contínuo de fontes de emissão do projeto</li>
             <li>Acompanhamento de mudanças no uso do solo</li>
@@ -141,7 +143,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
             <li>Alertas e ações corretivas quando necessário</li>
           </ul>
           
-          <h3>[TEXTO TEMPORÁRIO] Gerenciamento de Riscos de Vazamento:</h3>
+          <h3>Gerenciamento de Riscos de Vazamento:</h3>
           <ul class="service-list">
             <li>Identificação de potenciais fontes de vazamento</li>
             <li>Avaliação de riscos de deslocamento de atividades</li>
@@ -151,17 +153,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
             <li>Documentação e relatório de gestão de vazamento</li>
           </ul>
           <p>
-            [TEXTO TEMPORÁRIO] O vazamento (leakage) ocorre quando as atividades que geram 
+            O vazamento (leakage) ocorre quando as atividades que geram 
             emissões são deslocadas para fora da área do projeto. Nossa equipe desenvolve 
             estratégias específicas para identificar, prevenir e mitigar esses riscos.
           </p>
         </div>
       </div>
 
-      <div class="content-section highlight-section">
-        <h2>[TEXTO TEMPORÁRIO] Nossa Abordagem</h2>
+      <div class="content-section">
+        <h2>Nossa Abordagem</h2>
         <p>
-          [TEXTO TEMPORÁRIO] Trabalhamos com metodologias reconhecidas internacionalmente e 
+          Trabalhamos com metodologias reconhecidas internacionalmente e 
           seguimos os mais altos padrões de qualidade. Nossos projetos são desenvolvidos 
           para atender aos requisitos de:
         </p>
@@ -173,126 +175,74 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </ul>
       </div>
 
-      <div class="cta-section">
-        <h2>[TEXTO TEMPORÁRIO] Pronto para Desenvolver seu Projeto de Carbono?</h2>
-        <p>[TEXTO TEMPORÁRIO] Entre em contato conosco para uma consulta inicial e análise de viabilidade.</p>
-        <Button href="/#contato">Solicitar Consulta</Button>
-      </div>
+      <CTA
+        title="Pronto para Desenvolver seu Projeto de Carbono?"
+        subtitle="Entre em contato conosco para uma consulta inicial e análise de viabilidade."
+        cta="Solicitar Consulta"
+      />
     </div>
   </section>
 </BaseLayout>
 
 <style lang="scss">
-  .page-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-    color: white;
-    padding: var(--spacing-2xl) 0;
-    text-align: center;
-  }
-
-  .page-header h1 {
-    color: white;
-    margin-bottom: var(--spacing-md);
-  }
-
-  .page-subtitle {
-    font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.95);
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
+.projetos-carbono {
   .content-section {
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
+
+    h2 {
+      color: var(--color-primary);
+    }
   }
 
-  .content-section h2 {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-md);
-    padding-top: var(--spacing-lg);
-    border-top: 3px solid var(--color-primary);
-  }
+  ul {
+    list-style: none;
+    padding-left: 0;
 
-  .content-section:first-of-type h2 {
-    border-top: none;
-    padding-top: 0;
-  }
+    li {
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--color-text-secondary);
+      
+      padding-top: var(--spacing-xs);
+      padding-bottom: var(--spacing-xs);
 
-  .service-detail {
-    background-color: var(--color-bg-secondary);
-    padding: var(--spacing-xl);
-    border-radius: var(--border-radius-lg);
-    margin-bottom: var(--spacing-lg);
+      &::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        align-content: center;
+        color: var(--color-primary);
+        font-weight: bold;
+      }
+    }
   }
 
   .service-content {
     margin-top: var(--spacing-md);
+
+    h3 {
+      color: var(--color-primary);
+      margin-top: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+      font-size: 1.125rem;
+    }
+
+    .service-list > li::before {
+      content: '✓';
+    }
+
+    & > p {
+      margin-top: var(--spacing-sm);
+      margin-bottom: 0;
+    }
   }
 
-  .service-content h3 {
-    color: var(--color-primary);
-    margin-top: var(--spacing-md);
-    margin-bottom: var(--spacing-sm);
-    font-size: 1.125rem;
-  }
-
-  .service-list {
-    list-style: none;
-    padding-left: 0;
-    margin: var(--spacing-md) 0;
-  }
-
-  .service-list li {
-    padding: var(--spacing-sm) 0;
-    padding-left: 1.5rem;
-    position: relative;
-    color: var(--color-text-secondary);
-  }
-
-  .service-list li::before {
-    content: '✓';
-    position: absolute;
-    left: 0;
-    color: var(--color-primary);
-    font-weight: bold;
-  }
-
-  .highlight-section {
-    background-color: var(--color-bg-primary);
-    padding: var(--spacing-xl);
-    border-radius: var(--border-radius-lg);
-    border: 2px solid var(--color-primary);
-    margin: var(--spacing-xl) 0;
-  }
-
-  .standards-list {
-    list-style: none;
-    padding-left: 0;
-    margin: var(--spacing-md) 0;
-  }
-
-  .standards-list li {
-    padding: var(--spacing-sm) 0;
-    padding-left: 1.5rem;
-    position: relative;
-    color: var(--color-text-secondary);
-  }
-
-  .standards-list li::before {
+  .standards-list > li::before {
     content: '•';
-    position: absolute;
-    left: 0;
-    color: var(--color-primary);
-    font-weight: bold;
     font-size: 1.5rem;
+    margin-bottom: 4px;
   }
-
-  .cta-section {
-    text-align: center;
-    padding: var(--spacing-xl);
-    background-color: var(--color-bg-secondary);
-    border-radius: var(--border-radius-lg);
-    margin-top: var(--spacing-xl);
-  }
+}
 </style>
 

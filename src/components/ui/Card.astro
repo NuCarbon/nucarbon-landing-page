@@ -1,6 +1,7 @@
 ---
 interface Props {
   title?: string;
+  smallTitle?: boolean;
   href?: string;
   class?: string;
   icon?: any;
@@ -11,10 +12,10 @@ const { title, href, class: className = '', icon: Icon } = Astro.props;
 
 <div class={`card ${className}`}>
   {title && (
-    <h3 class="card-title">
+    <h4 class="card-title">
       {Icon && <Icon class="card-icon" />}
       {title}
-    </h3>
+    </h4>
   )}
   <div class="card-content">
     <slot />
@@ -44,11 +45,12 @@ const { title, href, class: className = '', icon: Icon } = Astro.props;
   &-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-text-primary);
+    // color: var(--color-text-primary);
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
 
     :global(svg) {
       width: 4rem;

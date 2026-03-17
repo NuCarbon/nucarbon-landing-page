@@ -79,8 +79,6 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
     submitBtn.innerText = enabled ? submitBtnText : '...';
   }
 
-  changeFormState(false)
-
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!messageEl || !submitBtn) return;
