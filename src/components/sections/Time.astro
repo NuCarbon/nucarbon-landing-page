@@ -15,13 +15,13 @@ import gabriel from "../../images/gabriel.png";
       <TeamMember
         image={marcio}
         name="Marcio Magrini"
-        role="Founder"
+        role={["Founder", "CEO"]}
       />
 
       <TeamMember
         image={gisele}
         name="Gisele Corbanezi"
-        role="Head de Operações"
+        role={["Co-founder", "Head de Operações"]}
       />
 
       <TeamMember
@@ -45,12 +45,26 @@ import gabriel from "../../images/gabriel.png";
   
   &-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-md);
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
     padding: 0 var(--spacing-md);
   }
 
+  @media (min-width: 450px) {
+    &-grid {
+      gap: var(--spacing-md);
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
   @media (min-width: 900px) {
+    &-grid {
+      gap: var(--spacing-md);
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
     &-grid {
       gap: var(--spacing-xl);
       grid-template-columns: repeat(4, 1fr);

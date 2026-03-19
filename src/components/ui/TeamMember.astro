@@ -4,15 +4,28 @@ import Image from "astro/components/Image.astro";
 interface Props {
   image: any;
   name: string;
-  role: string;
+  role: string | string[];
 }
 
-const { image, name, role } = Astro.props;
+const { image, name } = Astro.props;
+
+let role = Astro.props.role
+if (typeof(role) == "string") {
+  role = [role]
+}
 ---
 <div class="team-member">
   <Image src={image} alt=`${name}, ${role}` width={400} />
-  <h4 class="team-member-name">{name}</h4>
-  <p class="team-member-role">{role}</p>
+  <div class="team-member-content">
+    <h4 class="team-member-name">{name}</h4>
+    <div class="team-member-roles">
+      {
+        role.map(value =>
+          <p class="team-member-role">{value}</p>
+        )
+      }
+    </div>
+  </div>
 </div>
 
 <style lang="scss">
@@ -21,27 +34,52 @@ const { image, name, role } = Astro.props;
   flex-direction: column;
   align-items: center;
   padding: 0;
+  margin: 0 auto;
   text-align: center;
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-lg);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding-bottom: var(--spacing-md);
   background-color: var(--color-bg-primary);
+  max-width: 300px;
 
   & > img {
     border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-    margin-bottom: var(--spacing-md);
     width: 100%;
-    max-width: 300px;
+  }
+
+  &-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-sm) var(--spacing-xs);
   }
 
   &-name {
-    margin-bottom: 4px;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  &-roles {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   &-role {
     font-variant: all-small-caps;
     margin-bottom: 0;
+  }
+
+  @media (min-width: 700px) {
+    &-content {
+      padding: var(--spacing-sm);
+    }
+  }
+
+  @media (min-width: 1000px) {
+    &-content {
+      padding: var(--spacing-md);
+    }
   }
 }
 </style>
