@@ -3,6 +3,7 @@ import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import '../styles/global.scss';
 import { Font } from 'astro:assets';
+import { SEO } from "astro-seo";
 
 interface Props {
   title: string;
@@ -16,6 +17,11 @@ const { title, className, description = 'Nucarbon - Soluções sustentáveis em 
 <!doctype html>
 <html lang="pt-BR">
   <head>
+    <SEO
+      title={title}
+      description={description}
+    />
+
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
