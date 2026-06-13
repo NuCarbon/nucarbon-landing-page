@@ -6,18 +6,18 @@ import AnalyticsIcon from '../icons/Analytics.astro';
 import Button from '../ui/Button.astro';
 ---
 
-<section id="servicos" class="section nossos-servicos">
+<section id="solucoes" class="section nossas-solucoes">
   <div class="container">
-    <h2 class="section-title">Nossos Serviços</h2>
+    <h2 class="section-title">Nossas Soluções</h2>
     <p class="section-subtitle">
       Soluções estruturadas em crédito de carbono e agroflorestas, com foco em integridade, qualidade técnica e impacto socioambiental.
     </p>
     
-    <div class="servicos-grid grid grid-3">
+    <div class="solucoes-grid grid grid-3">
       <Card 
         title="Projetos de Carbono"
         icon={AnalyticsIcon}
-        href="/servicos/projetos-carbono"
+        href="/solucoes/projetos-carbono"
       >
         <p>
           Atuamos no desenvolvimento completo de projetos de crédito de carbono, desde a análise de viabilidade até a geração e o monitoramento contínuo dos créditos. Nosso trabalho inclui inventários de emissões e remoções, elaboração de documentos técnicos como PDD e MRV, além do acompanhamento e apoio à gestão de riscos, sempre guiados por critérios de rastreabilidade, integridade e gestão contínua dos projetos.
@@ -27,7 +27,7 @@ import Button from '../ui/Button.astro';
       <Card 
         title="Projetos Agroflorestais"
         icon={ForestIcon}
-        href="/servicos/projetos-agroflorestais"
+        href="/solucoes/projetos-agroflorestais"
       >
         <p>
           Desenvolvemos projetos agroflorestais que integram produção, restauração ambiental e manejo sustentável do solo, gerando benefícios econômicos, ambientais e sociais. Atuamos desde a análise de viabilidade e planejamento técnico até a implementação e o acompanhamento contínuo, incluindo estimativas de renda associadas aos produtos e serviços gerados pelos sistemas agroflorestais.
@@ -37,7 +37,7 @@ import Button from '../ui/Button.astro';
       <Card 
         title="Treinamentos"
         icon={EducationIcon}
-        href="/servicos/treinamentos"
+        href="/solucoes/treinamentos"
       >
         <p>
           Oferecemos treinamentos e ações de capacitação em temas ambientais, agroflorestais e de sustentabilidade, adaptados a diferentes públicos, como empresas, escolas, comunidades e profissionais técnicos. Os conteúdos são desenvolvidos por uma equipe multidisciplinar e ajustados às necessidades de cada contexto, promovendo conscientização, boas práticas e decisões responsáveis, sempre fundamentados na ciência e no respeito às legislações nacional e internacional.
@@ -45,22 +45,22 @@ import Button from '../ui/Button.astro';
       </Card>
     </div>
     
-    <div class="servicos-cta">
+    <div class="solucoes-cta">
       <Button href="/#contato">Entre em contato</Button>
     </div>
   </div>
 </section>
 
 <style lang="scss">
-.nossos-servicos {
+.nossas-solucoes {
   background-color: var(--color-bg-secondary);
 }
 
-.servicos-grid {
+.solucoes-grid {
   margin-bottom: var(--spacing-xl);
 }
 
-.servicos-cta {
+.solucoes-cta {
   text-align: center;
   margin-top: var(--spacing-xl);
 }
