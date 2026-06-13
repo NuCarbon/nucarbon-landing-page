@@ -30,7 +30,7 @@ import logo from "../../images/logo.png"
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const header = document.querySelector('.header');
+    const header = document.querySelector('.header')!;
     const toggle = document.querySelector('.mobile-menu-toggle');
     const menu = document.querySelector('.nav-menu');
     let lastScrollY = window.scrollY + 1;
@@ -52,6 +52,13 @@ import logo from "../../images/logo.png"
           menu.classList.remove('active');
           toggle.classList.remove('active');
           toggle.setAttribute('aria-expanded', 'false');
+
+          header.classList.add('scrolling');
+          window.addEventListener('scrollend', () => {
+            lastScrollY = window.scrollY - 1;
+            updateHeader();
+            header.classList.remove('scrolling');
+          }, { once: true });
         });
       });
     }
@@ -63,14 +70,14 @@ import logo from "../../images/logo.png"
       const scrollingUp = scrollY < lastScrollY;
       
       if (scrollY === 0) {
-        header?.classList.remove('scrolled', 'hidden');
-        header?.classList.add('transparent');
+        header.classList.remove('scrolled', 'hidden');
+        header.classList.add('transparent');
       } else if (scrollingDown) {
-        header?.classList.remove('transparent');
-        header?.classList.add('scrolled', 'hidden');
+        header.classList.remove('transparent');
+        header.classList.add('scrolled', 'hidden');
       } else if (scrollingUp) {
-        header?.classList.remove('transparent', 'hidden');
-        header?.classList.add('scrolled');
+        header.classList.remove('transparent', 'hidden');
+        header.classList.add('scrolled');
       }
       
       lastScrollY = scrollY;
@@ -112,7 +119,7 @@ import logo from "../../images/logo.png"
     }
   }
 
-  &.hidden {
+  &.hidden, &.scrolling {
     transform: translateY(-100%);
   }
 
