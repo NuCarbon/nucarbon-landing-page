@@ -20,12 +20,16 @@ const { title, className, description = 'Nucarbon - Soluções sustentáveis em 
     <SEO
       title={title}
       description={description}
+      charset="UTF-8"
+      extend={{
+        link: [
+          { rel: "sitemap", href: "/sitemap-index.xml" },
+          { rel: "icon", type: "image/png", href: "/favicon.png" }
+        ],
+      }}
     />
 
-    <meta charset="UTF-8" />
-    <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
     
     <!-- Open Graph / Facebook -->
@@ -38,8 +42,6 @@ const { title, className, description = 'Nucarbon - Soluções sustentáveis em 
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    
-    <title>{title}</title>
 
     <Font cssVariable="--font-kollektif" preload />
   </head>
