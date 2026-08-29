@@ -1,0 +1,58 @@
+---
+import type { CommunityPost as CommunityPostData } from '../../../types/app';
+import CommunityPost from './CommunityPost.astro';
+
+interface Props {
+  posts?: CommunityPostData[];
+}
+
+const { posts = [] } = Astro.props;
+---
+
+<app-community-feed class="community-feed">
+  {posts.map((post) => <CommunityPost post={post} />)}
+
+  <template data-post-template>
+    <CommunityPost />
+  </template>
+</app-community-feed>
+
+<script>
+  import type { CommunityPost } from '../../../types/app';
+
+  function setText(root: ParentNode, selector: string, value: string): void {
+    const target = root.querySelector<HTMLElement>(selector);
+    if (target) target.textContent = value;
+  }
+
+  class CommunityFeed extends HTMLElement {
+    set posts(posts: CommunityPost[]) {
+      const template = this.querySelector<HTMLTemplateElement>(
+        'template[data-post-template]',
+      );
+
+      if (!template) return;
+
+      this.querySelectorAll(':scope > .community-post').forEach((post) => post.remove());
+
+      const renderedPosts = posts.map((post) => {
+        const fragment = template.content.cloneNode(true) as DocumentFragment;
+
+        setText(fragment, '[data-post-avatar]', post.author.charAt(0));
+        setText(fragment, '[data-post-author]', post.author);
+        setText(fragment, '[data-post-timestamp]', post.timestamp);
+        setText(fragment, '[data-post-body]', post.body);
+        setText(fragment, '[data-post-reactions]', post.reactions);
+        setText(fragment, '[data-post-comments]', `${post.comments} comentários`);
+
+        return fragment;
+      });
+
+      this.append(...renderedPosts);
+    }
+  }
+
+  if (!customElements.get('app-community-feed')) {
+    customElements.define('app-community-feed', CommunityFeed);
+  }
+</script>

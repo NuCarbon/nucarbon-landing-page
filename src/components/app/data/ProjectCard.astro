@@ -1,0 +1,41 @@
+---
+import type { Project } from '../../../types/app';
+
+interface Props {
+  project?: Project;
+}
+
+const { project } = Astro.props;
+const safeId = project?.id.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+const progress = project
+  ? Math.min(100, Math.max(0, project.progress))
+  : undefined;
+---
+
+<article class="project-card">
+  <div
+    class:list={[
+      'project-image',
+      safeId && `project-image-${safeId}`,
+    ]}
+    data-project-image
+  >
+  </div>
+
+  <div class="project-content">
+    <p class="project-tags">
+      <span data-project-biome>{project?.biome}</span>
+      <span data-project-location>{project?.location}</span>
+    </p>
+    <h3 data-project-name>{project?.name}</h3>
+    <p data-project-hectares>
+      {project && `${project.hectares} hectares em restauração`}
+    </p>
+    <div class="project-progress">
+      <span>Progresso</span>
+      <strong data-project-progress>{project && `${project.progress}%`}</strong>
+      <i><b data-project-progress-bar style={progress !== undefined && `width: ${progress}%`}></b></i>
+    </div>
+    <small data-project-status>{project?.status}</small>
+  </div>
+</article>

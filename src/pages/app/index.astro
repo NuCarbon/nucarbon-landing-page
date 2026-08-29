@@ -1,34 +1,8 @@
 ---
-import AppPageIntro from '../../components/app/AppPageIntro.astro';
-import ProjectGrid from '../../components/app/ProjectGrid.astro';
-import FootprintCard from '../../components/app/dashboard/FootprintCard.astro';
+import DashboardView from '../../components/app/views/DashboardView.astro';
 import AppLayout from '../../layouts/AppLayout.astro';
 ---
 
 <AppLayout title="Meu painel | Nucarbon" active="dashboard">
-  <section class="app-page" data-app-view="dashboard" aria-live="polite">
-    <AppPageIntro description="Aqui está o resumo da sua jornada de impacto.">
-      Olá, <span data-greeting-name>...</span>!
-    </AppPageIntro>
-
-    <FootprintCard />
-
-    <section>
-      <h2>Resumo de Impacto</h2>
-      <div class="metric-grid" data-metrics></div>
-    </section>
-
-    <section class="section-heading">
-      <div><h2>Meus Projetos</h2></div>
-      <a href="/app/projetos">Ver todos</a>
-    </section>
-
-    <ProjectGrid />
-  </section>
+  <DashboardView />
 </AppLayout>
-
-<script>
-  import { loadDashboard } from '../../scripts/app-data';
-
-  loadDashboard();
-</script>

@@ -1,0 +1,24 @@
+---
+import type { CommunityPost } from '../../../types/app';
+
+interface Props {
+  post?: CommunityPost;
+}
+
+const { post } = Astro.props;
+---
+
+<article class="community-post">
+  <header>
+    <div class="post-avatar" data-post-avatar>{post?.author.charAt(0)}</div>
+    <div>
+      <strong data-post-author>{post?.author}</strong>
+      <small data-post-timestamp>{post?.timestamp}</small>
+    </div>
+  </header>
+  <p data-post-body>{post?.body}</p>
+  <footer>
+    <span data-post-reactions>{post?.reactions}</span>
+    <span data-post-comments>{post && `${post.comments} comentários`}</span>
+  </footer>
+</article>

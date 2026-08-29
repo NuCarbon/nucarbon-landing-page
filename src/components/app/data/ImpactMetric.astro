@@ -1,0 +1,17 @@
+---
+import type { ImpactMetric } from '../../../types/app';
+
+interface Props {
+  metric?: ImpactMetric;
+}
+
+const { metric } = Astro.props;
+---
+
+<article class="metric-card">
+  <span data-metric-icon>{metric?.icon}</span>
+  <div>
+    <p data-metric-label>{metric?.label}</p>
+    <strong data-metric-value>{metric?.value}</strong>
+  </div>
+</article>

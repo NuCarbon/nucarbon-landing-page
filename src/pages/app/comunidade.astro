@@ -1,23 +1,8 @@
 ---
-import AppPageIntro from '../../components/app/AppPageIntro.astro';
+import CommunityView from '../../components/app/views/CommunityView.astro';
 import AppLayout from '../../layouts/AppLayout.astro';
 ---
 
 <AppLayout title="Comunidade | Nucarbon" active="community">
-  <section class="app-page" data-app-view="community" aria-live="polite">
-    <AppPageIntro
-      overline="Comunidade Nucarbon"
-      description="Acompanhe as atualizações de quem protege e restaura nossos biomas."
-    >
-      Impacto que cresce junto
-    </AppPageIntro>
-
-    <div class="community-feed" data-community></div>
-  </section>
+  <CommunityView />
 </AppLayout>
-
-<script>
-  import { loadCommunity } from '../../scripts/app-data';
-
-  loadCommunity();
-</script>

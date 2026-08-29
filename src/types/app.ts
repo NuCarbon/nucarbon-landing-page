@@ -14,11 +14,13 @@ export interface ImpactMetric {
   icon: string;
 }
 
+export interface Footprint {
+  value: string;
+  updatedLabel: string;
+}
+
 export interface Dashboard {
-  footprint: {
-    value: string;
-    updatedLabel: string;
-  };
+  footprint: Footprint;
   metrics: ImpactMetric[];
   projects: Project[];
 }

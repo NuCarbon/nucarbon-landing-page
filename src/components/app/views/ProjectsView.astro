@@ -1,0 +1,42 @@
+---
+import AppPageIntro from '../AppPageIntro.astro';
+import AppError from '../data/AppError.astro';
+import ProjectGrid from '../data/ProjectGrid.astro';
+---
+
+<app-projects-view class="app-page" aria-live="polite">
+  <AppPageIntro
+    overline="Projetos locais de alto impacto"
+    description="Conheça os projetos que sua jornada ajuda a tornar realidade."
+  >
+    Restauração florestal no Brasil
+  </AppPageIntro>
+
+  <ProjectGrid />
+
+  <template data-app-error>
+    <AppError />
+  </template>
+</app-projects-view>
+
+<script>
+  import { AppDataView } from '../../../scripts/app/data-view';
+  import type { Project, ProjectsResponse } from '../../../types/app';
+
+  type ProjectGridElement = HTMLElement & { projects: Project[] };
+
+  class ProjectsView extends AppDataView<ProjectsResponse> {
+    protected readonly endpoint = '/api/projects';
+
+    protected async renderData(data: ProjectsResponse): Promise<void> {
+      await customElements.whenDefined('app-project-grid');
+
+      const projects = this.querySelector<ProjectGridElement>('app-project-grid');
+      if (projects) projects.projects = data.projects;
+    }
+  }
+
+  if (!customElements.get('app-projects-view')) {
+    customElements.define('app-projects-view', ProjectsView);
+  }
+</script>

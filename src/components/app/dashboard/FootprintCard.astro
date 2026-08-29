@@ -1,6 +1,16 @@
+---
+import type { Footprint } from '../../../types/app';
+
+interface Props {
+  footprint?: Footprint;
+}
+
+const { footprint } = Astro.props;
+---
+
 <div class="footprint-card" data-footprint-card>
   <p>Sua Pegada Anual</p>
-  <strong data-footprint>—</strong>
-  <span data-footprint-date></span>
+  <strong data-footprint>{footprint?.value ?? '—'}</strong>
+  <span data-footprint-date>{footprint?.updatedLabel}</span>
   <a href="/#contato">Recalcular pegada</a>
 </div>

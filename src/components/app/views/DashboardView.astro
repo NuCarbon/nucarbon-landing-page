@@ -1,0 +1,66 @@
+---
+import AppPageIntro from '../AppPageIntro.astro';
+import AppError from '../data/AppError.astro';
+import ImpactMetrics from '../data/ImpactMetrics.astro';
+import ProjectGrid from '../data/ProjectGrid.astro';
+import FootprintCard from '../dashboard/FootprintCard.astro';
+---
+
+<app-dashboard-view class="app-page" aria-live="polite">
+  <AppPageIntro description="Aqui está o resumo da sua jornada de impacto.">
+    Olá, <span data-greeting-name>...</span>!
+  </AppPageIntro>
+
+  <FootprintCard />
+
+  <section>
+    <h2>Resumo de Impacto</h2>
+    <ImpactMetrics />
+  </section>
+
+  <section class="section-heading">
+    <div><h2>Meus Projetos</h2></div>
+    <a href="/app/projetos">Ver todos</a>
+  </section>
+
+  <ProjectGrid />
+
+  <template data-app-error>
+    <AppError />
+  </template>
+</app-dashboard-view>
+
+<script>
+  import { AppDataView } from '../../../scripts/app/data-view';
+  import type { Dashboard, ImpactMetric, Project } from '../../../types/app';
+
+  type ImpactMetricsElement = HTMLElement & { metrics: ImpactMetric[] };
+  type ProjectGridElement = HTMLElement & { projects: Project[] };
+
+  class DashboardView extends AppDataView<Dashboard> {
+    protected readonly endpoint = '/api/dashboard';
+
+    protected async renderData(data: Dashboard): Promise<void> {
+      const footprint = this.querySelector<HTMLElement>('[data-footprint]');
+      const footprintDate = this.querySelector<HTMLElement>('[data-footprint-date]');
+
+      if (footprint) footprint.textContent = data.footprint.value;
+      if (footprintDate) footprintDate.textContent = data.footprint.updatedLabel;
+
+      await Promise.all([
+        customElements.whenDefined('app-impact-metrics'),
+        customElements.whenDefined('app-project-grid'),
+      ]);
+
+      const metrics = this.querySelector<ImpactMetricsElement>('app-impact-metrics');
+      const projects = this.querySelector<ProjectGridElement>('app-project-grid');
+
+      if (metrics) metrics.metrics = data.metrics;
+      if (projects) projects.projects = data.projects;
+    }
+  }
+
+  if (!customElements.get('app-dashboard-view')) {
+    customElements.define('app-dashboard-view', DashboardView);
+  }
+</script>
