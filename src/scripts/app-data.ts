@@ -5,7 +5,7 @@ type Dashboard = { footprint: { value: string; updatedLabel: string }; metrics: 
 type CommunityPost = { id: string; author: string; timestamp: string; body: string; reactions: string; comments: number };
 
 async function api<T>(path: string): Promise<T> {
-  const response = await fetch(`https://nucarbon.com.br${path}`, { headers: { Authorization: await authorizationHeader() } });
+  const response = await fetch(path, { headers: { Authorization: await authorizationHeader() } });
   if (response.status === 401) { window.location.assign('/entrar'); throw new Error('Sessão inválida.'); }
   if (!response.ok) throw new Error('Não foi possível carregar estes dados agora.');
   return response.json() as Promise<T>;

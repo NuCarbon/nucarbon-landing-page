@@ -16,7 +16,7 @@
     "astro": "^6.4.6",
     "astro-seo": "^1.1.0",
     "firebase": "^12.18.0",
-    "firebase-admin": "^14.3.0"
+    "firebase-admin": "^13.5.0"
   },
   "devDependencies": {
     "netlify": "^27.4.1",
