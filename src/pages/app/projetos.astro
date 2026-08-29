@@ -1,7 +1,24 @@
 ---
+import AppPageIntro from '../../components/app/AppPageIntro.astro';
+import ProjectGrid from '../../components/app/ProjectGrid.astro';
 import AppLayout from '../../layouts/AppLayout.astro';
 ---
+
 <AppLayout title="Projetos | Nucarbon" active="projects">
-  <section class="app-page" data-app-view="projects" aria-live="polite"><header class="page-intro"><p class="overline">Projetos locais de alto impacto</p><h1>Restauração florestal no Brasil</h1><p>Conheça os projetos que sua jornada ajuda a tornar realidade.</p></header><div class="project-grid" data-projects></div></section>
+  <section class="app-page" data-app-view="projects" aria-live="polite">
+    <AppPageIntro
+      overline="Projetos locais de alto impacto"
+      description="Conheça os projetos que sua jornada ajuda a tornar realidade."
+    >
+      Restauração florestal no Brasil
+    </AppPageIntro>
+
+    <ProjectGrid />
+  </section>
 </AppLayout>
-<script>import { loadProjects } from '../../scripts/app-data'; loadProjects();</script>
+
+<script>
+  import { loadProjects } from '../../scripts/app-data';
+
+  loadProjects();
+</script>

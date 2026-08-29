@@ -11,26 +11,53 @@ export const authReady = new Promise<User | null>((resolve) => {
 });
 
 function setUser(user: User) {
-  document.querySelectorAll<HTMLElement>('[data-user-name], [data-greeting-name]').forEach((element) => { element.textContent = user.displayName?.split(' ')[0] || 'você'; });
+  const firstName = user.displayName?.trim().split(/\s+/)[0] || 'você';
+
+  document
+    .querySelectorAll<HTMLElement>('[data-user-name], [data-greeting-name]')
+    .forEach((element) => {
+      element.textContent = firstName;
+    });
+
   document.querySelectorAll<HTMLImageElement>('[data-user-avatar]').forEach((image) => {
-    if (user.photoURL) { image.src = user.photoURL; image.alt = `Foto de ${user.displayName || 'usuário'}`; image.hidden = false; }
+    if (!user.photoURL) return;
+
+    image.src = user.photoURL;
+    image.alt = `Foto de ${user.displayName || 'usuário'}`;
+    image.hidden = false;
   });
 }
 
 export async function protectPage() {
   const user = await authReady;
-  if (!user) window.location.replace('/entrar'); else setUser(user);
+
+  if (!user) {
+    window.location.replace('/entrar');
+    return;
+  }
+
+  setUser(user);
 }
 
 export async function redirectIfAuthenticated() {
   const user = await authReady;
+
   if (user) window.location.replace('/app');
 }
 
-export async function signInWithGoogle() { await signInWithPopup(auth, googleProvider); }
-export async function signOutUser() { await signOut(auth); window.location.assign('/'); }
+export async function signInWithGoogle() {
+  await signInWithPopup(auth, googleProvider);
+}
+
+export async function signOutUser() {
+  await signOut(auth);
+  window.location.assign('/');
+}
+
 export async function authorizationHeader() {
   const user = await authReady;
+
   if (!user) throw new Error('Sua sessão expirou. Entre novamente.');
+
   return `Bearer ${await user.getIdToken(true)}`;
 }

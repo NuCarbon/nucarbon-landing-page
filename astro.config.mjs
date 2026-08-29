@@ -20,8 +20,10 @@ export default defineConfig({
     integrations: [sitemap({
       filter: (page) => !page.includes('/app') && !page.includes('/entrar'),
     })],
-    optimizeDeps: {
-      exclude: ['js-big-decimal']
+    vite: {
+      optimizeDeps: {
+        exclude: ['js-big-decimal']
+      }
     },
     devToolbar: {
       enabled: false,

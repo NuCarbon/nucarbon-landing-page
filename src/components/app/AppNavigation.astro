@@ -1,0 +1,41 @@
+---
+interface Props {
+  active: 'dashboard' | 'projects' | 'community';
+  placement: 'sidebar' | 'bottom';
+}
+
+const { active, placement } = Astro.props;
+const navItems = [
+  { key: 'dashboard', label: 'Painel', href: '/app', icon: '▦' },
+  { key: 'projects', label: 'Projetos', href: '/app/projetos', icon: '♣' },
+  { key: 'community', label: 'Comunidade', href: '/app/comunidade', icon: '♧' },
+] as const;
+
+const isSidebar = placement === 'sidebar';
+const navigationClass = isSidebar ? 'app-sidebar' : 'app-bottom-nav';
+const linkClass = isSidebar ? 'app-nav-item' : 'app-bottom-link';
+---
+
+{
+  isSidebar ? (
+    <aside class={navigationClass} aria-label="Navegação da conta">
+      <nav>
+        {navItems.map((item) => (
+          <a href={item.href} class:list={[linkClass, { active: active === item.key }]}>
+            <span aria-hidden="true">{item.icon}</span>
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </aside>
+  ) : (
+    <nav class={navigationClass} aria-label="Navegação da conta">
+      {navItems.map((item) => (
+        <a href={item.href} class:list={[linkClass, { active: active === item.key }]}>
+          <span aria-hidden="true">{item.icon}</span>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  )
+}

@@ -9,11 +9,16 @@ const config = {
 };
 
 function requireConfig() {
-  if (Object.values(config).some((value) => !value)) throw new Error('A autenticação ainda não foi configurada.');
+  if (Object.values(config).some((value) => !value)) {
+    throw new Error('A autenticação ainda não foi configurada.');
+  }
+
   return config;
 }
 
 const app = getApps()[0] ?? initializeApp(requireConfig());
+
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+
 googleProvider.setCustomParameters({ prompt: 'select_account' });

@@ -1,0 +1,17 @@
+---
+import Image from 'astro/components/Image.astro';
+import logo from '../../images/logo.png';
+---
+
+<header class="app-header">
+  <a href="/app" class="app-brand" aria-label="Nucarbon, painel">
+    <Image src={logo} alt="" width={28} height={28} />
+    <span>Nucarbon</span>
+  </a>
+
+  <div class="app-user-menu">
+    <img data-user-avatar alt="" hidden />
+    <span data-user-name>Carregando...</span>
+    <button type="button" class="app-sign-out" data-sign-out>Sair</button>
+  </div>
+</header>
