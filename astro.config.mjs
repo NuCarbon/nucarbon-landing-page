@@ -17,5 +17,13 @@ export default defineConfig({
           }]
         }
       }],
-    integrations: [sitemap()],
+    integrations: [sitemap({
+      filter: (page) => !page.includes('/app') && !page.includes('/entrar'),
+    })],
+    optimizeDeps: {
+      exclude: ['js-big-decimal']
+    },
+    devToolbar: {
+      enabled: false,
+    },
 });

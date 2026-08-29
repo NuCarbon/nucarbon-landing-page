@@ -1,43 +1,32 @@
-# Astro Starter Kit: Minimal
+# Nucarbon landing page and member area
+
+Astro public website plus a Firebase-authenticated member experience deployed on Netlify.
+
+## Local development
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+cp .env.example .env.local
+npm run dev:netlify
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Set the public Firebase values in `.env.local`. Enable Google under **Firebase Authentication → Sign-in method** and add the local and production Netlify domains to the authorized domains list.
 
-## 🚀 Project Structure
+## Firebase and Netlify setup
 
-Inside of your Astro project, you'll see the following folders and files:
+1. Create a Firebase project, enable Google authentication, and create a Cloud Firestore database.
+2. Deploy [`firestore.rules`](./firestore.rules) to deny direct browser access. All reads go through Netlify Functions.
+3. In Netlify, set the `PUBLIC_FIREBASE_*` values for builds, and set `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY` as protected function environment variables.
+4. With those server values exported locally, run `npm run seed:firebase` once to create the read-only demo documents.
+5. Deploy normally. Netlify reads `netlify.toml`, builds the Astro site, and exposes the authenticated endpoints at `/api/dashboard`, `/api/projects`, and `/api/community`.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+The client configuration is public by design. Never commit the Firebase Admin service-account credentials or place them in `PUBLIC_*` variables.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Commands
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Run the Astro site only. |
+| `npm run dev:netlify` | Run Astro and Netlify Functions locally. |
+| `npm run build` | Build the production static site. |
+| `npm run seed:firebase` | Seed Firestore demo data with server credentials. |

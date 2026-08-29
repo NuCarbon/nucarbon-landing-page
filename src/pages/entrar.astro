@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Entrar | Nucarbon" className="login-page">
+  <section class="login-card" aria-labelledby="login-title">
+    <p class="eyebrow">Sua jornada de impacto</p>
+    <h1 id="login-title">Entre na Nucarbon</h1>
+    <p>Veja sua pegada, os projetos que apoia e as novidades da comunidade.</p>
+    <button id="google-sign-in" class="google-button" type="button">Continuar com Google</button>
+    <p id="login-error" class="login-error" role="alert" hidden></p>
+  </section>
+</BaseLayout>
+
+<script>
+  import { redirectIfAuthenticated, signInWithGoogle } from '../scripts/auth';
+  redirectIfAuthenticated();
+  const button = document.querySelector<HTMLButtonElement>('#google-sign-in');
+  const error = document.querySelector<HTMLParagraphElement>('#login-error');
+  button?.addEventListener('click', async () => {
+    button.disabled = true;
+    button.textContent = 'Abrindo Google…';
+    try { await signInWithGoogle(); window.location.assign('/app'); }
+    catch (cause) {
+      button.disabled = false;
+      button.textContent = 'Continuar com Google';
+      if (error) { error.hidden = false; error.textContent = cause instanceof Error ? cause.message : 'Não foi possível entrar. Tente novamente.'; }
+    }
+  });
+</script>
+
+<style lang="scss">
+  :global(.login-page) { min-height: 75vh; display:grid; place-items:center; padding:7rem 1.25rem 3rem; background:var(--app-background); }
+  .login-card { max-width:480px; background:#fff; border:1px solid var(--app-border); border-radius:20px; padding:2.5rem; box-shadow:var(--shadow-md); text-align:center; }
+  .eyebrow { color:var(--app-green); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:.75rem; }
+  .login-card h1 { color:var(--app-green-dark); font-size:2rem; }
+  .google-button { width:100%; margin-top:1rem; border:1px solid var(--app-border); border-radius:100px; padding:.85rem 1.25rem; background:#fff; color:var(--color-text-primary); font:inherit; font-weight:700; cursor:pointer; }
+  .google-button:hover { background:var(--app-green-soft); border-color:var(--app-green); }
+  .google-button:disabled { opacity:.65; cursor:wait; }
+  .login-error { margin:1rem 0 0; color:#b42318; }
+</style>

@@ -1,0 +1,28 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+---
+
+<AppLayout title="Meu painel | Nucarbon" active="dashboard">
+  <section class="app-page" data-app-view="dashboard" aria-live="polite">
+    <header class="page-intro">
+      <h1>Olá, <span data-greeting-name>...</span>!</h1><p>
+        Aqui está o resumo da sua jornada de impacto.
+      </p>
+    </header>
+    <div class="footprint-card" data-footprint-card>
+      <p>Sua Pegada Anual</p><strong data-footprint>—</strong><span
+        data-footprint-date></span><a href="/#contato">Recalcular pegada</a>
+    </div>
+    <section>
+      <h2>Resumo de Impacto</h2><div class="metric-grid" data-metrics></div>
+    </section>
+    <section class="section-heading">
+      <div><h2>Meus Projetos</h2></div><a href="/app/projetos">Ver todos</a>
+    </section><div class="project-grid" data-projects></div>
+  </section>
+</AppLayout>
+
+<script>
+  import { loadDashboard } from "../../scripts/app-data";
+  loadDashboard();
+</script>

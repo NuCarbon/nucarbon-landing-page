@@ -1,0 +1,7 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+---
+<AppLayout title="Projetos | Nucarbon" active="projects">
+  <section class="app-page" data-app-view="projects" aria-live="polite"><header class="page-intro"><p class="overline">Projetos locais de alto impacto</p><h1>Restauração florestal no Brasil</h1><p>Conheça os projetos que sua jornada ajuda a tornar realidade.</p></header><div class="project-grid" data-projects></div></section>
+</AppLayout>
+<script>import { loadProjects } from '../../scripts/app-data'; loadProjects();</script>

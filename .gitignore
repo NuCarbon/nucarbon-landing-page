@@ -17,3 +17,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local Firebase / Netlify configuration and function build artifacts
+.env.local
+.netlify/
+netlify/functions/*.zip
+netlify/functions/manifest.json
