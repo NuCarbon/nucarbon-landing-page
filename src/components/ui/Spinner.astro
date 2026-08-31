@@ -1,0 +1,53 @@
+---
+interface Props {
+  label?: string;
+  size?: 'small' | 'medium';
+  [attribute: string]: unknown;
+}
+
+const {
+  label = 'Carregando',
+  size = 'medium',
+  ...attributes
+} = Astro.props;
+---
+
+<span
+  class:list={['spinner', `spinner--${size}`]}
+  role="status"
+  aria-label={label}
+  {...attributes}
+></span>
+
+<style lang="scss">
+  .spinner {
+    display: inline-block;
+    flex: 0 0 auto;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+
+    &--small {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    &--medium {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation-duration: 1.4s;
+    }
+  }
+</style>

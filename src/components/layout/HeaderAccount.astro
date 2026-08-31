@@ -1,0 +1,147 @@
+---
+import Skeleton from '../ui/Skeleton.astro';
+---
+
+<li class="nav-account" data-header-account aria-live="polite">
+  <span
+    class="nav-auth-loading"
+    data-auth-loading
+    role="status"
+    aria-label="Verificando sessão"
+  >
+    <Skeleton width="30px" height="30px" variant="circle" />
+    <Skeleton width="4.5rem" height="0.75rem" />
+  </span>
+
+  <a href="/entrar" class="nav-cta" data-auth-guest hidden>Entrar</a>
+
+  <a href="/app" class="nav-profile" data-auth-user hidden aria-label="Abrir meu painel">
+    <img data-user-avatar alt="" hidden />
+    <span class="nav-profile-fallback" data-user-initial hidden></span>
+    <span data-user-name>Minha conta</span>
+  </a>
+</li>
+
+<script>
+  import { authReady, showAuthenticatedUser } from '../../scripts/auth';
+
+  async function initializeHeaderAccount(account: HTMLElement): Promise<void> {
+    if (account.dataset.authInitialized) return;
+    account.dataset.authInitialized = 'true';
+
+    const user = await authReady;
+
+    if (user) {
+      showAuthenticatedUser(user, account);
+      return;
+    }
+
+    const loading = account.querySelector<HTMLElement>('[data-auth-loading]');
+    const guest = account.querySelector<HTMLElement>('[data-auth-guest]');
+
+    if (loading) loading.hidden = true;
+    if (guest) guest.hidden = false;
+  }
+
+  function initializeAccounts(): void {
+    document
+      .querySelectorAll<HTMLElement>('[data-header-account]')
+      .forEach((account) => void initializeHeaderAccount(account));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeAccounts, { once: true });
+  } else {
+    initializeAccounts();
+  }
+</script>
+
+<style lang="scss">
+  .nav-account,
+  .nav-auth-loading,
+  .nav-profile {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-account {
+    min-height: 2.5rem;
+  }
+
+  .nav-auth-loading,
+  .nav-profile {
+    gap: 0.5rem;
+  }
+
+  .nav-auth-loading {
+    min-width: 7rem;
+  }
+
+  .nav-cta {
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: 500;
+
+    &:hover {
+      background-color: var(--color-primary-dark);
+      color: white;
+    }
+  }
+
+  .nav-profile {
+    padding: 0.25rem 0.65rem 0.25rem 0.25rem;
+    border-radius: 100px;
+    background: var(--color-primary-accent);
+    color: var(--color-primary-dark);
+    font-weight: 700;
+
+    &:hover {
+      background: #d9f1e7;
+      color: var(--color-primary-dark);
+    }
+
+    img,
+    &-fallback {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    img {
+      object-fit: cover;
+    }
+
+    &-fallback {
+      display: grid;
+      place-items: center;
+      background: var(--color-primary);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+  }
+
+  @media (min-width: 992px) {
+    :global(.header.transparent) .nav-cta {
+      background-color: white;
+      color: var(--color-primary);
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: var(--color-primary-dark);
+      }
+    }
+
+    :global(.header.transparent) .nav-profile {
+      background: rgba(255, 255, 255, 0.16);
+      color: white;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+      }
+    }
+  }
+</style>

@@ -4,27 +4,51 @@ import { auth, googleProvider } from './firebase';
 // Firebase restores the persisted session asynchronously. Never read
 // auth.currentUser before this first state notification has fired.
 export const authReady = new Promise<User | null>((resolve) => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    unsubscribe();
+  let unsubscribe: (() => void) | undefined;
+
+  const finish = (user: User | null) => {
+    unsubscribe?.();
     resolve(user);
-  });
+  };
+
+  unsubscribe = onAuthStateChanged(auth, finish, () => finish(null));
 });
 
-function setUser(user: User) {
+export function showAuthenticatedUser(
+  user: User,
+  root: ParentNode = document,
+): void {
   const firstName = user.displayName?.trim().split(/\s+/)[0] || 'você';
+  const initial =
+    user.displayName?.trim().charAt(0) || user.email?.trim().charAt(0) || 'V';
 
-  document
+  root
     .querySelectorAll<HTMLElement>('[data-user-name], [data-greeting-name]')
     .forEach((element) => {
       element.textContent = firstName;
     });
 
-  document.querySelectorAll<HTMLImageElement>('[data-user-avatar]').forEach((image) => {
-    if (!user.photoURL) return;
+  root.querySelectorAll<HTMLImageElement>('[data-user-avatar]').forEach((image) => {
+    if (!user.photoURL) {
+      image.hidden = true;
+      return;
+    }
 
     image.src = user.photoURL;
     image.alt = `Foto de ${user.displayName || 'usuário'}`;
     image.hidden = false;
+  });
+
+  root.querySelectorAll<HTMLElement>('[data-user-initial]').forEach((element) => {
+    element.textContent = initial.toLocaleUpperCase('pt-BR');
+    element.hidden = Boolean(user.photoURL);
+  });
+
+  root.querySelectorAll<HTMLElement>('[data-auth-loading]').forEach((element) => {
+    element.hidden = true;
+  });
+  root.querySelectorAll<HTMLElement>('[data-auth-user]').forEach((element) => {
+    element.hidden = false;
   });
 }
 
@@ -36,13 +60,7 @@ export async function protectPage() {
     return;
   }
 
-  setUser(user);
-}
-
-export async function redirectIfAuthenticated() {
-  const user = await authReady;
-
-  if (user) window.location.replace('/app');
+  showAuthenticatedUser(user);
 }
 
 export async function signInWithGoogle() {

@@ -1,0 +1,70 @@
+---
+interface Props {
+  height?: string;
+  radius?: string;
+  variant?: 'block' | 'circle' | 'line';
+  width?: string;
+}
+
+const {
+  height = '1rem',
+  radius,
+  variant = 'line',
+  width = '100%',
+} = Astro.props;
+const style = [
+  `--skeleton-width: ${width}`,
+  `--skeleton-height: ${height}`,
+  radius && `--skeleton-radius: ${radius}`,
+]
+  .filter(Boolean)
+  .join('; ');
+---
+
+<span
+  class:list={['skeleton', `skeleton--${variant}`]}
+  style={style}
+  aria-hidden="true"
+></span>
+
+<style lang="scss">
+  .skeleton {
+    display: block;
+    width: var(--skeleton-width);
+    height: var(--skeleton-height);
+    overflow: hidden;
+    border-radius: var(--skeleton-radius, 0.4rem);
+    background: #e7e9e3;
+    position: relative;
+
+    &::after {
+      position: absolute;
+      inset: 0;
+      content: '';
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.65),
+        transparent
+      );
+      transform: translateX(-100%);
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    &--circle {
+      border-radius: 50%;
+    }
+  }
+
+  @keyframes shimmer {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton::after {
+      animation: none;
+    }
+  }
+</style>

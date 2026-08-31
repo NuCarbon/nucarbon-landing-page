@@ -1,6 +1,7 @@
 ---
 import Image from 'astro/components/Image.astro';
 import logo from '../../images/logo.png';
+import Skeleton from '../ui/Skeleton.astro';
 ---
 
 <header class="app-header">
@@ -9,8 +10,14 @@ import logo from '../../images/logo.png';
     <span>Nucarbon</span>
   </a>
 
-  <div class="app-user-menu">
+  <div class="app-user-menu app-user-loading" data-auth-loading aria-hidden="true">
+    <Skeleton width="30px" height="30px" variant="circle" />
+    <Skeleton width="5rem" height="0.75rem" />
+  </div>
+
+  <div class="app-user-menu" data-auth-user hidden>
     <img data-user-avatar alt="" hidden />
+    <span class="app-user-avatar-fallback" data-user-initial hidden></span>
     <span data-user-name>Carregando...</span>
     <button type="button" class="app-sign-out" data-sign-out>Sair</button>
   </div>

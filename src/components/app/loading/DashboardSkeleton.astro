@@ -1,0 +1,24 @@
+---
+import Skeleton from '../../ui/Skeleton.astro';
+import ImpactMetricsSkeleton from './ImpactMetricsSkeleton.astro';
+import ProjectGridSkeleton from './ProjectGridSkeleton.astro';
+---
+
+<div class="app-view-content" aria-hidden="true">
+  <div class="footprint-card skeleton-card skeleton-stack">
+    <Skeleton width="8rem" height="0.75rem" />
+    <Skeleton width="14rem" height="2rem" />
+    <Skeleton width="7rem" height="0.7rem" />
+    <Skeleton width="7.5rem" height="0.75rem" />
+  </div>
+
+  <section>
+    <Skeleton width="10rem" height="1.15rem" />
+    <div class="skeleton-section-content">
+      <ImpactMetricsSkeleton />
+    </div>
+  </section>
+
+  <Skeleton width="8rem" height="1.15rem" />
+  <ProjectGridSkeleton count={2} />
+</div>

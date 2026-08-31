@@ -29,8 +29,11 @@ const { title, active = 'dashboard' } = Astro.props;
     </div>
     <script>
       import { protectPage, signOutUser } from '../scripts/auth';
-      protectPage();
-      document.querySelector('[data-sign-out]')?.addEventListener('click', signOutUser);
+
+      void protectPage();
+      document
+        .querySelector('[data-sign-out]')
+        ?.addEventListener('click', () => void signOutUser());
     </script>
   </body>
 </html>

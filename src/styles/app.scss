@@ -66,6 +66,22 @@
   }
 }
 
+.app-user-loading {
+  min-width: 7.5rem;
+}
+
+.app-user-avatar-fallback {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--app-green);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
 .app-sign-out {
   border: 0;
   background: transparent;
@@ -168,6 +184,34 @@
     margin: 0 0 0.75rem;
     font-size: 1.15rem;
   }
+}
+
+.app-view-content {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.skeleton-stack {
+  display: grid;
+  gap: 0.75rem;
+
+  &--compact {
+    gap: 0.4rem;
+  }
+}
+
+.skeleton-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.skeleton-section-content {
+  margin-top: 0.75rem;
+}
+
+.skeleton-post-body {
+  margin: 1rem 0;
 }
 
 .page-intro {

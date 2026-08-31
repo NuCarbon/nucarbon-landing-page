@@ -18,6 +18,7 @@ export abstract class AppDataView<T> extends HTMLElement {
     try {
       const data = await fetchAppData<T>(this.endpoint);
       await this.renderData(data);
+      this.finishLoading();
     } catch {
       const errorTemplate = this.querySelector<HTMLTemplateElement>(
         'template[data-app-error]',
@@ -26,6 +27,18 @@ export abstract class AppDataView<T> extends HTMLElement {
       if (errorTemplate) {
         this.replaceChildren(errorTemplate.content.cloneNode(true));
       }
+
+      this.setAttribute('aria-busy', 'false');
     }
+  }
+
+  private finishLoading(): void {
+    this.querySelectorAll<HTMLElement>('[data-app-loading]').forEach((element) => {
+      element.hidden = true;
+    });
+    this.querySelectorAll<HTMLElement>('[data-app-content]').forEach((element) => {
+      element.hidden = false;
+    });
+    this.setAttribute('aria-busy', 'false');
   }
 }

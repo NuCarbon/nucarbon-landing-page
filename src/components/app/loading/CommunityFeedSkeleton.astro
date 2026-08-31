@@ -1,0 +1,28 @@
+---
+import Skeleton from '../../ui/Skeleton.astro';
+---
+
+<div class="community-feed" aria-hidden="true">
+  {
+    Array.from({ length: 2 }).map(() => (
+      <article class="community-post skeleton-card">
+        <header>
+          <Skeleton width="35px" height="35px" variant="circle" />
+          <div class="skeleton-stack skeleton-stack--compact">
+            <Skeleton width="8.5rem" height="0.8rem" />
+            <Skeleton width="4rem" height="0.6rem" />
+          </div>
+        </header>
+        <div class="skeleton-stack skeleton-post-body">
+          <Skeleton />
+          <Skeleton width="92%" />
+          <Skeleton width="68%" />
+        </div>
+        <footer>
+          <Skeleton width="6rem" height="0.7rem" />
+          <Skeleton width="5.5rem" height="0.7rem" />
+        </footer>
+      </article>
+    ))
+  }
+</div>

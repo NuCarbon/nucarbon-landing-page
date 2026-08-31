@@ -1,6 +1,7 @@
 ---
-import Image from "astro/components/Image.astro";
-import logo from "../../images/logo.png"
+import Image from 'astro/components/Image.astro';
+import HeaderAccount from './HeaderAccount.astro';
+import logo from '../../images/logo.png';
 ---
 
 <header class="header transparent">
@@ -23,7 +24,7 @@ import logo from "../../images/logo.png"
         <li><a href="/#creditos-carbono">Créditos de Carbono</a></li>
         <li><a href="/#faq">Perguntas Frequentes</a></li>
         <li><a href="/#contato">Contato</a></li>
-        <li><a href="/entrar" class="nav-cta">Entrar</a></li>
+        <HeaderAccount />
       </ul>
     </nav>
   </div>

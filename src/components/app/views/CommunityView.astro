@@ -2,9 +2,11 @@
 import AppPageIntro from '../AppPageIntro.astro';
 import CommunityFeed from '../data/CommunityFeed.astro';
 import AppError from '../data/AppError.astro';
+import CommunityFeedSkeleton from '../loading/CommunityFeedSkeleton.astro';
+import LoadingState from '../../ui/LoadingState.astro';
 ---
 
-<app-community-view class="app-page" aria-live="polite">
+<app-community-view class="app-page" aria-live="polite" aria-busy="true">
   <AppPageIntro
     overline="Comunidade Nucarbon"
     description="Acompanhe as atualizações de quem protege e restaura nossos biomas."
@@ -12,7 +14,13 @@ import AppError from '../data/AppError.astro';
     Impacto que cresce junto
   </AppPageIntro>
 
-  <CommunityFeed />
+  <LoadingState label="Carregando publicações da comunidade">
+    <CommunityFeedSkeleton />
+  </LoadingState>
+
+  <div data-app-content hidden>
+    <CommunityFeed />
+  </div>
 
   <template data-app-error>
     <AppError />

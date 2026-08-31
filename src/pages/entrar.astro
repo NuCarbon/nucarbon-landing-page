@@ -1,41 +1,158 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import LoadingState from '../components/ui/LoadingState.astro';
+import Spinner from '../components/ui/Spinner.astro';
 ---
 
 <BaseLayout title="Entrar | Nucarbon" className="login-page">
-  <section class="login-card" aria-labelledby="login-title">
+  <LoadingState label="Verificando sua sessão">
+    <div class="login-auth-loading">
+      <Spinner label="Verificando sua sessão" aria-hidden="true" />
+      <p>Verificando sua sessão...</p>
+    </div>
+  </LoadingState>
+
+  <section class="login-card" data-login-content aria-labelledby="login-title" hidden>
     <p class="eyebrow">Sua jornada de impacto</p>
     <h1 id="login-title">Entre na Nucarbon</h1>
     <p>Veja sua pegada, os projetos que apoia e as novidades da comunidade.</p>
-    <button id="google-sign-in" class="google-button" type="button">Continuar com Google</button>
+    <button id="google-sign-in" class="google-button" type="button">
+      <Spinner
+        data-sign-in-spinner
+        label="Abrindo Google"
+        size="small"
+        hidden
+      />
+      <span data-sign-in-label>Continuar com Google</span>
+    </button>
     <p id="login-error" class="login-error" role="alert" hidden></p>
   </section>
 </BaseLayout>
 
 <script>
-  import { redirectIfAuthenticated, signInWithGoogle } from '../scripts/auth';
-  redirectIfAuthenticated();
+  import { authReady, signInWithGoogle } from '../scripts/auth';
+
+  const loading = document.querySelector<HTMLElement>('[data-app-loading]');
+  const content = document.querySelector<HTMLElement>('[data-login-content]');
   const button = document.querySelector<HTMLButtonElement>('#google-sign-in');
   const error = document.querySelector<HTMLParagraphElement>('#login-error');
+  const buttonLabel = button?.querySelector<HTMLElement>('[data-sign-in-label]');
+  const buttonSpinner = button?.querySelector<HTMLElement>('[data-sign-in-spinner]');
+
+  const user = await authReady;
+
+  if (user) {
+    window.location.replace('/app');
+  } else {
+    if (loading) loading.hidden = true;
+    if (content) content.hidden = false;
+  }
+
   button?.addEventListener('click', async () => {
     button.disabled = true;
-    button.textContent = 'Abrindo Google…';
-    try { await signInWithGoogle(); window.location.assign('/app'); }
-    catch (cause) {
+    if (buttonLabel) buttonLabel.textContent = 'Abrindo Google…';
+    if (buttonSpinner) buttonSpinner.hidden = false;
+
+    try {
+      await signInWithGoogle();
+      window.location.assign('/app');
+    } catch (cause) {
       button.disabled = false;
-      button.textContent = 'Continuar com Google';
-      if (error) { error.hidden = false; error.textContent = cause instanceof Error ? cause.message : 'Não foi possível entrar. Tente novamente.'; }
+      if (buttonLabel) buttonLabel.textContent = 'Continuar com Google';
+      if (buttonSpinner) buttonSpinner.hidden = true;
+
+      if (error) {
+        error.hidden = false;
+        error.textContent =
+          cause instanceof Error
+            ? cause.message
+            : 'Não foi possível entrar. Tente novamente.';
+      }
     }
   });
 </script>
 
 <style lang="scss">
-  :global(.login-page) { min-height: 75vh; display:grid; place-items:center; padding:7rem 1.25rem 3rem; background:var(--app-background); }
-  .login-card { max-width:480px; background:#fff; border:1px solid var(--app-border); border-radius:20px; padding:2.5rem; box-shadow:var(--shadow-md); text-align:center; }
-  .eyebrow { color:var(--app-green); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:.75rem; }
-  .login-card h1 { color:var(--app-green-dark); font-size:2rem; }
-  .google-button { width:100%; margin-top:1rem; border:1px solid var(--app-border); border-radius:100px; padding:.85rem 1.25rem; background:#fff; color:var(--color-text-primary); font:inherit; font-weight:700; cursor:pointer; }
-  .google-button:hover { background:var(--app-green-soft); border-color:var(--app-green); }
-  .google-button:disabled { opacity:.65; cursor:wait; }
-  .login-error { margin:1rem 0 0; color:#b42318; }
+  :global(.login-page) {
+    display: grid;
+    place-items: center;
+    min-height: 75vh;
+    padding: 7rem 1.25rem 3rem;
+    background: var(--app-background);
+  }
+
+  .login-auth-loading {
+    display: grid;
+    place-items: center;
+    gap: 0.75rem;
+    color: var(--app-green);
+
+    p {
+      margin: 0;
+      color: var(--app-text-muted);
+    }
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 2rem 1.5rem;
+    border: 1px solid var(--app-border);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+
+    h1 {
+      color: var(--app-green-dark);
+      font-size: 2rem;
+    }
+  }
+
+  .eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--app-green);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .google-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.85rem 1.25rem;
+    border: 1px solid var(--app-border);
+    border-radius: 100px;
+    background: #fff;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+
+    &:hover {
+      border-color: var(--app-green);
+      background: var(--app-green-soft);
+    }
+
+    &:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+  }
+
+  .login-error {
+    margin: 1rem 0 0;
+    color: #b42318;
+  }
+
+  @media (min-width: 600px) {
+    .login-card {
+      padding: 2.5rem;
+    }
+  }
 </style>
