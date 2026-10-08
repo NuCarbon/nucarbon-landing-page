@@ -1,0 +1,40 @@
+---
+import CalculatorIcon from './CalculatorIcon.astro';
+
+interface Props {
+  group: string;
+  value: string;
+  label: string;
+  description?: string;
+  icon: string;
+  badge?: string;
+  badgeTone?: 'green' | 'neutral' | 'danger';
+  selected?: boolean;
+  compact?: boolean;
+}
+
+const {
+  group,
+  value,
+  label,
+  description,
+  icon,
+  badge,
+  badgeTone = 'green',
+  selected = false,
+  compact = false,
+} = Astro.props;
+---
+
+<label class:list={['option-card', { 'option-card--selected': selected, 'option-card--compact': compact }]}>
+  <input class="option-card__input" type="radio" name={group} value={value} checked={selected} />
+  <span class="option-card__icon"><CalculatorIcon name={icon} /></span>
+  <span class="option-card__content">
+    <span class="option-card__heading">
+      <span class="option-card__label">{label}</span>
+      {badge && <span class:list={['option-card__badge', `option-card__badge--${badgeTone}`]}>{badge}</span>}
+    </span>
+    {description && <span class="option-card__description">{description}</span>}
+  </span>
+  <span class="option-card__radio" aria-hidden="true"></span>
+</label>

@@ -1,0 +1,39 @@
+---
+import { Font } from 'astro:assets';
+import { SEO } from 'astro-seo';
+import '../styles/global.scss';
+import '../styles/calculator.scss';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Calcule sua pegada de carbono e descubra maneiras de reduzir seu impacto.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <SEO
+      title={title}
+      description={description}
+      charset="UTF-8"
+      extend={{
+        link: [
+          { rel: 'sitemap', href: '/sitemap-index.xml' },
+          { rel: 'icon', type: 'image/png', href: '/favicon.png' },
+        ],
+      }}
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <Font cssVariable="--font-kollektif" preload />
+  </head>
+  <body class="calculator-page">
+    <slot />
+  </body>
+</html>

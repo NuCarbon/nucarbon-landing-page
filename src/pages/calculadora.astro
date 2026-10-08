@@ -1,0 +1,247 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import CalculatorLogo from '../components/calculator/CalculatorLogo.astro';
+import CalculatorIcon from '../components/calculator/CalculatorIcon.astro';
+import OptionCard from '../components/calculator/OptionCard.astro';
+
+const categories = [
+  { label: 'Transporte', value: '2,4', width: 46, danger: true },
+  { label: 'Moradia', value: '1,1', width: 21 },
+  { label: 'Alimentação', value: '0,8', width: 16, light: true },
+  { label: 'Consumo', value: '0,3', width: 8 },
+  { label: 'Resíduos', value: '0,2', width: 5 },
+];
+---
+
+<CalculatorLayout title="Calculadora de carbono | NuCarbon">
+  <main class="calculator" data-calculator>
+    <section class="calculator__flow" data-calculator-flow>
+      <header class="calculator__header">
+        <CalculatorLogo />
+        <p class="calculator__step-label">Etapa <span data-current-step>1</span> de 6 <strong data-step-name>[Perfil]</strong></p>
+      </header>
+
+      <div class="calculator__progress" aria-label="Progresso do cálculo">
+        <span class="calculator__progress-value" data-progress></span>
+      </div>
+      <div class="calculator__dots" aria-hidden="true">
+        {[1, 2, 3, 4, 5, 6].map((step) => <span class:list={['calculator__dot', { 'calculator__dot--active': step === 1 }]} data-dot={step}></span>)}
+      </div>
+
+      <form class="calculator__form" data-calculator-form>
+        <section class="calculator-step calculator-step--profile" data-step="1" aria-labelledby="profile-title">
+          <h1 class="calculator-step__title" id="profile-title">Qual o seu perfil de cálculo?</h1>
+          <div class="calculator-step__options calculator-step__options--profile">
+            <OptionCard group="profile" value="person" label="Pessoa física" description="Hábitos pessoais de transporte, moradia e consumo." icon="person" selected />
+            <OptionCard group="profile" value="family" label="Família" description="Cálculo consolidado para todos os membros da residência." icon="home" />
+            <OptionCard group="profile" value="company" label="Empresa" description="Diagnóstico de emissões operacionais e escritórios." icon="building" />
+            <OptionCard group="profile" value="event" label="Evento" description="Estime emissões geradas por celebrações ou congressos." icon="calendar" />
+          </div>
+        </section>
+
+        <section class="calculator-step" data-step="2" aria-labelledby="home-title" hidden>
+          <h1 class="calculator-step__title" id="home-title">Como é a sua moradia?</h1>
+          <button class="calculator-step__unsure" type="button" data-skip>Não sei responder</button>
+          <div class="calculator-step__options calculator-step__options--three">
+            <OptionCard group="home" value="apartment" label="Apartamento" description="Edifício com áreas e serviços compartilhados." icon="apartment" selected />
+            <OptionCard group="home" value="small-house" label="Casa pequena" description="Casa de até 100 m²." icon="house" />
+            <OptionCard group="home" value="large-house" label="Casa grande" description="Casa com mais de 100 m²." icon="home" />
+          </div>
+        </section>
+
+        <section class="calculator-step calculator-step--transport" data-step="3" aria-labelledby="transport-title" hidden>
+          <h1 class="calculator-step__title" id="transport-title">Qual o seu principal meio de transporte?</h1>
+          <button class="calculator-step__unsure" type="button" data-skip>Não sei responder</button>
+          <div class="calculator-step__options calculator-step__options--transport">
+            <OptionCard group="transport" value="gas" label="Carro (gasolina)" icon="car" compact selected />
+            <OptionCard group="transport" value="ethanol" label="Carro (etanol)" icon="leaf" compact />
+            <OptionCard group="transport" value="electric" label="Carro (elétrico)" icon="plug" compact />
+            <OptionCard group="transport" value="motorcycle" label="Moto" icon="motorcycle" compact />
+            <OptionCard group="transport" value="public" label="Transporte público" icon="bus" compact />
+            <OptionCard group="transport" value="bike" label="Bicicleta/a pé" icon="bike" compact />
+          </div>
+          <div class="calculator-range">
+            <div class="calculator-range__header">
+              <label class="calculator-range__label" for="weekly-distance"><span class="calculator-range__desktop-label">Quantos km você percorre por semana?</span><span class="calculator-range__mobile-label">Uso semanal estimado</span></label>
+              <output class="calculator-range__output" for="weekly-distance"><span data-distance>180</span> km</output>
+            </div>
+            <input class="calculator-range__input" id="weekly-distance" name="distance" type="range" min="0" max="500" value="180" step="10" />
+            <div class="calculator-range__ticks"><span>0 km</span><span>250 km</span><span>500+ km</span></div>
+          </div>
+        </section>
+
+        <section class="calculator-step" data-step="4" aria-labelledby="energy-title" hidden>
+          <h1 class="calculator-step__title" id="energy-title">Qual é o seu consumo mensal de energia?</h1>
+          <button class="calculator-step__unsure" type="button" data-skip>Não sei responder</button>
+          <div class="calculator-step__options calculator-step__options--three">
+            <OptionCard group="energy" value="low" label="Baixo" description="Até 150 kWh por mês." icon="leaf" />
+            <OptionCard group="energy" value="medium" label="Médio" description="Entre 150 e 300 kWh por mês." icon="energy" selected />
+            <OptionCard group="energy" value="high" label="Alto" description="Mais de 300 kWh por mês." icon="energy" />
+          </div>
+        </section>
+
+        <section class="calculator-step calculator-step--food" data-step="5" aria-labelledby="food-title" hidden>
+          <h1 class="calculator-step__title" id="food-title">Como você descreveria sua alimentação habitual?</h1>
+          <button class="calculator-step__unsure" type="button" data-skip>Não sei responder</button>
+          <div class="calculator-step__options calculator-step__options--food">
+            <OptionCard group="food" value="vegan" label="Vegana" description="Apenas alimentos vegetais, sem carnes ou derivados." icon="vegan" badge="Menor pegada" />
+            <OptionCard group="food" value="vegetarian" label="Vegetariana" description="Sem carnes, mas consome ovos e laticínios." icon="egg" badge="Pegada baixa" />
+            <OptionCard group="food" value="flexitarian" label="Flexitariana" description="Base vegetal, consumindo carnes raramente." icon="bowl" badge="Equilibrada" selected />
+            <OptionCard group="food" value="moderate" label="Moderada" description="Carne presente na maioria das refeições." icon="meat" badge="Pegada média" badgeTone="neutral" />
+            <OptionCard group="food" value="high" label="Alto consumo de carne" description="Base proteica focada em carnes todos os dias." icon="meat" badge="Maior pegada" badgeTone="danger" />
+          </div>
+        </section>
+
+        <section class="calculator-step" data-step="6" aria-labelledby="waste-title" hidden>
+          <h1 class="calculator-step__title" id="waste-title">Como você lida com seus resíduos?</h1>
+          <button class="calculator-step__unsure" type="button" data-skip>Não sei responder</button>
+          <div class="calculator-step__options calculator-step__options--three">
+            <OptionCard group="waste" value="recycle" label="Reciclo sempre" description="Separo recicláveis e reduzo o desperdício." icon="leaf" selected />
+            <OptionCard group="waste" value="sometimes" label="Às vezes" description="Separo apenas alguns tipos de materiais." icon="bag" />
+            <OptionCard group="waste" value="trash" label="Não separo" description="Descarto a maior parte no lixo comum." icon="trash" />
+          </div>
+        </section>
+      </form>
+
+      <nav class="calculator__actions" aria-label="Navegação da calculadora">
+        <button class="calculator__back" type="button" data-back>Voltar</button>
+        <button class="calculator__continue" type="button" data-continue>Continuar</button>
+      </nav>
+    </section>
+
+    <section class="result" data-result hidden>
+      <header class="result__header">
+        <span class="result__mobile-mark" aria-hidden="true"><CalculatorIcon name="leaf" /></span>
+        <CalculatorLogo />
+        <nav class="result__nav" aria-label="Navegação principal">
+          <a href="/#quem-somos">Como funciona</a><a href="/app/projetos">Projetos</a><a href="/app/comunidade">Comunidade</a>
+        </nav>
+        <div class="result__account"><a href="/entrar">Entrar</a><button type="button" data-recalculate>Calcular pegada</button></div>
+      </header>
+
+      <div class="result__main">
+        <div class="result__summary">
+          <p class="result__eyebrow">Cálculo concluído</p>
+          <h1 class="result__title">Sua pegada de carbono estimada</h1>
+          <section class="result-total" aria-label="Pegada total estimada">
+            <span class="result-total__icon"><CalculatorIcon name="tree" /></span>
+            <div><p class="result-total__number"><strong data-total>4,8</strong> tCO₂e / ano</p><p class="result-total__trees">≈ <span data-trees>32</span> árvores necessárias para compensar sua pegada anual</p></div>
+          </section>
+
+          <section class="result-breakdown">
+            <h2 class="result-breakdown__title">Distribuição <span class="result-breakdown__desktop-word">por Categoria</span><span class="result-breakdown__mobile-word">estimada</span></h2>
+            {categories.map((category) => (
+              <div class="result-breakdown__item" data-category={category.label.toLowerCase()}>
+                <div class="result-breakdown__label"><strong>{category.label}</strong><span>{category.value} tCO₂e</span></div>
+                <div class="result-breakdown__track"><span class:list={['result-breakdown__bar', { 'result-breakdown__bar--danger': category.danger, 'result-breakdown__bar--light': category.light }]} style={`--bar-width:${category.width}%`}></span></div>
+              </div>
+            ))}
+          </section>
+        </div>
+
+        <aside class="result__insights">
+          <section class="result-alert"><span class="result-alert__icon">!</span><div><h2>Foco de Atenção: Transporte</h2><p>Sua maior fonte de emissão é Transporte. Considere alternativas mais ecológicas como transporte público ou carona compartilhada para reduzir sua métrica significativamente.</p></div></section>
+          <section class="result-tips">
+            <h2>Como reduzir sua pegada</h2>
+            <article class="result-tip"><span><CalculatorIcon name="bus" /></span><div><h3>Transporte Coletivo</h3><p>Trocar o carro pelo transporte público 2x na semana reduz cerca de 600 kg de CO₂ ao ano.</p></div></article>
+            <article class="result-tip"><span><CalculatorIcon name="bowl" /></span><div><h3>Segunda sem Carne</h3><p>Substituir proteína animal por vegetal uma vez na semana economiza até 400 kg de CO₂.</p></div></article>
+            <article class="result-tip result-tip--desktop"><span><CalculatorIcon name="bag" /></span><div><h3>Consumo Local</h3><p>Dar preferência a produtores da sua região evita o frete de longa distância e apoia economias locais.</p></div></article>
+          </section>
+          <a class="result__projects" href="/app/projetos">Conhecer projetos de restauração</a>
+          <div class="result__secondary-actions"><button type="button" data-recalculate>Recalcular</button><button type="button" data-share>Compartilhar <span class="result__desktop-word">resultado</span></button></div>
+          <p class="result__note"><span><CalculatorIcon name="info" /></span>Esta é uma estimativa baseada em médias nacionais de consumo. Os valores reais podem variar. Dados demonstrativos.</p>
+        </aside>
+      </div>
+
+      <footer class="result-footer">
+        <div class="result-footer__brand"><CalculatorLogo /><p>Acelerando a transição ecológica brasileira por meio de tecnologia, dados científicos e restauração ecológica de nossos biomas originais.</p></div>
+        <div class="result-footer__links"><div><strong>Plataforma</strong><a href="/#quem-somos">Como funciona</a><a href="/calculadora">Calculadora</a><a href="/app/projetos">Projetos ativos</a></div><div><strong>Recursos</strong><a href="/#faq">Metodologia</a><a href="/#contato">Blog</a><a href="/#creditos-carbono">Relatórios tCO₂e</a></div><div><strong>Contato</strong><a href="/#contato">Suporte</a><a href="/#contato">Parcerias B2B</a><a href="/#contato">Fale conosco</a></div></div>
+        <p class="result-footer__copyright">© 2026 NuCarbon S.A. Todos os direitos reservados.</p>
+      </footer>
+    </section>
+  </main>
+</CalculatorLayout>
+
+<script>
+  const calculator = document.querySelector<HTMLElement>('[data-calculator]');
+  const flow = document.querySelector<HTMLElement>('[data-calculator-flow]');
+  const result = document.querySelector<HTMLElement>('[data-result]');
+  const form = document.querySelector<HTMLFormElement>('[data-calculator-form]');
+  const currentStepElement = document.querySelector<HTMLElement>('[data-current-step]');
+  const stepNameElement = document.querySelector<HTMLElement>('[data-step-name]');
+  const progress = document.querySelector<HTMLElement>('[data-progress]');
+  const back = document.querySelector<HTMLButtonElement>('[data-back]');
+  const continueButton = document.querySelector<HTMLButtonElement>('[data-continue]');
+  const distance = document.querySelector<HTMLInputElement>('#weekly-distance');
+  const distanceOutput = document.querySelector<HTMLElement>('[data-distance]');
+  const stepNames = ['Perfil', 'Moradia', 'Transporte', 'Energia', 'Alimentação e consumo', 'Resíduos'];
+  let currentStep = 1;
+
+  const updateStep = () => {
+    document.querySelectorAll<HTMLElement>('[data-step]').forEach((panel) => {
+      panel.hidden = Number(panel.dataset.step) !== currentStep;
+    });
+    document.querySelectorAll<HTMLElement>('[data-dot]').forEach((dot) => {
+      const dotStep = Number(dot.dataset.dot);
+      dot.classList.toggle('calculator__dot--complete', dotStep < currentStep);
+      dot.classList.toggle('calculator__dot--active', dotStep === currentStep);
+    });
+    if (currentStepElement) currentStepElement.textContent = String(currentStep);
+    if (stepNameElement) stepNameElement.textContent = `[${stepNames[currentStep - 1]}]`;
+    if (progress) progress.style.width = `${(currentStep / 6) * 100}%`;
+    if (back) back.textContent = currentStep === 1 ? 'Voltar' : 'Anterior';
+    if (continueButton) continueButton.textContent = currentStep === 6 ? 'Ver resultado' : 'Continuar';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  form?.addEventListener('change', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || input.type !== 'radio') return;
+    form.querySelectorAll<HTMLInputElement>(`input[name="${input.name}"]`).forEach((radio) => {
+      radio.closest('.option-card')?.classList.toggle('option-card--selected', radio.checked);
+    });
+  });
+
+  distance?.addEventListener('input', () => {
+    if (distanceOutput) distanceOutput.textContent = distance.value;
+    distance.style.setProperty('--range-progress', `${(Number(distance.value) / Number(distance.max)) * 100}%`);
+  });
+
+  continueButton?.addEventListener('click', () => {
+    if (currentStep < 6) {
+      currentStep += 1;
+      updateStep();
+      return;
+    }
+    flow?.setAttribute('hidden', '');
+    result?.removeAttribute('hidden');
+    calculator?.classList.add('calculator--result');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  back?.addEventListener('click', () => {
+    if (currentStep === 1) {
+      window.location.assign('/');
+      return;
+    }
+    currentStep -= 1;
+    updateStep();
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-skip]').forEach((button) => button.addEventListener('click', () => continueButton?.click()));
+  document.querySelectorAll<HTMLButtonElement>('[data-recalculate]').forEach((button) => button.addEventListener('click', () => {
+    currentStep = 1;
+    result?.setAttribute('hidden', '');
+    flow?.removeAttribute('hidden');
+    calculator?.classList.remove('calculator--result');
+    updateStep();
+  }));
+  document.querySelector<HTMLButtonElement>('[data-share]')?.addEventListener('click', async () => {
+    const shareData = { title: 'Minha pegada de carbono', text: 'Minha pegada de carbono estimada é 4,8 tCO₂e por ano.', url: window.location.href };
+    if (navigator.share) await navigator.share(shareData);
+    else await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+  });
+
+  distance?.dispatchEvent(new Event('input'));
+  updateStep();
+</script>
