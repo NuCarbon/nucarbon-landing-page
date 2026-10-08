@@ -15,7 +15,7 @@
         "npm:@netlify/functions@6",
         "npm:astro-seo@^1.1.0",
         "npm:astro@^6.4.6",
-        "npm:firebase-admin@^14.3.0",
+        "npm:firebase-admin@^13.5.0",
         "npm:firebase@^12.18.0",
         "npm:netlify@^27.4.1",
         "npm:sass@^1.96.0"
