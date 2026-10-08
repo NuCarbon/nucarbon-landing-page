@@ -1,0 +1,87 @@
+---
+import OptionCard from '../OptionCard.astro';
+import { TransportAnswer, type CalculatorAnswers } from '../../../scripts/calculator/state';
+
+interface Props {
+  answers: Readonly<CalculatorAnswers>;
+  active: boolean;
+  label: string;
+}
+
+const { answers, active, label } = Astro.props;
+---
+
+<section class="calculator-step calculator-step--transport" data-step="transport" data-step-label={label} hidden={!active} aria-labelledby="transport-title">
+  <h1 class="calculator-step__title" id="transport-title">Qual o seu principal meio de transporte?</h1>
+  <div class="calculator-step__options calculator-step__options--transport">
+    <OptionCard group="transport" value={TransportAnswer.Gas} label="Carro (gasolina)" icon="car" compact selected={answers.transport === TransportAnswer.Gas} />
+    <OptionCard group="transport" value={TransportAnswer.Ethanol} label="Carro (etanol)" icon="leaf" compact selected={answers.transport === TransportAnswer.Ethanol} />
+    <OptionCard group="transport" value={TransportAnswer.Electric} label="Carro (elétrico)" icon="plug" compact selected={answers.transport === TransportAnswer.Electric} />
+    <OptionCard group="transport" value={TransportAnswer.Motorcycle} label="Moto" icon="motorcycle" compact selected={answers.transport === TransportAnswer.Motorcycle} />
+    <OptionCard group="transport" value={TransportAnswer.Public} label="Transporte público" icon="bus" compact selected={answers.transport === TransportAnswer.Public} />
+    <OptionCard group="transport" value={TransportAnswer.Bike} label="Bicicleta/a pé" icon="bike" compact selected={answers.transport === TransportAnswer.Bike} />
+  </div>
+  <div class="calculator-range">
+    <div class="calculator-range__header">
+      <label class="calculator-range__label" for="weekly-distance"><span class="calculator-range__desktop-label">Quantos km você percorre por semana?</span><span class="calculator-range__mobile-label">Uso semanal estimado</span></label>
+      <output class="calculator-range__output" for="weekly-distance"><span data-distance>{answers.distance}</span> km</output>
+    </div>
+    <input class="calculator-range__input" id="weekly-distance" name="distance" type="range" min="0" max="500" value={answers.distance} step="10" />
+    <div class="calculator-range__ticks"><span>0 km</span><span>250 km</span><span>500+ km</span></div>
+  </div>
+</section>
+
+<style lang="scss">
+  .calculator-range {
+    margin-top: 2.8rem;
+    padding: 2.15rem 2.25rem;
+    border-radius: 20px;
+    background: #fff;
+
+    &__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    &__label { font-size: 1.15rem; font-weight: 700; }
+    &__mobile-label { display: none; }
+
+    &__output {
+      padding: 0.6rem 1rem;
+      border-radius: 9px;
+      background: var(--calculator-green-soft);
+      color: var(--calculator-green-dark);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    &__input {
+      --range-progress: 36%;
+      width: 100%;
+      height: 10px;
+      margin: 1.6rem 0 0;
+      border-radius: 99px;
+      appearance: none;
+      background: linear-gradient(90deg, var(--calculator-green) 0 var(--range-progress), #ddddd8 var(--range-progress) 100%);
+      cursor: pointer;
+
+      &::-webkit-slider-thumb { width: 28px; height: 28px; border: 0; border-radius: 50%; appearance: none; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+      &::-moz-range-thumb { width: 28px; height: 28px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+    }
+
+    &__ticks { display: flex; justify-content: space-between; color: var(--calculator-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; }
+  }
+
+  @media (max-width: 600px) {
+    .calculator-range {
+      order: 3;
+      margin-top: 1.5rem;
+      padding: 1.4rem 1rem;
+      border: 1.5px solid var(--calculator-line);
+      border-radius: 14px;
+
+      &__label { font-size: 1rem; }
+      &__desktop-label { display: none; }
+      &__mobile-label { display: inline; }
+      &__output { padding: 0.45rem 0.7rem; font-size: 1rem; }
+      &__input { margin-top: 1.3rem; }
+    }
+  }
+</style>
