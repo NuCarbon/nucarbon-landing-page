@@ -9,12 +9,28 @@ export interface Coordinates { latitude: number; longitude: number }
 
 export interface Project {
   id: UUID;
+  slug: string;
+  published: boolean;
   biome: Biome;
   location: Coordinates;
   name: string;
   areaHectares: number;
   restorationProgress: number; // Ratio from 0 to 1.
   status: ProjectStatus;
+  summary: string;
+  description: string;
+  municipality: string;
+  state: string;
+  gallery: { url: string; alt: string }[];
+  treesPlanted: number;
+  carbonTonnes: number;
+  participants: number;
+  species: { name: string; scientificName: string }[];
+  impacts: { title: string; description: string }[];
+  timeline: { label: string; description: string }[];
+  methodology: string;
+  documents: { title: string; url: string }[];
+  pricePerTonneCents: number;
 }
 
 export interface ImpactMetric {

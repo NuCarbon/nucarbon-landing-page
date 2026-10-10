@@ -1,8 +1,4 @@
 ---
-import ProjectsView from '../../components/app/views/ProjectsView.astro';
-import AppLayout from '../../layouts/AppLayout.astro';
+export const prerender = false;
+return Astro.redirect('/projetos', 301);
 ---
-
-<AppLayout title="Projetos | Nucarbon" active="projects">
-  <ProjectsView />
-</AppLayout>

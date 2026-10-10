@@ -19,7 +19,7 @@ const { categories } = initialResult;
     >
     <CalculatorLogo />
     <nav class="result__nav" aria-label="Navegação principal">
-      <a href="/#quem-somos">Como funciona</a><a href="/app/projetos"
+      <a href="/#quem-somos">Como funciona</a><a href="/projetos"
         >Projetos</a
       ><a href="/app/comunidade">Comunidade</a>
     </nav>
@@ -33,11 +33,7 @@ const { categories } = initialResult;
     <div class="result__summary">
       <p class="result__eyebrow">Cálculo concluído</p>
       <h1 class="result__title">Sua pegada de carbono estimada</h1>
-      <div class="result__save">
-        <p data-save-status role="status" aria-live="polite"></p>
-        <button type="button" data-save-sign-in hidden>Entrar com Google e salvar</button>
-        <button type="button" data-save-retry hidden>Tentar salvar novamente</button>
-      </div>
+      <div class="result__save" data-save-error hidden><p role="alert">Não foi possível salvar seu cálculo.</p><button type="button" data-save-retry>Tentar novamente</button></div>
       <section class="result-total" aria-label="Pegada total estimada">
         <span class="result-total__icon"><CalculatorIcon name="tree" /></span>
         <div>
@@ -131,7 +127,7 @@ const { categories } = initialResult;
           }
         </div>
       </section>
-      <a class="result__projects" href="/app/projetos"
+      <a class="result__projects" href="/projetos"
         >Conhecer projetos de restauração</a
       >
       <div class="result__secondary-actions">
@@ -160,7 +156,7 @@ const { categories } = initialResult;
       <div>
         <strong>Plataforma</strong><a href="/#quem-somos">Como funciona</a><a
           href="/calculadora">Calculadora</a
-        ><a href="/app/projetos">Projetos ativos</a>
+        ><a href="/projetos">Projetos ativos</a>
       </div><div>
         <strong>Recursos</strong><a href="/#faq">Metodologia</a><a
           href="/#contato">Blog</a

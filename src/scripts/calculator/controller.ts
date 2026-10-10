@@ -7,6 +7,8 @@ import {
 import { calculateFootprint } from './calculate';
 import { renderResults } from './results';
 import { initializeResultSaving } from './persistence';
+import { readDraft } from './draft';
+import { openLoginModal } from '../login-modal';
 
 export function initializeCalculator(calculator: HTMLElement): void {
   const form = calculator.querySelector<HTMLFormElement>('[data-calculator-form]')!;
@@ -44,6 +46,14 @@ export function initializeCalculator(calculator: HTMLElement): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function showResult(): void {
+    renderResults(result, calculateFootprint(flow.snapshot().answers));
+    flowElement.hidden = true;
+    result.hidden = false;
+    calculator.classList.add('calculator--result');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function advance(): void {
     if (!flow.isLastStep) {
       flow.next();
@@ -51,16 +61,13 @@ export function initializeCalculator(calculator: HTMLElement): void {
       return;
     }
     publishState();
-    renderResults(result, calculateFootprint(flow.snapshot().answers));
     saveResult(flow.snapshot().answers);
-    flowElement.hidden = true;
-    result.hidden = false;
-    calculator.classList.add('calculator--result');
+    showResult();
     result.dispatchEvent(new CustomEvent('calculator:complete', {
       detail: flow.snapshot(),
       bubbles: true,
     }));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    void import('../auth').then(({ authReady }) => authReady).then((user) => { if (!user) void openLoginModal(); });
   }
 
   form.addEventListener('submit', (event) => { event.preventDefault(); advance(); });
@@ -114,4 +121,32 @@ export function initializeCalculator(calculator: HTMLElement): void {
 
   distance.dispatchEvent(new Event('input'));
   updateStep();
+  const restore = (answers: CalculatorAnswers) => {
+    for (const [key, value] of Object.entries(answers)) {
+      flow.setAnswer(key as keyof CalculatorAnswers, value as never);
+      if (key === 'distance') { distance.value = String(value); distance.dispatchEvent(new Event('input')); }
+      else {
+        const radio = [...form.querySelectorAll<HTMLInputElement>(`input[name="${key}"]`)].find((item) => item.value === value);
+        if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles:true })); }
+      }
+    }
+    showResult();
+  };
+  const draft = readDraft();
+  if (draft) { restore(draft.answers); saveResult(draft.answers, false); }
+  else void import('../auth').then(async ({ authReady }) => {
+    const user = await authReady;
+    if (!user) return;
+    try {
+      const response = await fetch('/api/calculator-result', { headers:{ Authorization:`Bearer ${await user.getIdToken()}` } });
+      if (response.ok) { const data = await response.json(); if (!readDraft() && data.result?.answers) restore(data.result.answers); }
+    } catch { /* calculator stays available */ }
+  });
+  const returnTo = new URLSearchParams(location.search).get('returnTo');
+  if (returnTo?.startsWith('/projetos/') && !returnTo.startsWith('//')) {
+    result.querySelectorAll<HTMLAnchorElement>('.result__projects').forEach((link) => {
+      link.href = returnTo;
+      link.textContent = 'Voltar ao projeto';
+    });
+  }
 }

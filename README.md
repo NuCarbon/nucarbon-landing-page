@@ -18,7 +18,7 @@ Set the public Firebase values in `.env.local`. Enable Google under **Firebase A
 2. Deploy [`firestore.rules`](./firestore.rules) to deny direct browser access. All reads go through Netlify Functions.
 3. In Netlify, set the `PUBLIC_FIREBASE_*` values for builds, and set `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY` as protected function environment variables.
 4. With those server values exported locally, run `npm run seed:firebase` to create missing schema v2 demo documents. Use Node 22.7+ with support for `--experimental-transform-types`. Preview and validate without credentials or writes using `npm run seed:firebase -- --dry-run`.
-5. Deploy normally. Netlify reads `netlify.toml`, builds the Astro site, and exposes the authenticated endpoints at `/api/dashboard`, `/api/projects`, and `/api/community`.
+5. Deploy normally. Netlify reads `netlify.toml`, builds the Astro site, and exposes authenticated endpoints at `/api/dashboard`, `/api/community`, `/api/calculator-result`, and `/api/demo-checkouts`. `/api/projects` serves published project fields publicly.
 
 The client configuration is public by design. Never commit the Firebase Admin service-account credentials or place them in `PUBLIC_*` variables.
 
@@ -43,7 +43,7 @@ Run schema, formatting, and calculator checks with `node --experimental-transfor
 
 ## Saved calculator results
 
-Completing the calculator automatically saves for signed-in users through `POST /api/calculator-result`. Guests can sign in with Google from the result screen and save the same answers. Save failures display a retry action without discarding the result.
+Completing the calculator automatically saves for signed-in users through `POST /api/calculator-result`. Guests see a dismissible Google sign-in modal. Their answers remain in versioned browser storage for seven days and are saved after sign-in. Save failures display a retry action without discarding the result.
 
 The endpoint validates all answers and recomputes the result on the server. The owner is always the verified Firebase token's UID; the request accepts no user ID or precomputed totals. A single merge into `users/{firebaseUid}` atomically updates `footprint` (numeric annual emissions and native timestamp) and `calculator` (numeric answer codes, weekly distance in km, category emissions in tonnes, tree equivalence, schema/calculation versions, and timestamp). Existing profile fields are preserved. Each save replaces the latest calculation; it does not append history. Increment `calculationVersion` in `netlify/functions/_calculator.ts` when changing the calculation coefficients or method.
 
@@ -55,5 +55,14 @@ The dashboard reads this user's saved footprint and shows an empty state until t
 | --- | --- |
 | `npm run dev` | Run the Astro site only. |
 | `npm run dev:netlify` | Run Astro and Netlify Functions locally. |
-| `npm run build` | Build the production static site. |
+| `npm run build` | Build static pages and on-demand Netlify routes. |
 | `npm run seed:firebase` | Seed Firestore demo data with server credentials. |
+| `npm run backfill:projects -- --dry-run` | Preview missing project fields in Firestore. |
+
+## Projetos públicos e checkout demonstrativo
+
+As páginas `/projetos` e `/projetos/[slug]` são renderizadas sob demanda pelo adaptador Netlify. Os demais caminhos continuam pré-renderizados. O Firestore permanece fechado para acesso direto pelo navegador; leituras públicas usam apenas a projeção de campos publicados em `/api/projects`.
+
+Antes de publicar estas páginas em um ambiente com projetos existentes, execute `npm run backfill:projects -- --dry-run` com as credenciais Firebase Admin para revisar os campos ausentes. Em seguida execute `npm run backfill:projects`. O comando preserva IDs e valores já cadastrados, verifica slugs duplicados e adiciona preço demonstrativo de R$ 75,00 por tonelada. Somente os três projetos demonstrativos conhecidos recebem `published: true`; os demais permanecem não publicados até revisão explícita. Textos e imagens adicionados pelo backfill são demonstrativos e devem ser revisados antes da publicação.
+
+Publique o adaptador, as páginas, as funções Netlify e as regras restritivas em `firestore.rules` no mesmo lançamento. O checkout guarda pedidos apenas em `users/{uid}/demoOrders`; confirmar uma simulação não cobra, não emite certificado e não altera métricas reais.

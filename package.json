@@ -8,9 +8,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "seed:firebase": "node --experimental-transform-types scripts/seed-firestore.mjs"
+    "seed:firebase": "node --experimental-transform-types scripts/seed-firestore.mjs",
+    "backfill:projects": "node --experimental-transform-types scripts/backfill-projects.mjs"
   },
   "dependencies": {
+    "@astrojs/netlify": "^7.0.13",
     "@astrojs/sitemap": "^3.7.3",
     "@netlify/functions": "^6.0.0",
     "astro": "^6.4.6",

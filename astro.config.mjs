@@ -1,9 +1,11 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import netlify from '@astrojs/netlify';
 
 // https://astro.build/config
 export default defineConfig({
+    adapter: netlify(),
     site: 'https://nucarbon.com.br',
     fonts: [{
         provider: fontProviders.local(),
@@ -18,7 +20,7 @@ export default defineConfig({
         }
       }],
     integrations: [sitemap({
-      filter: (page) => !page.includes('/app') && !page.includes('/entrar'),
+      filter: (page) => !page.includes('/app') && !page.includes('/entrar') && !page.includes('/checkout'),
     })],
     vite: {
       optimizeDeps: {

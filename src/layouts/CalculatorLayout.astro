@@ -3,6 +3,7 @@ import { Font } from 'astro:assets';
 import { SEO } from 'astro-seo';
 import '../styles/global.scss';
 import '../styles/calculator.scss';
+import LoginModal from '../components/auth/LoginModal.astro';
 
 interface Props {
   title: string;
@@ -35,5 +36,6 @@ const {
   </head>
   <body class="calculator-page">
     <slot />
+    <LoginModal />
   </body>
 </html>

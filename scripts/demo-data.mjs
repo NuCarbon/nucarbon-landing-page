@@ -1,5 +1,6 @@
 import { GeoPoint, Timestamp } from 'firebase-admin/firestore';
 import { Biome, MetricType, ProjectStatus, ReactionType } from '../src/types/app.ts';
+import { missingProjectFields } from '../netlify/functions/_project-content.ts';
 
 // Fixed UUIDs make repeated seeds idempotent. New production entities should
 // receive crypto.randomUUID() at creation; Firebase Auth UIDs remain unchanged.
@@ -29,18 +30,21 @@ export function createDemoDocuments() {
     [`authors/${ids.official}`, { displayName: 'Nucarbon Oficial' }],
     [`authors/${ids.carlos}`, { displayName: 'Carlos M.' }],
     [`projects/${ids.mata}`, {
+      ...missingProjectFields(ids.mata, 'Restauração Corredores da Mata Atlântica'),
       name: 'Restauração Corredores da Mata Atlântica',
       biome: Biome.AtlanticForest, status: ProjectStatus.Monitoring,
       location: new GeoPoint(-22.53, -52.17), areaHectares: 120, restorationProgress: 0.65,
       createdAt: timestamp('2026-01-01T12:00:00Z'),
     }],
     [`projects/${ids.cerrado}`, {
+      ...missingProjectFields(ids.cerrado, 'Guardiões do Cerrado e Nascentes'),
       name: 'Guardiões do Cerrado e Nascentes',
       biome: Biome.Cerrado, status: ProjectStatus.Planting,
       location: new GeoPoint(-14.13, -47.51), areaHectares: 85, restorationProgress: 0.4,
       createdAt: timestamp('2026-01-02T12:00:00Z'),
     }],
     [`projects/${ids.paraiba}`, {
+      ...missingProjectFields(ids.paraiba, 'Reflorestamento Biodiverso Vale do Paraíba'),
       name: 'Reflorestamento Biodiverso Vale do Paraíba',
       biome: Biome.AtlanticForest, status: ProjectStatus.Monitoring,
       location: new GeoPoint(-22.47, -44.45), areaHectares: 135, restorationProgress: 0.85,

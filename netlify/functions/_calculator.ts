@@ -16,6 +16,17 @@ const codes = {
   waste: { [WasteAnswer.Recycle]: 1, [WasteAnswer.Sometimes]: 2, [WasteAnswer.Trash]: 3 },
 };
 
+export function decodeAnswers(stored: Record<string, number>): CalculatorAnswers {
+  const result: Record<string, unknown> = {};
+  for (const [key, options] of Object.entries(codes)) {
+    const entry = Object.entries(options).find(([, code]) => code === stored[key]);
+    if (!entry) throw new Error('Invalid saved answers');
+    result[key] = entry[0];
+  }
+  result.distance = stored.weeklyDistanceKm;
+  return parseAnswers(result);
+}
+
 export function parseAnswers(value: unknown): CalculatorAnswers {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid answers');
   const answers = value as Record<string, unknown>;

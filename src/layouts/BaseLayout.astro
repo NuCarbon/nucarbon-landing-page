@@ -4,14 +4,18 @@ import Footer from '../components/layout/Footer.astro';
 import '../styles/global.scss';
 import { Font } from 'astro:assets';
 import { SEO } from "astro-seo";
+import LoginModal from '../components/auth/LoginModal.astro';
 
 interface Props {
   title: string;
   description?: string;
   className?: string;
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
 }
 
-const { title, className, description = 'Nucarbon - Soluções sustentáveis em créditos de carbono e projetos agroflorestais' } = Astro.props;
+const { title, className, canonical, image, noindex = false, description = 'Nucarbon - Soluções sustentáveis em créditos de carbono e projetos agroflorestais' } = Astro.props;
 ---
 
 <!doctype html>
@@ -20,6 +24,9 @@ const { title, className, description = 'Nucarbon - Soluções sustentáveis em 
     <SEO
       title={title}
       description={description}
+      canonical={canonical}
+      noindex={noindex}
+      nofollow={noindex}
       charset="UTF-8"
       extend={{
         link: [
@@ -30,6 +37,8 @@ const { title, className, description = 'Nucarbon - Soluções sustentáveis em 
     />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {image && <meta property="og:image" content={image} />}
+    {image && <meta name="twitter:image" content={image} />}
     <meta name="generator" content={Astro.generator} />
     
     <!-- Open Graph / Facebook -->
@@ -51,6 +60,6 @@ const { title, className, description = 'Nucarbon - Soluções sustentáveis em 
       <slot />
     </main>
     <Footer />
+    <LoginModal />
   </body>
 </html>
-

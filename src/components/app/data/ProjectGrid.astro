@@ -49,6 +49,8 @@ const { projects = [] } = Astro.props;
         setText(fragment, '[data-project-biome]', biomeLabels[project.biome]);
         setText(fragment, '[data-project-location]', formatLocation(project.location));
         setText(fragment, '[data-project-name]', project.name);
+        const link = fragment.querySelector<HTMLAnchorElement>('[data-project-link]');
+        if (link) link.href = `/projetos/${encodeURIComponent(project.slug)}`;
         setText(
           fragment,
           '[data-project-hectares]',

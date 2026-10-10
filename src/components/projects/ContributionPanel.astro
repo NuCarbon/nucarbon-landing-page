@@ -1,0 +1,88 @@
+---
+import type { Project } from '../../types/app';
+const { project } = Astro.props as { project: Project };
+---
+<aside class="panel" data-contribution data-slug={project.slug} data-price={project.pricePerTonneCents}>
+  <h2>Apoie este projeto</h2><p>{project.summary}</p>
+  <p class="footprint" data-footprint-note hidden></p>
+  <fieldset data-percent-options hidden><legend>Selecione a quantidade:</legend><label><input type="radio" name="contribution-mode" value="25" /> 25%</label><label><input type="radio" name="contribution-mode" value="100" checked /> 100%</label><label><input type="radio" name="contribution-mode" value="custom" /> Personalizar</label></fieldset>
+  <label class="quantity-label" for="contribution-quantity">Quantidade em toneladas de CO₂e</label>
+  <input id="contribution-quantity" data-quantity type="number" min="0.01" max="1000" step="0.01" value="1" inputmode="decimal" />
+  <p class="calculator-link"><a href={`/calculadora?returnTo=${encodeURIComponent(`/projetos/${project.slug}`)}`}>Calcular minha pegada</a> (opcional)</p>
+  <div class="total"><span>Valor por tCO₂e</span><strong data-unit-price></strong><span>Quantidade selecionada</span><strong data-selected-quantity>1 t</strong><span>Total demonstrativo</span><strong data-total></strong></div>
+  <button type="button" data-participate>Participar deste projeto</button>
+  <p data-contribution-error role="alert" hidden></p>
+  <small>Simulação demonstrativa. Nenhum pagamento será cobrado ou certificado oficial emitido.</small>
+</aside>
+<script>
+  import { authReady } from '../../scripts/auth';
+  import { openLoginModal } from '../../scripts/login-modal';
+  import { readDraft, savePendingDraft } from '../../scripts/calculator/draft';
+  import { calculateFootprint } from '../../scripts/calculator/calculate';
+  import { auth } from '../../scripts/firebase';
+  const panel = document.querySelector<HTMLElement>('[data-contribution]');
+  if (panel) {
+    const root = panel;
+    const price = Number(panel.dataset.price);
+    const input = panel.querySelector<HTMLInputElement>('[data-quantity]')!;
+    const modes = panel.querySelector<HTMLElement>('[data-percent-options]')!;
+    const note = panel.querySelector<HTMLElement>('[data-footprint-note]')!;
+    const error = panel.querySelector<HTMLElement>('[data-contribution-error]')!;
+    const money = (cents: number) => new Intl.NumberFormat('pt-BR', { style:'currency',currency:'BRL' }).format(cents/100);
+    panel.querySelector<HTMLElement>('[data-unit-price]')!.textContent = money(price);
+    let footprint: number | null = null;
+    const draft = readDraft();
+    if (draft) footprint = calculateFootprint(draft.answers).total;
+    else {
+      const user = await authReady;
+      if (user) {
+        try {
+          const response = await fetch('/api/calculator-result', { headers:{ Authorization:`Bearer ${await user.getIdToken()}` } });
+          if (response.ok) footprint = (await response.json()).result?.footprint?.annualEmissionsTonnes ?? null;
+        } catch { /* manual input remains available */ }
+      }
+    }
+    if (footprint !== null && footprint > 0) {
+      note.hidden = false; note.textContent = `Sua pegada estimada é ${footprint.toLocaleString('pt-BR')} tCO₂e/ano.`;
+      modes.hidden = false;
+      input.value = String(Math.round(footprint * 100) / 100);
+    }
+    function mode() { return root.querySelector<HTMLInputElement>('input[name="contribution-mode"]:checked')?.value ?? 'custom'; }
+    function update() {
+      const selected = mode();
+      if (footprint && selected !== 'custom') input.value = String(Math.round(footprint * Number(selected)) / 10000);
+      input.readOnly = Boolean(footprint && selected !== 'custom');
+      const quantity = Number(input.value);
+      const valid = Number.isFinite(quantity) && quantity >= .01 && quantity <= 1000 && Math.abs(Math.round(quantity * 100) - quantity * 100) < 1e-8;
+      root.querySelector<HTMLElement>('[data-selected-quantity]')!.textContent = valid ? `${quantity.toLocaleString('pt-BR')} t` : '—';
+      root.querySelector<HTMLElement>('[data-total]')!.textContent = valid ? money(Math.round(quantity * price)) : '—';
+      root.querySelector<HTMLButtonElement>('[data-participate]')!.disabled = !valid;
+    }
+    modes.addEventListener('change', update); input.addEventListener('input', () => { if (!input.readOnly) panel.querySelector<HTMLInputElement>('input[value="custom"]')?.click(); update(); }); update();
+    panel.querySelector<HTMLButtonElement>('[data-participate]')!.addEventListener('click', async () => {
+      error.hidden = true;
+      const selected = mode();
+      const intent = { slug: panel.dataset.slug, mode: footprint && selected !== 'custom' ? 'percentage' : 'manual', percentage: selected === 'custom' ? undefined : Number(selected), quantity: Number(input.value), key: crypto.randomUUID(), createdAt: Date.now() };
+      const continueCheckout = async () => {
+        const user = auth.currentUser;
+        if (!user) return;
+        try { await savePendingDraft(user); sessionStorage.removeItem('nucarbon:checkout-order:v1'); sessionStorage.setItem('nucarbon:checkout-intent:v1', JSON.stringify(intent)); location.assign('/checkout'); }
+        catch (cause) { error.textContent = cause instanceof Error ? cause.message : 'Não foi possível continuar.'; error.hidden = false; }
+      };
+      const user = await authReady;
+      if (user) await continueCheckout(); else await openLoginModal(continueCheckout);
+    });
+  }
+</script>
+<style lang="scss">
+  .panel { position:sticky; top:110px; padding:26px; border-radius:20px; background:white; box-shadow:0 16px 38px #153b1d15; align-self:start; }
+  h2 { margin:0 0 6px; font-size:1.4rem; color:#202c22; } p { color:#637066; line-height:1.5; }
+  .footprint { padding:12px; border-radius:10px; background:#e8f4e9; color:#1d642c; font-weight:700; }
+  fieldset { border:0; padding:0; margin:18px 0; } legend { font-weight:700; margin-bottom:10px; } fieldset label { display:inline-flex; align-items:center; margin-right:14px; gap:4px; cursor:pointer; }
+  .quantity-label { display:block; font-weight:700; margin:16px 0 6px; } input[type=number] { width:100%; border:1px solid #b5c8b7; border-radius:8px; padding:10px; font:inherit; }
+  .calculator-link { font-size:.85rem; } a { color:#246f32; }
+  .total { display:grid; grid-template-columns:1fr auto; gap:9px; border-top:1px solid #e0e8df; padding:20px 0; } .total span { color:#667; } .total strong { color:#235f2c; text-align:right; }
+  button[data-participate] { width:100%; padding:14px; border:0; border-radius:100px; background:#287a36; color:white; font:inherit; font-weight:700; cursor:pointer; } button:disabled { opacity:.5; cursor:not-allowed; }
+  small { display:block; margin-top:15px; color:#718073; text-align:center; line-height:1.4; } [role=alert] { color:#b42318; }
+  @media(max-width:850px) { .panel { position:static; } }
+</style>

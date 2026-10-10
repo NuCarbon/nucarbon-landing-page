@@ -68,6 +68,10 @@ export async function signInWithGoogle() {
 }
 
 export async function signOutUser() {
+  const { clearAccountState } = await import('./calculator/draft');
+  clearAccountState();
+  sessionStorage.removeItem('nucarbon:checkout-order:v1');
+  sessionStorage.removeItem('nucarbon:checkout-intent:v1');
   await signOut(auth);
   window.location.assign('/');
 }

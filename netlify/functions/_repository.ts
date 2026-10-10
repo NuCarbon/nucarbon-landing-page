@@ -4,7 +4,15 @@ import type { UUID } from '../../src/types/app';
 
 export async function readProjects(limit = 50) {
   const snapshot = await db().collection(`${DATASET_PATH}/projects`).orderBy('createdAt').limit(limit).get();
-  return snapshot.docs.map((doc) => projectToJSON(doc.id, doc.data() as ProjectDocument));
+  return snapshot.docs.filter((doc) => doc.data().published === true && typeof doc.data().slug === 'string').map((doc) => projectToJSON(doc.id, doc.data() as ProjectDocument));
+}
+
+export async function readProjectBySlug(slug: string) {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null;
+  const snapshot = await db().collection(`${DATASET_PATH}/projects`).where('slug', '==', slug).limit(2).get();
+  if (snapshot.size > 1) throw new Error('Duplicate project slug');
+  const doc = snapshot.docs[0];
+  return doc?.data().published === true ? projectToJSON(doc.id, doc.data() as ProjectDocument) : null;
 }
 
 export async function readCommunityPosts() {
