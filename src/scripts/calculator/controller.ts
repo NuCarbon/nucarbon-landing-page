@@ -4,6 +4,9 @@ import {
   type CalculatorPanel,
   type StepId,
 } from './state';
+import { calculateFootprint } from './calculate';
+import { renderResults } from './results';
+import { initializeResultSaving } from './persistence';
 
 export function initializeCalculator(calculator: HTMLElement): void {
   const form = calculator.querySelector<HTMLFormElement>('[data-calculator-form]')!;
@@ -14,6 +17,7 @@ export function initializeCalculator(calculator: HTMLElement): void {
   const back = calculator.querySelector<HTMLButtonElement>('[data-back]')!;
   const next = calculator.querySelector<HTMLButtonElement>('[data-continue]')!;
   const distance = form.querySelector<HTMLInputElement>('[name="distance"]')!;
+  const saveResult = initializeResultSaving(calculator);
 
   function publishState(): void {
     for (const panel of [...panels, result]) {
@@ -47,6 +51,8 @@ export function initializeCalculator(calculator: HTMLElement): void {
       return;
     }
     publishState();
+    renderResults(result, calculateFootprint(flow.snapshot().answers));
+    saveResult(flow.snapshot().answers);
     flowElement.hidden = true;
     result.hidden = false;
     calculator.classList.add('calculator--result');

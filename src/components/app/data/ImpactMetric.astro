@@ -1,4 +1,5 @@
 ---
+import { formatMetric } from '../../../scripts/app/format';
 import type { ImpactMetric } from '../../../types/app';
 
 interface Props {
@@ -6,12 +7,13 @@ interface Props {
 }
 
 const { metric } = Astro.props;
+const display = metric && formatMetric(metric);
 ---
 
 <article class="metric-card">
-  <span data-metric-icon>{metric?.icon}</span>
+  <span data-metric-icon>{display?.icon}</span>
   <div>
-    <p data-metric-label>{metric?.label}</p>
-    <strong data-metric-value>{metric?.value}</strong>
+    <p data-metric-label>{display?.label}</p>
+    <strong data-metric-value>{display?.value}</strong>
   </div>
 </article>

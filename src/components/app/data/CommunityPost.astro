@@ -1,4 +1,5 @@
 ---
+import { formatDate, formatReactions, formatComments } from '../../../scripts/app/format';
 import type { CommunityPost } from '../../../types/app';
 
 interface Props {
@@ -10,15 +11,15 @@ const { post } = Astro.props;
 
 <article class="community-post">
   <header>
-    <div class="post-avatar" data-post-avatar>{post?.author.charAt(0)}</div>
+    <div class="post-avatar" data-post-avatar>{post?.author.displayName.charAt(0)}</div>
     <div>
-      <strong data-post-author>{post?.author}</strong>
-      <small data-post-timestamp>{post?.timestamp}</small>
+      <strong data-post-author>{post?.author.displayName}</strong>
+      <small data-post-timestamp>{post && formatDate(post.createdAt)}</small>
     </div>
   </header>
   <p data-post-body>{post?.body}</p>
   <footer>
-    <span data-post-reactions>{post?.reactions}</span>
-    <span data-post-comments>{post && `${post.comments} comentários`}</span>
+    <span data-post-reactions>{post && formatReactions(post.reactions)}</span>
+    <span data-post-comments>{post && formatComments(post.commentCount)}</span>
   </footer>
 </article>

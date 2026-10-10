@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "seed:firebase": "node scripts/seed-firestore.mjs"
+    "seed:firebase": "node --experimental-transform-types scripts/seed-firestore.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

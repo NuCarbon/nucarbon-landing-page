@@ -18,6 +18,7 @@ const { metrics = [] } = Astro.props;
 </app-impact-metrics>
 
 <script>
+  import { formatMetric } from '../../../scripts/app/format';
   import type { ImpactMetric } from '../../../types/app';
 
   class ImpactMetrics extends HTMLElement {
@@ -32,13 +33,14 @@ const { metrics = [] } = Astro.props;
 
       const cards = metrics.map((metric) => {
         const fragment = template.content.cloneNode(true) as DocumentFragment;
+        const display = formatMetric(metric);
         const icon = fragment.querySelector<HTMLElement>('[data-metric-icon]');
         const label = fragment.querySelector<HTMLElement>('[data-metric-label]');
         const value = fragment.querySelector<HTMLElement>('[data-metric-value]');
 
-        if (icon) icon.textContent = metric.icon;
-        if (label) label.textContent = metric.label;
-        if (value) value.textContent = metric.value;
+        if (icon) icon.textContent = display.icon;
+        if (label) label.textContent = display.label;
+        if (value) value.textContent = display.value;
 
         return fragment;
       });

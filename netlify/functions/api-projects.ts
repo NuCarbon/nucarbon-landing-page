@@ -1,13 +1,9 @@
 import type { Config } from '@netlify/functions';
-import { db } from './_firebase';
-import { authenticated, json, unavailable } from './_api';
+import { authenticated, json } from './_api';
+import { readProjects } from './_repository';
 
 export default authenticated(async () => {
-  const document = await db().doc('demo/projects').get();
-
-  if (!document.exists) return unavailable();
-
-  return json({ projects: document.data()?.items ?? [] });
+  return json({ projects: await readProjects() });
 }, 'Unable to load projects');
 
 export const config: Config = { path: '/api/projects' };

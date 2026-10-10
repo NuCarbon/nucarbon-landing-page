@@ -1,7 +1,9 @@
 import type { Context } from '@netlify/functions';
 import { adminAuth } from './_firebase';
+import type { DecodedIdToken } from 'firebase-admin/auth';
 
 export type Handler = (request: Request, context: Context) => Promise<Response>;
+export type AuthenticatedHandler = (request: Request, context: Context, user: DecodedIdToken) => Promise<Response>;
 
 export async function requireUser(request: Request) {
   const header = request.headers.get('authorization');
@@ -26,16 +28,17 @@ export function json(data: unknown, init: ResponseInit = {}) {
 }
 
 export function authenticated(
-  handler: Handler,
+  handler: AuthenticatedHandler,
   errorMessage: string,
 ): Handler {
   return async (request, context) => {
-    if (!(await requireUser(request))) {
+    const user = await requireUser(request);
+    if (!user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     try {
-      return await handler(request, context);
+      return await handler(request, context, user);
     } catch {
       return json({ error: errorMessage }, { status: 500 });
     }

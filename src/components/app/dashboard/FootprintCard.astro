@@ -1,4 +1,5 @@
 ---
+import { formatFootprint, formatUpdatedAt } from '../../../scripts/app/format';
 import type { Footprint } from '../../../types/app';
 
 interface Props {
@@ -10,7 +11,7 @@ const { footprint } = Astro.props;
 
 <div class="footprint-card" data-footprint-card>
   <p>Sua Pegada Anual</p>
-  <strong data-footprint>{footprint?.value ?? '—'}</strong>
-  <span data-footprint-date>{footprint?.updatedLabel}</span>
+  <strong data-footprint>{footprint ? formatFootprint(footprint.annualEmissionsTonnes) : '—'}</strong>
+  <span data-footprint-date>{footprint && formatUpdatedAt(footprint.updatedAt)}</span>
   <a href="/calculadora">Recalcular pegada</a>
 </div>

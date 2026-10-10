@@ -1,0 +1,25 @@
+import { db } from './_firebase';
+import { DATASET_PATH, postToJSON, projectToJSON, type AuthorDocument, type PostDocument, type ProjectDocument } from './_schema';
+import type { UUID } from '../../src/types/app';
+
+export async function readProjects(limit = 50) {
+  const snapshot = await db().collection(`${DATASET_PATH}/projects`).orderBy('createdAt').limit(limit).get();
+  return snapshot.docs.map((doc) => projectToJSON(doc.id, doc.data() as ProjectDocument));
+}
+
+export async function readCommunityPosts() {
+  const database = db();
+  const snapshot = await database.collection(`${DATASET_PATH}/posts`).orderBy('createdAt', 'desc').limit(50).get();
+  if (snapshot.empty) return [];
+  const authorIds = [...new Set(snapshot.docs.map((doc) => (doc.data() as PostDocument).authorId))];
+  const authors = await database.getAll(...authorIds.map((id) => database.doc(`${DATASET_PATH}/authors/${id}`)));
+  const byId = new Map(authors.filter((doc) => doc.exists).map((doc) => [doc.id, {
+    id: doc.id as UUID, displayName: (doc.data() as AuthorDocument).displayName,
+  }]));
+  return snapshot.docs.map((doc) => {
+    const post = doc.data() as PostDocument;
+    const author = byId.get(post.authorId);
+    if (!author) throw new Error('Community post references a missing author.');
+    return postToJSON(doc.id, post, author);
+  });
+}

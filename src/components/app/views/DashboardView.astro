@@ -39,6 +39,7 @@ import LoadingState from '../../ui/LoadingState.astro';
 </app-dashboard-view>
 
 <script>
+  import { formatFootprint, formatUpdatedAt } from '../../../scripts/app/format';
   import { AppDataView } from '../../../scripts/app/data-view';
   import type { Dashboard, ImpactMetric, Project } from '../../../types/app';
 
@@ -52,8 +53,10 @@ import LoadingState from '../../ui/LoadingState.astro';
       const footprint = this.querySelector<HTMLElement>('[data-footprint]');
       const footprintDate = this.querySelector<HTMLElement>('[data-footprint-date]');
 
-      if (footprint) footprint.textContent = data.footprint.value;
-      if (footprintDate) footprintDate.textContent = data.footprint.updatedLabel;
+      if (footprint) footprint.textContent = data.footprint ? formatFootprint(data.footprint.annualEmissionsTonnes) : '—';
+      if (footprintDate) footprintDate.textContent = data.footprint
+        ? formatUpdatedAt(data.footprint.updatedAt)
+        : 'Calcule sua pegada para ver seu resultado aqui.';
 
       await Promise.all([
         customElements.whenDefined('app-impact-metrics'),
