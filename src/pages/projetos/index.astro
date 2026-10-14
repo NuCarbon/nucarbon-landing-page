@@ -1,24 +1,153 @@
 ---
 export const prerender = false;
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { readProjects } from '../../../netlify/functions/_repository';
-import { biomeLabels } from '../../scripts/app/format';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { readProjects } from "../../../netlify/functions/_repository";
+import { biomeLabels } from "../../scripts/app/format";
+
 let projects = [] as Awaited<ReturnType<typeof readProjects>>;
 let unavailable = false;
-try { projects = await readProjects(); } catch { Astro.response.status = 503; unavailable = true; }
+try {
+  projects = await readProjects();
+} catch {
+  Astro.response.status = 503;
+  unavailable = true;
+}
 ---
-<BaseLayout title="Projetos de restauração | Nucarbon" description="Conheça projetos de restauração ecológica e escolha como contribuir em uma simulação demonstrativa." canonical="https://nucarbon.com.br/projetos" image="https://nucarbon.com.br/projects/forest-hero-2.jpg" className="projects-page">
-  <div class="wrap"><nav aria-label="Caminho"><a href="/">Início</a> › Projetos</nav><h1>Projetos de restauração</h1><p>Explore projetos publicados e faça uma simulação de contribuição.</p>
-  {unavailable ? <p role="alert">Projetos temporariamente indisponíveis. Tente novamente mais tarde.</p> : projects.length ? <div class="grid">{projects.map((project) => <article><a href={`/projetos/${project.slug}`}><img src={project.gallery[0]?.url} alt={project.gallery[0]?.alt ?? ''} /><div><small>{biomeLabels[project.biome]} · {project.municipality}, {project.state}</small><h2>{project.name}</h2><p>{project.summary}</p><strong>Conhecer projeto →</strong></div></a></article>)}</div> : <p>Nenhum projeto publicado no momento.</p>}
+
+<BaseLayout
+  title="Projetos de restauração | Nucarbon"
+  description="Conheça projetos de restauração ecológica e escolha como contribuir em uma simulação demonstrativa."
+  canonical="https://nucarbon.com.br/projetos"
+  image="https://nucarbon.com.br/projects/forest-hero-2.jpg"
+  className="projects-page"
+>
+  <div class="wrap">
+    <nav aria-label="Caminho"><a href="/">Início</a> › Projetos</nav><h1>
+      Projetos de restauração
+    </h1><p>
+      Explore projetos publicados e faça uma simulação de contribuição.
+    </p>
+    {
+      unavailable ? (
+        <p role="alert">
+          Projetos temporariamente indisponíveis. Tente novamente mais tarde.
+        </p>
+      ) : projects.length ? (
+        <div class="grid">
+          {projects.map((project) => (
+            <article>
+              <a href={`/projetos/${project.slug}`}>
+                <img
+                  src={project.gallery[0]?.url}
+                  alt={project.gallery[0]?.alt ?? ""}
+                />
+                <div>
+                  <small>
+                    {biomeLabels[project.biome]} · {project.municipality},{" "}
+                    {project.state}
+                  </small>
+                  <h2>{project.name}</h2>
+                  <p>{project.summary}</p>
+                  <strong>Conhecer projeto →</strong>
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p>Nenhum projeto publicado no momento.</p>
+      )
+    }
   </div>
-  <script is:inline type="application/ld+json" set:html={JSON.stringify({ '@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{ '@type':'ListItem',position:1,name:'Início',item:'https://nucarbon.com.br/' },{ '@type':'ListItem',position:2,name:'Projetos',item:'https://nucarbon.com.br/projetos' }] })} />
+  <script
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Início",
+          item: "https://nucarbon.com.br/",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Projetos",
+          item: "https://nucarbon.com.br/projetos",
+        },
+      ],
+    })}
+  />
 </BaseLayout>
+
 <style lang="scss">
-  :global(.projects-page) { min-height:70vh; background:#f8f9f5; padding:130px 0 90px; }
-  .wrap { width:min(1200px,calc(100% - 36px)); margin:auto; } nav { color:#647266; } nav a { color:#286e35; }
-  h1 { font-size:clamp(2rem,4vw,3.5rem); color:#1d3824; margin:28px 0 4px; } .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:22px; margin-top:34px; }
-  article { overflow:hidden; background:white; border-radius:18px; box-shadow:0 10px 25px #1b422111; } article a { color:inherit; text-decoration:none; } article img { width:100%; height:210px; object-fit:cover; } article div { padding:20px; } small { color:#287139; } h2 { margin:8px 0; font-size:1.35rem; } article strong { color:#287139; }
-  :global(body:has(.projects-page) .header.transparent) { background:#fff; box-shadow:0 2px 12px #142b1818; }
-  :global(body:has(.projects-page) .header.transparent .nav-menu a) { color:#1d3c25; }
-  :global(body:has(.projects-page) .header.transparent .logo-text) { background:linear-gradient(135deg,#1e6930,#62a66d); -webkit-background-clip:text; background-clip:text; }
+  :global(.projects-page) {
+    min-height: 70vh;
+    background: #f8f9f5;
+    padding: 130px 0 90px;
+  }
+  .wrap {
+    width: min(1200px, calc(100% - 36px));
+    margin: auto;
+  }
+  nav {
+    color: #647266;
+  }
+  nav a {
+    color: #286e35;
+  }
+  h1 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: #1d3824;
+    margin: 28px 0 4px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 22px;
+    margin-top: 34px;
+  }
+  article {
+    overflow: hidden;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px #1b422111;
+  }
+  article a {
+    color: inherit;
+    text-decoration: none;
+  }
+  article img {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+  }
+  article div {
+    padding: 20px;
+  }
+  small {
+    color: #287139;
+  }
+  h2 {
+    margin: 8px 0;
+    font-size: 1.35rem;
+  }
+  article strong {
+    color: #287139;
+  }
+  :global(body:has(.projects-page) .header.transparent) {
+    background: #fff;
+    box-shadow: 0 2px 12px #142b1818;
+  }
+  :global(body:has(.projects-page) .header.transparent .nav-menu a) {
+    color: #1d3c25;
+  }
+  :global(body:has(.projects-page) .header.transparent .logo-text) {
+    background: linear-gradient(135deg, #1e6930, #62a66d);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
 </style>

@@ -1,34 +1,186 @@
 ---
 export const prerender = false;
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Gallery from '../../components/projects/Gallery.astro';
-import Metrics from '../../components/projects/Metrics.astro';
-import Sections from '../../components/projects/Sections.astro';
-import ContributionPanel from '../../components/projects/ContributionPanel.astro';
-import { biomeLabels } from '../../scripts/app/format';
-import { readProjectBySlug } from '../../../netlify/functions/_repository';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Gallery from "../../components/projects/Gallery.astro";
+import Metrics from "../../components/projects/Metrics.astro";
+import Sections from "../../components/projects/Sections.astro";
+import ContributionPanel from "../../components/projects/ContributionPanel.astro";
+import { biomeLabels } from "../../scripts/app/format";
+import { readProjectBySlug } from "../../../netlify/functions/_repository";
+
 let project: Awaited<ReturnType<typeof readProjectBySlug>> = null;
 let unavailable = false;
-try { project = await readProjectBySlug(Astro.params.slug ?? ''); } catch { Astro.response.status = 503; unavailable = true; }
+try {
+  project = await readProjectBySlug(Astro.params.slug ?? "");
+} catch {
+  Astro.response.status = 503;
+  unavailable = true;
+}
 if (!project && !unavailable) Astro.response.status = 404;
 const canonical = project && `https://nucarbon.com.br/projetos/${project.slug}`;
 ---
-<BaseLayout title={project ? `${project.name} | Projetos Nucarbon` : 'Projeto indisponível | Nucarbon'} description={project?.summary} canonical={canonical || undefined} image={project?.gallery[0] && `https://nucarbon.com.br${project.gallery[0].url}`} noindex={!project} className="project-page">
+
+<BaseLayout
+  title={project
+    ? `${project.name} | Projetos Nucarbon`
+    : "Projeto indisponível | Nucarbon"}
+  description={project?.summary}
+  canonical={canonical || undefined}
+  image={project?.gallery[0] &&
+    `https://nucarbon.com.br${project.gallery[0].url}`}
+  noindex={!project}
+  className="project-page"
+>
   <div class="wrap">
-    {project ? <>
-      <nav class="breadcrumb" aria-label="Caminho"><a href="/">Início</a> › <a href="/projetos">Projetos</a> › {project.name}</nav>
-      <div class="layout"><div class="content"><p class="tags">{biomeLabels[project.biome]} · {project.municipality}, {project.state}</p><h1>{project.name}</h1><Gallery project={project} /><Metrics project={project} /><Sections project={project} /></div><ContributionPanel project={project} /></div>
-      <script is:inline type="application/ld+json" set:html={JSON.stringify({ '@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{ '@type':'ListItem',position:1,name:'Início',item:'https://nucarbon.com.br/' },{ '@type':'ListItem',position:2,name:'Projetos',item:'https://nucarbon.com.br/projetos' },{ '@type':'ListItem',position:3,name:project.name,item:canonical }] })} />
-    </> : <div class="missing"><h1>{unavailable ? 'Projetos temporariamente indisponíveis' : 'Projeto não encontrado'}</h1><p>{unavailable ? 'Tente novamente mais tarde.' : 'Este projeto não está publicado ou não existe.'}</p><a href="/projetos">Ver projetos</a></div>}
+    {
+      project ? (
+        <>
+          <nav class="breadcrumb" aria-label="Caminho">
+            <a href="/">Início</a> › <a href="/projetos">Projetos</a> ›{" "}
+            {project.name}
+          </nav>
+          <div class="layout">
+            <>
+              <div class="content">
+                <>
+                  <p class="tags">
+                    {biomeLabels[project.biome]} · {project.municipality},{" "}
+                    {project.state}
+                  </p>
+                  <h1>{project.name}</h1>
+                  <Gallery project={project} />
+                  <Metrics project={project} />
+                  <Sections project={project} />
+                </>
+              </div>
+              <ContributionPanel project={project} />
+            </>
+          </div>
+          <script
+            is:inline
+            type="application/ld+json"
+            set:html={JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Início",
+                  item: "https://nucarbon.com.br/",
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: "Projetos",
+                  item: "https://nucarbon.com.br/projetos",
+                },
+                {
+                  "@type": "ListItem",
+                  position: 3,
+                  name: project.name,
+                  item: canonical,
+                },
+              ],
+            })}
+          />
+        </>
+      ) : (
+        <div class="missing">
+          <>
+            <h1>
+              {unavailable
+                ? "Projetos temporariamente indisponíveis"
+                : "Projeto não encontrado"}
+            </h1>
+            <p>
+              {unavailable
+                ? "Tente novamente mais tarde."
+                : "Este projeto não está publicado ou não existe."}
+            </p>
+            <a href="/projetos">Ver projetos</a>
+          </>
+        </div>
+      )
+    }
   </div>
 </BaseLayout>
+
 <style lang="scss">
-  :global(.project-page) { min-height:75vh; padding:125px 0 100px; background:#f8f9f5; }
-  .wrap { width:min(1200px,calc(100% - 36px)); margin:auto; } .breadcrumb { margin-bottom:28px; color:#657266; font-size:.9rem; } a { color:#267135; }
-  .layout { display:grid; grid-template-columns:minmax(0,1fr) 350px; align-items:start; gap:35px; } .tags { color:#287639; font-weight:700; font-size:.9rem; } h1 { color:#1c2d20; font-size:clamp(2rem,4vw,3.5rem); line-height:1.1; margin:12px 0 28px; }
-  .missing { padding:80px 0; }
-  :global(body:has(.project-page) .header.transparent) { background:#fff; box-shadow:0 2px 12px #142b1818; }
-  :global(body:has(.project-page) .header.transparent .nav-menu a) { color:#1d3c25; }
-  :global(body:has(.project-page) .header.transparent .logo-text) { background:linear-gradient(135deg,#1e6930,#62a66d); -webkit-background-clip:text; background-clip:text; }
-  @media(max-width:850px) { .layout { grid-template-columns:1fr; } .content { display:contents; } .tags,.content h1 { grid-column:1; } :global(.project-page .gallery) { grid-row:3; } :global(.project-page .metrics) { grid-row:4; } :global(.project-page .panel) { grid-row:5; } :global(.project-page .sections-nav) { grid-row:6; } :global(.project-page .sections) { grid-row:7; } }
+  :global(.project-page) {
+    min-height: 75vh;
+    padding: 125px 0 100px;
+    background: #f8f9f5;
+  }
+  .wrap {
+    width: min(1200px, calc(100% - 36px));
+    margin: auto;
+  }
+  .breadcrumb {
+    margin-bottom: 28px;
+    color: #657266;
+    font-size: 0.9rem;
+  }
+  a {
+    color: #267135;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 350px;
+    align-items: start;
+    gap: 35px;
+  }
+  .tags {
+    color: #287639;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  h1 {
+    color: #1c2d20;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    margin: 12px 0 28px;
+  }
+  .missing {
+    padding: 80px 0;
+  }
+  :global(body:has(.project-page) .header.transparent) {
+    background: #fff;
+    box-shadow: 0 2px 12px #142b1818;
+  }
+  :global(body:has(.project-page) .header.transparent .nav-menu a) {
+    color: #1d3c25;
+  }
+  :global(body:has(.project-page) .header.transparent .logo-text) {
+    background: linear-gradient(135deg, #1e6930, #62a66d);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  @media (max-width: 850px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .content {
+      display: contents;
+    }
+    .tags,
+    .content h1 {
+      grid-column: 1;
+    }
+    :global(.project-page .gallery) {
+      grid-row: 3;
+    }
+    :global(.project-page .metrics) {
+      grid-row: 4;
+    }
+    :global(.project-page .panel) {
+      grid-row: 5;
+    }
+    :global(.project-page .sections-nav) {
+      grid-row: 6;
+    }
+    :global(.project-page .sections) {
+      grid-row: 7;
+    }
+  }
 </style>
