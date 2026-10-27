@@ -7,9 +7,7 @@
     "dev:netlify": "netlify dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro",
-    "seed:firebase": "node --experimental-transform-types scripts/seed-firestore.mjs",
-    "backfill:projects": "node --experimental-transform-types scripts/backfill-projects.mjs"
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/netlify": "^7.0.13",

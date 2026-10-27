@@ -9,10 +9,10 @@ const { project } = Astro.props as { project: Project };
   <label class="quantity-label" for="contribution-quantity">Quantidade em toneladas de CO₂e</label>
   <input id="contribution-quantity" data-quantity type="number" min="0.01" max="1000" step="0.01" value="1" inputmode="decimal" />
   <p class="calculator-link"><a href={`/calculadora?returnTo=${encodeURIComponent(`/projetos/${project.slug}`)}`}>Calcular minha pegada</a> (opcional)</p>
-  <div class="total"><span>Valor por tCO₂e</span><strong data-unit-price></strong><span>Quantidade selecionada</span><strong data-selected-quantity>1 t</strong><span>Total demonstrativo</span><strong data-total></strong></div>
+  <div class="total"><span>Valor por tCO₂e</span><strong data-unit-price></strong><span>Quantidade selecionada</span><strong data-selected-quantity>1 t</strong><span>Total estimado</span><strong data-total></strong></div>
   <button type="button" data-participate>Participar deste projeto</button>
   <p data-contribution-error role="alert" hidden></p>
-  <small>Simulação demonstrativa. Nenhum pagamento será cobrado ou certificado oficial emitido.</small>
+  <small>O pagamento ainda não está disponível. Você pode registrar seu interesse; nenhum valor será cobrado.</small>
 </aside>
 <script>
   import { authReady } from '../../scripts/auth';
@@ -66,7 +66,7 @@ const { project } = Astro.props as { project: Project };
       const continueCheckout = async () => {
         const user = auth.currentUser;
         if (!user) return;
-        try { await savePendingDraft(user); sessionStorage.removeItem('nucarbon:checkout-order:v1'); sessionStorage.setItem('nucarbon:checkout-intent:v1', JSON.stringify(intent)); location.assign('/checkout'); }
+        try { await savePendingDraft(user); sessionStorage.removeItem('nucarbon:checkout-order'); sessionStorage.setItem('nucarbon:checkout-intent', JSON.stringify(intent)); location.assign('/checkout'); }
         catch (cause) { error.textContent = cause instanceof Error ? cause.message : 'Não foi possível continuar.'; error.hidden = false; }
       };
       const user = await authReady;

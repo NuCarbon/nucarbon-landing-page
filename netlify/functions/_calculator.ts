@@ -48,8 +48,6 @@ export function buildUserCalculation(answers: CalculatorAnswers, updatedAt: Time
   return {
     footprint: { annualEmissionsTonnes: result.total, updatedAt },
     calculator: {
-      schemaVersion: 1,
-      calculationVersion: 1,
       answers: { ...storedAnswers, weeklyDistanceKm: answers.distance },
       annualEmissionsTonnes: result.total,
       treeEquivalent: result.trees,

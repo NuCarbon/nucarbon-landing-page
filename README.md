@@ -1,68 +1,44 @@
-# Nucarbon landing page and member area
+# Nucarbon
 
-Astro public website plus a Firebase-authenticated member experience deployed on Netlify.
+Astro site with public project pages, Firebase Authentication, Firestore, and Netlify Functions. Public pages render from Firestore on demand; account data is served only after Firebase token verification.
 
-## Local development
+## Local setup
 
 ```sh
 npm install
-cp .env.example .env.local
 npm run dev:netlify
 ```
 
-Set the public Firebase values in `.env.local`. Enable Google under **Firebase Authentication → Sign-in method** and add the local and production Netlify domains to the authorized domains list.
+Set `PUBLIC_FIREBASE_API_KEY`, `PUBLIC_FIREBASE_AUTH_DOMAIN`, `PUBLIC_FIREBASE_PROJECT_ID`, and `PUBLIC_FIREBASE_APP_ID` for the browser. Set `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY` for server functions. Enable Google sign-in in Firebase Authentication and authorize the local and deployed domains. Keep server credentials out of `PUBLIC_*` variables.
 
-## Firebase and Netlify setup
+## Firestore
 
-1. Create a Firebase project, enable Google authentication, and create a Cloud Firestore database.
-2. Deploy [`firestore.rules`](./firestore.rules) to deny direct browser access. All reads go through Netlify Functions.
-3. In Netlify, set the `PUBLIC_FIREBASE_*` values for builds, and set `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY` as protected function environment variables.
-4. With those server values exported locally, run `npm run seed:firebase` to create missing schema v2 demo documents. Use Node 22.7+ with support for `--experimental-transform-types`. Preview and validate without credentials or writes using `npm run seed:firebase -- --dry-run`.
-5. Deploy normally. Netlify reads `netlify.toml`, builds the Astro site, and exposes authenticated endpoints at `/api/dashboard`, `/api/community`, `/api/calculator-result`, and `/api/demo-checkouts`. `/api/projects` serves published project fields publicly.
+The application uses one set of root collections:
 
-The client configuration is public by design. Never commit the Firebase Admin service-account credentials or place them in `PUBLIC_*` variables.
-
-## Firestore schema v2
-
-The API reads `datasets/demo-v2`. Seed this dataset before deploying the updated API and client together. The seed preserves existing documents and leaves the old `demo/*` documents untouched. It creates demonstration fixtures, **not a migration of existing production records**. Legacy display strings do not contain precise event dates or geographic coordinates; a production migration needs authoritative timestamps and project coordinates rather than inferred values.
-
-| Document path | Stored fields |
+| Path | Purpose |
 | --- | --- |
-| `datasets/demo-v2` | `schemaVersion: 2`, footprint with numeric `annualEmissionsTonnes` and `updatedAt: Timestamp`, metrics with numeric type and value |
-| `datasets/demo-v2/projects/{uuid}` | Name, numeric biome/status codes, `areaHectares`, `restorationProgress` (0–1), `location: GeoPoint`, `createdAt: Timestamp` |
-| `datasets/demo-v2/authors/{uuid}` | Display name |
-| `datasets/demo-v2/posts/{uuid}` | `authorId` UUID reference, body text, `createdAt: Timestamp`, numeric `commentCount`, reaction type/count pairs |
+| `projects/{uuid}` | Project content, publication flag, price in cents, and Firestore coordinates and timestamps |
+| `authors/{uuid}` | Community author names |
+| `posts/{uuid}` | Community posts and reactions |
+| `users/{firebaseUid}` | Saved calculator answers, footprint, and any verified impact metrics |
+| `users/{firebaseUid}/orders/{uuid}` | Contribution selections and their status |
 
-New entity IDs should use `crypto.randomUUID()`. Demo IDs are fixed UUIDs for repeatable seeding. Firebase Authentication UIDs are a separate identity and should not be replaced with UUIDs. The current dataset remains shared demonstration data, not per-user impact records.
+Only published projects appear in public responses. Project records must contain the fields validated by [`_schema.ts`](./netlify/functions/_schema.ts); the API does not fill missing content with generated copy. Keep unpublished projects private while authoring them. The restrictive [`firestore.rules`](./firestore.rules) deny direct browser access, so all data access goes through Netlify Functions.
 
-Persisted enum codes are defined in `src/types/app.ts`; never renumber them. Names and bodies remain text. Labels, icons, units, dates, percentages, and reaction strings are formatted in `src/scripts/app/format.ts`. The API explicitly serializes native `GeoPoint` values to `{ latitude, longitude }` and native `Timestamp` values to Unix milliseconds; it does not expose Firestore internals.
+Three illustrative project records are in root `projects`. Run `node --env-file=.env --env-file=.env.local --experimental-transform-types scripts/complete-projects.mjs` to preview any missing required fields, then add `--apply` to fill them without changing existing IDs, measurements, publication flags, or prices. The illustrative descriptions and images do not claim verified impacts or certification. Community content is read from the root `authors` and `posts` collections.
 
-Measurements use fixed canonical units: annual footprint and carbon offsets in tonnes CO₂e, area in hectares, counts as nonnegative integers, and progress as a 0–1 ratio. The schema validator runs before seeding and when serving data. Sample coordinates and dates in `scripts/demo-data.mjs` are illustrative and must be replaced with verified values for real projects.
+Community posts use root `authors` and `posts` documents. Supported projects are stored under `users/{uid}/supportedProjects/{projectId}` with an active status and are shown separately from verified impact and checkout orders.
 
-Run schema, formatting, and calculator checks with `node --experimental-transform-types --test tests/*.test.mjs`.
+## Calculator and contribution flow
 
-## Saved calculator results
+Calculator answers are kept in browser storage for seven days and saved automatically for signed-in users. The server validates the answers and calculates the footprint. Signing out clears account-associated browser state.
 
-Completing the calculator automatically saves for signed-in users through `POST /api/calculator-result`. Guests see a dismissible Google sign-in modal. Their answers remain in versioned browser storage for seven days and are saved after sign-in. Save failures display a retry action without discarding the result.
+Project prices are stored as integer cents per tonne. The server resolves the project price and saved footprint, validates the chosen quantity, and stores an order under the authenticated user. Registering interest does not collect money or record verified compensation. The checkout page is excluded from indexing.
 
-The endpoint validates all answers and recomputes the result on the server. The owner is always the verified Firebase token's UID; the request accepts no user ID or precomputed totals. A single merge into `users/{firebaseUid}` atomically updates `footprint` (numeric annual emissions and native timestamp) and `calculator` (numeric answer codes, weekly distance in km, category emissions in tonnes, tree equivalence, schema/calculation versions, and timestamp). Existing profile fields are preserved. Each save replaces the latest calculation; it does not append history. Increment `calculationVersion` in `netlify/functions/_calculator.ts` when changing the calculation coefficients or method.
+## Checks
 
-The dashboard reads this user's saved footprint and shows an empty state until their first save. Demo projects and impact metrics remain separate. Deploy `firestore.rules` to deny direct browser access and deploy the new function with the client. No demo seed is required to save user calculations.
-
-## Commands
-
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Run the Astro site only. |
-| `npm run dev:netlify` | Run Astro and Netlify Functions locally. |
-| `npm run build` | Build static pages and on-demand Netlify routes. |
-| `npm run seed:firebase` | Seed Firestore demo data with server credentials. |
-| `npm run backfill:projects -- --dry-run` | Preview missing project fields in Firestore. |
-
-## Projetos públicos e checkout demonstrativo
-
-As páginas `/projetos` e `/projetos/[slug]` são renderizadas sob demanda pelo adaptador Netlify. Os demais caminhos continuam pré-renderizados. O Firestore permanece fechado para acesso direto pelo navegador; leituras públicas usam apenas a projeção de campos publicados em `/api/projects`.
-
-Antes de publicar estas páginas em um ambiente com projetos existentes, execute `npm run backfill:projects -- --dry-run` com as credenciais Firebase Admin para revisar os campos ausentes. Em seguida execute `npm run backfill:projects`. O comando preserva IDs e valores já cadastrados, verifica slugs duplicados e adiciona preço demonstrativo de R$ 75,00 por tonelada. Somente os três projetos demonstrativos conhecidos recebem `published: true`; os demais permanecem não publicados até revisão explícita. Textos e imagens adicionados pelo backfill são demonstrativos e devem ser revisados antes da publicação.
-
-Publique o adaptador, as páginas, as funções Netlify e as regras restritivas em `firestore.rules` no mesmo lançamento. O checkout guarda pedidos apenas em `users/{uid}/demoOrders`; confirmar uma simulação não cobra, não emite certificado e não altera métricas reais.
+```sh
+npm run build
+npx astro check
+node --experimental-transform-types --test tests/*.test.mjs
+```

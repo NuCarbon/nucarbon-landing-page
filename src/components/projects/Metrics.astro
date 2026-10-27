@@ -3,9 +3,9 @@ import type { Project } from '../../types/app';
 const { project } = Astro.props as { project: Project };
 const metrics = [
   ['Área do projeto', `${project.areaHectares.toLocaleString('pt-BR')} hectares`],
-  ['Árvores plantadas', project.treesPlanted.toLocaleString('pt-BR')],
-  ['Carbono estimado', `${project.carbonTonnes.toLocaleString('pt-BR')} tCO₂e`],
-  ['Participantes', project.participants.toLocaleString('pt-BR')],
+  ['Árvores plantadas', project.treesPlanted > 0 ? project.treesPlanted.toLocaleString('pt-BR') : 'Ainda não informado'],
+  ['Carbono estimado', project.carbonTonnes > 0 ? `${project.carbonTonnes.toLocaleString('pt-BR')} tCO₂e` : 'Ainda não informado'],
+  ['Participantes', project.participants > 0 ? project.participants.toLocaleString('pt-BR') : 'Ainda não informado'],
 ];
 ---
 <div class="metrics">{metrics.map(([label, value]) => <div><span>{label}</span><strong>{value}</strong></div>)}</div>

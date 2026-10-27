@@ -47,6 +47,7 @@ export interface Dashboard {
   footprint: Footprint | null;
   metrics: ImpactMetric[];
   projects: Project[];
+  supportedProjects: Project[];
 }
 
 export interface Author { id: UUID; displayName: string }

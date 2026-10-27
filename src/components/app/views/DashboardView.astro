@@ -21,12 +21,18 @@ import LoadingState from '../../ui/LoadingState.astro';
     <FootprintCard />
 
     <section>
-      <h2>Resumo de Impacto</h2>
+      <h2>Impacto verificado</h2>
       <ImpactMetrics />
+      <p data-metrics-empty hidden>Ainda não há impacto verificado na sua conta.</p>
+    </section>
+
+    <section data-supported-projects hidden>
+      <h2>Projetos apoiados</h2>
+      <ProjectGrid />
     </section>
 
     <section class="section-heading">
-      <div><h2>Meus Projetos</h2></div>
+      <div><h2>Projetos para conhecer</h2></div>
       <a href="/projetos">Ver todos</a>
     </section>
 
@@ -64,9 +70,15 @@ import LoadingState from '../../ui/LoadingState.astro';
       ]);
 
       const metrics = this.querySelector<ImpactMetricsElement>('app-impact-metrics');
-      const projects = this.querySelector<ProjectGridElement>('app-project-grid');
+      const supportedSection = this.querySelector<HTMLElement>('[data-supported-projects]');
+      const supportedProjects = supportedSection?.querySelector<ProjectGridElement>('app-project-grid');
+      const projects = this.querySelector<ProjectGridElement>(':scope > [data-app-content] > app-project-grid');
 
       if (metrics) metrics.metrics = data.metrics;
+      const emptyMetrics = this.querySelector<HTMLElement>('[data-metrics-empty]');
+      if (emptyMetrics) emptyMetrics.hidden = data.metrics.length > 0;
+      if (supportedSection) supportedSection.hidden = !data.supportedProjects?.length;
+      if (supportedProjects) supportedProjects.projects = data.supportedProjects ?? [];
       if (projects) projects.projects = data.projects;
     }
   }

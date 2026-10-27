@@ -46,5 +46,5 @@ export function authenticated(
 }
 
 export function unavailable() {
-  return json({ error: 'Demo data unavailable' }, { status: 503 });
+  return json({ error: 'Data unavailable' }, { status: 503 });
 }

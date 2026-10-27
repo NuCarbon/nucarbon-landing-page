@@ -1,57 +1,61 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { GeoPoint, Timestamp } from 'firebase-admin/firestore';
-import { createDemoDocuments } from '../scripts/demo-data.mjs';
 import { validateDocument, projectToJSON, postToJSON } from '../netlify/functions/_schema.ts';
-import { MetricType, ReactionType } from '../src/types/app.ts';
+import { Biome, MetricType, ProjectStatus, ReactionType } from '../src/types/app.ts';
 import { formatMetric, formatProgress, formatReactions, formatLocation, formatFootprint } from '../src/scripts/app/format.ts';
 
-const documents = createDemoDocuments();
-const [projectPath, project] = documents.find(([path]) => path.startsWith('projects/'));
-const [postPath, post] = documents.find(([path]) => path.startsWith('posts/'));
+const projectId = 'a834e161-c18c-48f6-bc36-091a7c359231';
+const authorId = 'f279c946-504b-49bc-9e20-cf29c1c0c728';
+const postId = '60e5ca51-7f92-46df-a36c-5c7438bd58e7';
+const project = {
+  name:'Projeto de Teste', slug:'projeto-de-teste', published:true,
+  biome:Biome.AtlanticForest, status:ProjectStatus.Monitoring,
+  location:new GeoPoint(-22.53,-52.17), areaHectares:120, restorationProgress:.65,
+  createdAt:Timestamp.fromMillis(1791547200000),
+  summary:'Resumo do projeto', description:'Descrição do projeto',
+  municipality:'Município', state:'SP', gallery:[{ url:'/projects/forest-hero-2.jpg', alt:'Floresta' }],
+  treesPlanted:10, carbonTonnes:1.2, participants:2,
+  species:[{ name:'Árvore', scientificName:'Arbor test' }], impacts:[], timeline:[],
+  methodology:'Método registrado', documents:[], pricePerTonneCents:7500,
+};
+const post = { authorId, createdAt:Timestamp.fromMillis(1791547200000), body:'Texto de teste', reactions:[{ type:ReactionType.Heart,count:2 }], commentCount:1 };
 
-test('demo documents have valid stable IDs, native dates/coordinates, and resolvable authors', () => {
-  assert.equal(new Set(documents.map(([path]) => path)).size, documents.length);
-  assert.deepEqual(createDemoDocuments(), documents);
-  for (const [path, data] of documents) {
-    validateDocument(path, data);
-    if (path.startsWith('posts/')) assert.ok(documents.some(([authorPath]) => authorPath === `authors/${data.authorId}`));
-  }
+test('root collection documents retain native dates and coordinates', () => {
+  validateDocument(`projects/${projectId}`, project);
+  validateDocument(`authors/${authorId}`, { displayName:'Autor' });
+  validateDocument(`posts/${postId}`, post);
   assert.ok(project.location instanceof GeoPoint);
   assert.ok(post.createdAt instanceof Timestamp);
 });
 
-test('API serialization returns numeric units and explicit geographic coordinates', () => {
-  const result = projectToJSON(projectPath.split('/')[1], project);
-  assert.deepEqual(result.location, { latitude: -22.53, longitude: -52.17 });
+test('public project serialization includes only explicit fields', () => {
+  const result = projectToJSON(projectId, { ...project, internalNote:'private' });
+  assert.deepEqual(result.location, { latitude:-22.53, longitude:-52.17 });
   assert.equal(result.areaHectares, 120);
-  assert.equal(result.restorationProgress, 0.65);
+  assert.equal(result.restorationProgress, .65);
+  assert.equal('internalNote' in result, false);
   assert.deepEqual(JSON.parse(JSON.stringify(result)), result);
-  const author = documents.find(([path]) => path === `authors/${post.authorId}`)[1];
-  const serialized = postToJSON(postPath.split('/')[1], post, { id: post.authorId, ...author });
-  assert.equal(serialized.createdAt, Date.parse('2026-10-07T12:00:00Z'));
-  assert.equal(serialized.reactions[0].count, 142);
-  assert.equal(serialized.author.id, post.authorId);
+  const serialized = postToJSON(postId, post, { id:authorId, displayName:'Autor' });
+  assert.equal(serialized.createdAt, post.createdAt.toMillis());
 });
 
-test('invalid IDs, legacy strings, invalid enum codes, and invalid numeric ranges are rejected', () => {
+test('invalid IDs, fields, and unsafe URLs are rejected', () => {
   assert.throws(() => validateDocument('projects/mata', project));
   for (const patch of [
-    { areaHectares: '120 hectares' }, { areaHectares: NaN },
-    { restorationProgress: 65 }, { restorationProgress: -0.1 },
-    { location: 'Teodoro Sampaio / SP' }, { biome: 999 }, { status: 'Monitoramento' },
-    { createdAt: 'Há 2 horas' },
-  ]) assert.throws(() => validateDocument(projectPath, { ...project, ...patch }));
-  assert.throws(() => validateDocument(postPath, { ...post, commentCount: 1.5 }));
-  assert.throws(() => validateDocument(postPath, { ...post, reactions: [{ type: ReactionType.Heart, count: -1 }] }));
-  assert.throws(() => validateDocument('', { ...documents[0][1], metrics: [{ type: MetricType.TreesSupported, value: 1.5 }] }));
+    { areaHectares:'120 hectares' }, { areaHectares:NaN },
+    { restorationProgress:65 }, { restorationProgress:-.1 },
+    { location:'SP' }, { biome:999 }, { status:'Monitoramento' },
+    { createdAt:'yesterday' }, { slug:undefined }, { pricePerTonneCents:0 },
+    { gallery:[{ url:'javascript:alert(1)', alt:'bad' }] },
+  ]) assert.throws(() => validateDocument(`projects/${projectId}`, { ...project, ...patch }));
+  assert.throws(() => validateDocument(`posts/${postId}`, { ...post, commentCount:1.5 }));
 });
 
-test('units, localized labels, and emoji are derived in client formatters', () => {
+test('units and labels remain presentation concerns', () => {
   assert.equal(formatFootprint(4.8), '4,8 tCO₂e / ano');
-  assert.equal(formatProgress(0.65), '65%');
-  assert.equal(formatMetric({ type: MetricType.CarbonOffset, value: 1.2 }).value, '1,2 tCO₂e');
-  assert.equal(formatMetric({ type: MetricType.TreesSupported, value: 1 }).value, '1 muda nativa');
-  assert.equal(formatReactions([{ type: ReactionType.Heart, count: 142 }]), '❤️ 142');
-  assert.equal(formatLocation({ latitude: -22.53, longitude: -52.17 }), '22.5300° S, 52.1700° O');
+  assert.equal(formatProgress(.65), '65%');
+  assert.equal(formatMetric({ type:MetricType.CarbonOffset,value:1.2 }).value, '1,2 tCO₂e');
+  assert.equal(formatReactions([{ type:ReactionType.Heart,count:2 }]), '❤️ 2');
+  assert.equal(formatLocation({ latitude:-22.53, longitude:-52.17 }), '22.5300° S, 52.1700° O');
 });

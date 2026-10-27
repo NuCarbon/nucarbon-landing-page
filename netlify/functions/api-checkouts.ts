@@ -14,6 +14,6 @@ export default authenticated(async (request, _context, user) => {
   if (request.method === 'POST' && !id) return createOrder(user.uid, body);
   if (request.method === 'POST' && id && body?.action === 'confirm') return confirmOrder(user.uid, id);
   return json({ error:'Invalid request' }, { status:400 });
-}, 'Unable to process demo checkout');
+}, 'Unable to process checkout');
 
-export const config: Config = { path:'/api/demo-checkouts' };
+export const config: Config = { path:'/api/checkouts' };

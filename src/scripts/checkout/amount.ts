@@ -1,4 +1,4 @@
-export function demoAmount(input: { mode: 'manual'; quantity: number } | { mode: 'percentage'; percentage: 25 | 100; annualFootprint: number }, pricePerTonneCents: number) {
+export function calculateAmount(input: { mode: 'manual'; quantity: number } | { mode: 'percentage'; percentage: 25 | 100; annualFootprint: number }, pricePerTonneCents: number) {
   if (!Number.isSafeInteger(pricePerTonneCents) || pricePerTonneCents <= 0) throw new Error('Invalid price');
   let quantity: number;
   if (input.mode === 'manual') {

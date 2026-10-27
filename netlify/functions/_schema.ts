@@ -1,10 +1,6 @@
 import { GeoPoint, Timestamp } from 'firebase-admin/firestore';
-import { Biome, MetricType, ProjectStatus, ReactionType } from '../../src/types/app.ts';
-import type { Author, CommunityPost, Footprint, ImpactMetric, Project, UUID } from '../../src/types/app';
-import { missingProjectFields } from './_project-content.ts';
-
-export const DATASET_PATH = 'datasets/demo-v2';
-export const SCHEMA_VERSION = 2;
+import { Biome, ProjectStatus, ReactionType } from '../../src/types/app.ts';
+import type { Author, CommunityPost, Project, UUID } from '../../src/types/app';
 
 export interface ProjectDocument extends Omit<Project, 'id' | 'location'> {
   location: GeoPoint;
@@ -15,19 +11,18 @@ export interface PostDocument extends Omit<CommunityPost, 'id' | 'author' | 'cre
   createdAt: Timestamp;
 }
 export type AuthorDocument = Omit<Author, 'id'>;
-export interface DatasetDocument {
-  schemaVersion: typeof SCHEMA_VERSION;
-  footprint: Omit<Footprint, 'updatedAt'> & { updatedAt: Timestamp };
-  metrics: ImpactMetric[];
+function ensure(condition: unknown, message: string): asserts condition {
+  if (!condition) {
+    console.log(message);
+    throw new Error(`Invalid document: ${message}`);
+  }
 }
 
-function ensure(condition: unknown, message: string): asserts condition {
-  if (!condition) throw new Error(`Invalid schema v2 document: ${message}`);
-}
 function object(value: unknown): Record<string, unknown> {
   ensure(value !== null && typeof value === 'object' && !Array.isArray(value), 'expected object');
   return value as Record<string, unknown>;
 }
+
 const nonnegative = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value) && value >= 0;
 const count = (value: unknown) => nonnegative(value) && Number.isSafeInteger(value);
 const text = (value: unknown) => typeof value === 'string' && value.trim().length > 0;
@@ -38,22 +33,6 @@ const safeUrl = (value: unknown) => typeof value === 'string' && (/^https:\/\/[^
 // Validate on both writes and reads: a TS cast alone cannot validate Firestore.
 export function validateDocument(path: string, value: unknown): void {
   const data = object(value);
-  if (path === '') {
-    ensure(data.schemaVersion === SCHEMA_VERSION, 'schemaVersion');
-    const footprint = object(data.footprint);
-    ensure(nonnegative(footprint.annualEmissionsTonnes), 'annualEmissionsTonnes');
-    ensure(footprint.updatedAt instanceof Timestamp, 'footprint.updatedAt');
-    ensure(Array.isArray(data.metrics), 'metrics');
-    const seen = new Set();
-    for (const entry of data.metrics) {
-      const metric = object(entry);
-      ensure(enumCode(metric.type, MetricType) && !seen.has(metric.type), 'metric type');
-      ensure(nonnegative(metric.value), 'metric value');
-      if (metric.type === MetricType.TreesSupported) ensure(count(metric.value), 'tree count');
-      seen.add(metric.type);
-    }
-    return;
-  }
   const [collection, id, extra] = path.split('/');
   ensure(uuid(id) && !extra, 'document UUID');
   if (collection === 'authors') {
@@ -66,12 +45,12 @@ export function validateDocument(path: string, value: unknown): void {
     ensure(nonnegative(data.areaHectares), 'areaHectares');
     ensure(nonnegative(data.restorationProgress) && data.restorationProgress <= 1, 'restorationProgress ratio');
     ensure(data.createdAt instanceof Timestamp, 'project createdAt');
-    if (data.slug !== undefined) ensure(typeof data.slug === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.slug), 'slug');
-    if (data.published !== undefined) ensure(typeof data.published === 'boolean', 'published');
-    if (data.pricePerTonneCents !== undefined) ensure(typeof data.pricePerTonneCents === 'number' && count(data.pricePerTonneCents) && data.pricePerTonneCents > 0, 'pricePerTonneCents');
-    for (const key of ['summary','description','municipality','state','methodology']) if (data[key] !== undefined) ensure(text(data[key]), key);
-    for (const key of ['treesPlanted','carbonTonnes','participants']) if (data[key] !== undefined) ensure(nonnegative(data[key]), key);
-    for (const key of ['gallery','species','impacts','timeline','documents']) if (data[key] !== undefined) ensure(Array.isArray(data[key]), key);
+    ensure(typeof data.slug === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.slug), 'slug');
+    ensure(typeof data.published === 'boolean', 'published');
+    ensure(typeof data.pricePerTonneCents === 'number' && count(data.pricePerTonneCents) && data.pricePerTonneCents > 0, 'pricePerTonneCents');
+    for (const key of ['summary', 'description', 'municipality', 'state', 'methodology']) ensure(text(data[key]), key);
+    for (const key of ['treesPlanted', 'carbonTonnes', 'participants']) ensure(nonnegative(data[key]), key);
+    for (const key of ['gallery', 'species', 'impacts', 'timeline', 'documents']) ensure(Array.isArray(data[key]), key);
     for (const image of (data.gallery ?? []) as unknown[]) { const item = object(image); ensure(safeUrl(item.url) && text(item.alt), 'gallery image'); }
     for (const species of (data.species ?? []) as unknown[]) { const item = object(species); ensure(text(item.name) && text(item.scientificName), 'species'); }
     for (const impact of (data.impacts ?? []) as unknown[]) { const item = object(impact); ensure(text(item.title) && text(item.description), 'impact'); }
@@ -91,25 +70,24 @@ export function validateDocument(path: string, value: unknown): void {
       seen.add(reaction.type);
     }
   } else {
-    throw new Error('Unknown schema v2 collection.');
+    throw new Error('Unknown collection.');
   }
 }
 
 export function projectToJSON(id: string, project: ProjectDocument): Project {
   validateDocument(`projects/${id}`, project);
-  const defaults = missingProjectFields(id, project.name);
   return {
     id: id as UUID, name: project.name, biome: project.biome, status: project.status,
     areaHectares: project.areaHectares, restorationProgress: project.restorationProgress,
     location: { latitude: project.location.latitude, longitude: project.location.longitude },
-    slug: project.slug ?? defaults.slug, published: project.published === true,
-    summary: project.summary ?? defaults.summary, description: project.description ?? defaults.description,
-    municipality: project.municipality ?? defaults.municipality, state: project.state ?? defaults.state,
-    gallery: project.gallery ?? defaults.gallery, treesPlanted: project.treesPlanted ?? defaults.treesPlanted,
-    carbonTonnes: project.carbonTonnes ?? defaults.carbonTonnes, participants: project.participants ?? defaults.participants,
-    species: project.species ?? defaults.species, impacts: project.impacts ?? defaults.impacts,
-    timeline: project.timeline ?? defaults.timeline, methodology: project.methodology ?? defaults.methodology,
-    documents: project.documents ?? defaults.documents, pricePerTonneCents: project.pricePerTonneCents ?? defaults.pricePerTonneCents,
+    slug: project.slug, published: project.published,
+    summary: project.summary, description: project.description,
+    municipality: project.municipality, state: project.state,
+    gallery: project.gallery, treesPlanted: project.treesPlanted,
+    carbonTonnes: project.carbonTonnes, participants: project.participants,
+    species: project.species, impacts: project.impacts,
+    timeline: project.timeline, methodology: project.methodology,
+    documents: project.documents, pricePerTonneCents: project.pricePerTonneCents,
   };
 }
 

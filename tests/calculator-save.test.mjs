@@ -25,7 +25,6 @@ test('save uses authenticated identity and server-calculated totals', async () =
   assert.ok(Object.values(calculation.calculator.answers).every((value) => typeof value === 'number'));
   assert.ok(Object.values(calculation.calculator.categoryEmissionsTonnes).every((value) => typeof value === 'number'));
   assert.equal(calculation.calculator.answers.weeklyDistanceKm, initialAnswers.distance);
-  assert.equal(calculation.calculator.calculationVersion, 1);
 });
 
 test('rejects missing/invalid answers, unsupported profiles, and forged identity or totals without writing', async () => {

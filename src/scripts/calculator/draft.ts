@@ -1,8 +1,8 @@
 import { calculateFootprint } from './calculate';
 import type { CalculatorAnswers } from './state';
 
-const DRAFT_KEY = 'nucarbon:calculator:v1';
-const SAVED_KEY = 'nucarbon:calculator:saved:v1';
+const DRAFT_KEY = 'nucarbon:calculator';
+const SAVED_KEY = 'nucarbon:calculator:saved';
 const WEEK = 7 * 24 * 60 * 60 * 1000;
 export interface Draft { answers: CalculatorAnswers; revision: string; createdAt: number }
 
