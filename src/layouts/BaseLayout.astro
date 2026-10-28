@@ -1,6 +1,7 @@
 ---
 import '../styles/global.scss';
 import LoginModal from '../components/auth/LoginModal.astro';
+import ConsentBanner from '../components/layout/ConsentBanner.astro';
 import Footer from '../components/layout/Footer.astro';
 import Header from '../components/layout/Header.astro';
 import SiteHead from '../components/layout/SiteHead.astro';
@@ -12,7 +13,11 @@ interface Props {
   className?: string;
   canonical?: string;
   image?: string;
+  imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   noindex?: boolean;
+  follow?: boolean;
   /** For pages that open with a dark hero under the header. */
   transparentHeader?: boolean;
 }
@@ -23,7 +28,11 @@ const {
   className,
   canonical,
   image,
+  imageAlt,
+  imageWidth,
+  imageHeight,
   noindex = false,
+  follow = false,
   transparentHeader = false,
 } = Astro.props;
 ---
@@ -36,7 +45,11 @@ const {
       description={description}
       canonical={canonical}
       image={image}
+      imageAlt={imageAlt}
+      imageWidth={imageWidth}
+      imageHeight={imageHeight}
       noindex={noindex}
+      follow={follow}
     />
   </head>
   <body>
@@ -49,5 +62,6 @@ const {
     </main>
     <Footer />
     <LoginModal />
+    <ConsentBanner />
   </body>
 </html>

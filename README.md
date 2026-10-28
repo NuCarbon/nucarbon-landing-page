@@ -27,13 +27,17 @@ npm run dev:netlify   # http://localhost:8888, with /api/* functions
 | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | --------------------------------------- |
 | `PUBLIC_FIREBASE_API_KEY`, `PUBLIC_FIREBASE_AUTH_DOMAIN`, `PUBLIC_FIREBASE_PROJECT_ID`, `PUBLIC_FIREBASE_APP_ID` | tracked `.env`                              | Browser Firebase SDK (inlined at build) |
 | `PUBLIC_GOOGLE_SCRIPT_URL`                                                                                       | tracked `.env`                              | Contact form                            |
+| `PUBLIC_FIREBASE_MEASUREMENT_ID`                                                                                 | tracked `.env`                              | Firebase Analytics (off while empty)    |
+| `PUBLIC_FEATURE_PROJECTS_CTA`                                                                                    | tracked `.env`                              | Feature flag (`'true'` turns it on)     |
 | `FIREBASE_PROJECT_ID`                                                                                            | tracked `.env` locally; Netlify UI deployed | Firebase Admin, seed project guard      |
 | `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`                                                                  | `.env.local` (ignored); Netlify UI deployed | Firebase Admin (server only)            |
 
-`PUBLIC_*` values are not secret and end up in the browser bundle. Never put server credentials in
-a `PUBLIC_*` variable. Deployed functions and SSR pages read `process.env` at runtime, so every
-server variable must also be set in the Netlify UI; `.env` files are only read locally. In
-Firebase Authentication, enable Google sign-in and authorize the local and deployed domains.
+`PUBLIC_*` values are not secret and end up in the browser bundle. They are inlined at build time,
+so changing one in the Netlify UI needs a redeploy. Feature flags (`PUBLIC_FEATURE_*`, read in
+`src/data/flags.ts`) default to off. Never put server credentials in a `PUBLIC_*` variable.
+Deployed functions and SSR pages read `process.env` at runtime, so every server variable must also
+be set in the Netlify UI; `.env` files are only read locally. In Firebase Authentication, enable
+Google sign-in and authorize the local and deployed domains.
 
 ## Scripts
 
