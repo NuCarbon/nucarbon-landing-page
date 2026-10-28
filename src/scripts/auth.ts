@@ -1,6 +1,7 @@
 // Firebase session helpers. Rendering account markup lives in user-display.ts.
 import { FirebaseError } from 'firebase/app';
 import { onAuthStateChanged, signInWithPopup, signOut, type Auth, type User } from 'firebase/auth';
+import { loginPath } from '../lib/urls';
 import { clearCheckoutState } from './checkout/storage';
 
 // firebase.ts throws while loading when the PUBLIC_FIREBASE_* variables are missing. Loading
@@ -92,7 +93,7 @@ export async function signOutUser(): Promise<void> {
 }
 
 export const loginUrl = (returnTo = `${location.pathname}${location.search}`) =>
-  `/entrar?returnTo=${encodeURIComponent(returnTo)}`;
+  loginPath(returnTo);
 
 /** Resolves the signed-in user, or sends a signed-out visitor to /entrar and resolves null. */
 export async function requireSignedIn(): Promise<User | null> {

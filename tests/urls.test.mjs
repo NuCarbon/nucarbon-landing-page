@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { safeReturnTo } from '../src/lib/urls.ts';
+import { loginPath, safeReturnTo } from '../src/lib/urls.ts';
 
 test('same-origin paths are kept with their query and hash', () => {
   assert.equal(safeReturnTo('/projetos/x?y=1'), '/projetos/x?y=1');
@@ -23,4 +23,11 @@ test('anything that could leave the site falls back', () => {
     assert.equal(safeReturnTo(raw), '/app', String(raw));
   }
   assert.equal(safeReturnTo('//evil.com', '/projetos'), '/projetos');
+});
+
+test('the login path carries an encoded returnTo that safeReturnTo accepts', () => {
+  const path = loginPath('/projetos/x?y=1');
+  assert.equal(path, '/entrar?returnTo=%2Fprojetos%2Fx%3Fy%3D1');
+  const returnTo = new URL(path, 'https://nucarbon.invalid').searchParams.get('returnTo');
+  assert.equal(safeReturnTo(returnTo), '/projetos/x?y=1');
 });

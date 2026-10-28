@@ -1,10 +1,10 @@
 ---
 export const prerender = false;
 
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import AppPageIntro from '../../components/app/AppPageIntro.astro';
 import ProjectCard from '../../components/projects/ProjectCard.astro';
 import ProjectNotice from '../../components/projects/ProjectNotice.astro';
-import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import AppLayout from '../../layouts/AppLayout.astro';
 import { setProjectsCacheHeaders } from '../../lib/projects';
 import { readProjects } from '../../server/repository';
 import type { Project } from '../../types/app';
@@ -20,24 +20,18 @@ try {
 setProjectsCacheHeaders(Astro.response.headers, !unavailable);
 ---
 
-<BaseLayout
+<AppLayout
   title="Projetos de restauração | Nucarbon"
   description="Conheça projetos de restauração ecológica e escolha como contribuir."
   canonical="/projetos"
-  className="page"
+  noindex={false}
+  access="public"
+  active="projects"
 >
-  <div class="container">
-    <Breadcrumbs
-      items={[
-        { label: 'Início', href: '/' },
-        { label: 'Projetos', href: '/projetos' },
-      ]}
-    />
-
-    <header class="intro">
-      <h1>Projetos de restauração</h1>
-      <p>Explore projetos publicados e escolha uma forma de contribuir.</p>
-    </header>
+  <div class="app-page">
+    <AppPageIntro description="Explore projetos publicados e escolha uma forma de contribuir.">
+      Projetos de restauração
+    </AppPageIntro>
 
     {unavailable ? (
       <ProjectNotice
@@ -45,7 +39,7 @@ setProjectsCacheHeaders(Astro.response.headers, !unavailable);
         message="Não foi possível carregar os projetos agora. Tente novamente em alguns minutos."
       />
     ) : projects.length ? (
-      <ul class="project-list" role="list">
+      <ul class="project-grid project-list" role="list">
         {projects.map((project) => (
           <li>
             <ProjectCard project={project} />
@@ -59,37 +53,12 @@ setProjectsCacheHeaders(Astro.response.headers, !unavailable);
       />
     )}
   </div>
-</BaseLayout>
+</AppLayout>
 
 <style lang="scss">
-  @use '../../styles/mixins' as mx;
-
-  .intro {
-    max-width: 44rem;
-    margin-bottom: var(--spacing-lg);
-
-    h1 {
-      margin-bottom: var(--spacing-xs);
-    }
-
-    p {
-      margin: 0;
-      font-size: 1.0625rem;
-    }
-  }
-
+  // Same grid as the dashboard's project cards (.project-grid in styles/app.scss).
   .project-list {
-    display: grid;
-    gap: var(--spacing-md);
     list-style: none;
-
-    @include mx.up(sm) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    @include mx.up(lg) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
 
     // Cards in a row share the tallest card's height.
     li {

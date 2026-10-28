@@ -51,24 +51,3 @@ const {
     <LoginModal />
   </body>
 </html>
-
-<style lang="scss">
-  @use '../styles/mixins' as mx;
-
-  .skip-link {
-    position: fixed;
-    top: var(--spacing-xs);
-    left: var(--spacing-xs);
-    z-index: calc(var(--z-header) + 1);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--radius-pill);
-    background-color: var(--color-surface);
-    box-shadow: var(--shadow-raised);
-    color: var(--color-primary-dark);
-    font-weight: 600;
-
-    &:not(:focus) {
-      @include mx.visually-hidden;
-    }
-  }
-</style>

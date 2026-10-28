@@ -78,6 +78,7 @@ $bottom-nav-height: 4rem;
 }
 
 .app-nav__link {
+  position: relative;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -126,6 +127,32 @@ $bottom-nav-height: 4rem;
   @include mx.up(lg) {
     width: 1.25rem;
     height: 1.25rem;
+  }
+}
+
+// Guests only: marks the links that lead to sign-in. A badge on the icon in the bottom bar.
+.app-nav__lock {
+  display: inline-flex;
+  color: var(--color-text-subtle);
+
+  svg {
+    width: 0.875rem;
+    height: 0.875rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @include mx.down(lg) {
+    position: absolute;
+    top: 0.65rem;
+    left: calc(50% + 0.45rem);
+  }
+
+  @include mx.up(lg) {
+    margin-left: auto;
   }
 }
 

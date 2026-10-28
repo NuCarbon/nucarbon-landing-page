@@ -10,11 +10,10 @@ import {
 import { formatCo2e, formatMoney, formatTonnes } from '../../lib/format';
 import type { CalculatorResultResponse, CheckoutRequest } from '../../types/app';
 import { getJson } from '../api';
-import { currentUser } from '../auth';
+import { currentUser, loginUrl } from '../auth';
 import { readDraft, savePendingDraft } from '../calculator/draft';
 import { saveCheckoutIntent } from '../checkout/storage';
 import { requireElement, setText } from '../dom';
-import { openLoginModal } from '../login-modal';
 
 type Selection = ContributionPercentage | 'custom';
 type Amount = ReturnType<typeof calculateAmount>;
@@ -127,16 +126,14 @@ export async function initializeContributionPanel(panel: HTMLElement): Promise<v
     error.hidden = false;
   }
 
-  // Runs right away when signed in, or once the login modal has closed after a sign-in,
-  // so it reports its own errors in the panel.
+  // Guests leave the selection behind and sign in on /entrar, which saves their calculator
+  // draft before returning to /checkout. A percentage is resolved against that saved footprint.
   async function continueToCheckout(request: Choice['request']): Promise<void> {
     try {
       const user = await currentUser();
-      if (!user) return;
-      // A percentage is resolved against the saved footprint, so save the draft first.
-      await savePendingDraft(user);
+      if (user) await savePendingDraft(user);
       saveCheckoutIntent({ ...request, key: crypto.randomUUID(), createdAt: Date.now() });
-      location.assign('/checkout');
+      location.assign(user ? '/checkout' : loginUrl('/checkout'));
     } catch (cause) {
       showError(cause);
     }
@@ -157,18 +154,11 @@ export async function initializeContributionPanel(panel: HTMLElement): Promise<v
     render();
   });
 
-  participate.addEventListener('click', async () => {
+  participate.addEventListener('click', () => {
     const choice = currentChoice();
     if (!choice) return;
     error.hidden = true;
-
-    const proceed = () => continueToCheckout(choice.request);
-    try {
-      if (await currentUser()) await proceed();
-      else await openLoginModal(proceed);
-    } catch (cause) {
-      showError(cause);
-    }
+    void continueToCheckout(choice.request);
   });
 
   render();

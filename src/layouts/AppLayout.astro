@@ -7,31 +7,77 @@ import AppNavigation from '../components/app/AppNavigation.astro';
 
 interface Props {
   title: string;
-  active?: 'dashboard' | 'community';
+  active?: 'dashboard' | 'projects' | 'community';
+  /**
+   * `signed-in` sends signed-out visitors to /entrar. `public` pages (the project pages) are
+   * open to everyone: guests get "Entrar" and sign-in links in place of their account.
+   */
+  access?: 'signed-in' | 'public';
+  description?: string;
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
 }
 
-const { title, active = 'dashboard' } = Astro.props;
+const {
+  title,
+  active = 'dashboard',
+  access = 'signed-in',
+  description,
+  canonical,
+  image,
+  noindex = true,
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <SiteHead title={title} noindex />
+    <SiteHead
+      title={title}
+      description={description}
+      canonical={canonical}
+      image={image}
+      noindex={noindex}
+    />
   </head>
   <body>
-    <div class="app-shell">
+    <a class="skip-link" href="#conteudo">
+      Pular para o conteúdo
+    </a>
+    <div class="app-shell" data-access={access}>
       <AppHeader />
       <AppNavigation active={active} />
-      <main class="app-main">
+      <main id="conteudo" class="app-main">
         <slot />
       </main>
     </div>
     <script>
-      import { requireSignedIn, signOutUser } from '../scripts/auth';
-      import { renderUser } from '../scripts/user-display';
+      import { onUserChange, requireSignedIn, signOutUser } from '../scripts/auth';
+      import { renderGuest, renderUser } from '../scripts/user-display';
 
-      const user = await requireSignedIn();
-      if (user) renderUser(document, user);
+      // Links that only work signed in point guests to /entrar (see AppHeader and AppNavigation).
+      function setAccountLinks(signedIn: boolean): void {
+        document.querySelectorAll<HTMLAnchorElement>('a[data-guest-href]').forEach((link) => {
+          link.href = (signedIn ? link.dataset.userHref : link.dataset.guestHref) ?? link.href;
+        });
+        const home = document.querySelector<HTMLAnchorElement>('[data-app-home]');
+        home?.setAttribute('href', signedIn ? '/app' : '/');
+        home?.setAttribute('aria-label', signedIn ? 'Nucarbon, painel' : 'Nucarbon, início');
+      }
+
+      const shell = document.querySelector<HTMLElement>('.app-shell');
+      if (shell?.dataset.access === 'public') {
+        onUserChange((user) => {
+          if (user) renderUser(document, user);
+          else renderGuest(document);
+          setAccountLinks(Boolean(user));
+        });
+      } else {
+        const user = await requireSignedIn();
+        if (user) renderUser(document, user);
+      }
+
       document
         .querySelector('[data-sign-out]')
         ?.addEventListener('click', () => void signOutUser());

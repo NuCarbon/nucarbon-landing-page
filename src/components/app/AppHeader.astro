@@ -3,10 +3,11 @@ import Button from '../ui/Button.astro';
 import Logo from '../ui/Logo.astro';
 import Skeleton from '../ui/Skeleton.astro';
 import UserAvatar from '../ui/UserAvatar.astro';
+import { loginPath } from '../../lib/urls';
 ---
 
 <header class="app-header">
-  <Logo size="sm" href="/app" aria-label="Nucarbon, painel" />
+  <Logo size="sm" href="/app" aria-label="Nucarbon, painel" data-app-home />
 
   <div class="app-account" data-auth-loading aria-hidden="true">
     <Skeleton width="32px" height="32px" variant="circle" />
@@ -20,4 +21,9 @@ import UserAvatar from '../ui/UserAvatar.astro';
       Sair
     </Button>
   </div>
+
+  {/* Shown on public pages only (AppLayout access="public"). */}
+  <Button href={loginPath(Astro.url.pathname)} size="sm" data-auth-guest hidden>
+    Entrar
+  </Button>
 </header>

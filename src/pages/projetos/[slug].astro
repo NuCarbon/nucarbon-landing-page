@@ -1,13 +1,13 @@
 ---
 export const prerender = false;
 
-import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContributionPanel from '../../components/projects/ContributionPanel.astro';
 import ProjectGallery from '../../components/projects/ProjectGallery.astro';
 import ProjectMetrics from '../../components/projects/ProjectMetrics.astro';
 import ProjectNotice from '../../components/projects/ProjectNotice.astro';
 import ProjectSections from '../../components/projects/ProjectSections.astro';
 import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import AppLayout from '../../layouts/AppLayout.astro';
 import { biomeLabels, formatPlace } from '../../lib/format';
 import { projectPath, setProjectsCacheHeaders } from '../../lib/projects';
 import { readProjectBySlug } from '../../server/repository';
@@ -24,74 +24,73 @@ Astro.response.status = project ? 200 : unavailable ? 503 : 404;
 setProjectsCacheHeaders(Astro.response.headers, Boolean(project));
 ---
 
-<BaseLayout
+<AppLayout
   title={project ? `${project.name} | Projetos Nucarbon` : 'Projeto indisponível | Nucarbon'}
   description={project?.summary}
   canonical={project ? projectPath(project.slug) : undefined}
   image={project?.gallery[0]?.url}
   noindex={!project}
-  className="page"
+  access="public"
+  active="projects"
 >
-  <div class="container">
-    {project ? (
-      <>
-        <Breadcrumbs
-          items={[
-            { label: 'Início', href: '/' },
-            { label: 'Projetos', href: '/projetos' },
-            { label: project.name, href: projectPath(project.slug) },
-          ]}
-        />
-        <div class="project">
-          <header class="project__header">
-            <p class="project__meta">
-              <span>{biomeLabels[project.biome]}</span>
-              <span aria-hidden="true">·</span>
-              <span>{formatPlace(project)}</span>
-            </p>
-            <h1>{project.name}</h1>
-          </header>
-          <div class="project__media">
-            <ProjectGallery project={project} />
-            <ProjectMetrics project={project} />
-          </div>
-          <div class="project__panel">
-            <ContributionPanel project={project} />
-          </div>
-          <div class="project__sections">
-            <ProjectSections project={project} />
-          </div>
+  {project ? (
+    <>
+      <Breadcrumbs
+        items={[
+          { label: 'Projetos', href: '/projetos' },
+          { label: project.name, href: projectPath(project.slug) },
+        ]}
+      />
+      <div class="project">
+        <header class="project__header">
+          <p class="project__meta">
+            <span>{biomeLabels[project.biome]}</span>
+            <span aria-hidden="true">·</span>
+            <span>{formatPlace(project)}</span>
+          </p>
+          <h1>{project.name}</h1>
+        </header>
+        <div class="project__media">
+          <ProjectGallery project={project} />
+          <ProjectMetrics project={project} />
         </div>
-      </>
-    ) : unavailable ? (
-      <ProjectNotice
-        headingLevel={1}
-        title="Projetos temporariamente indisponíveis"
-        message="Não foi possível carregar este projeto agora. Tente novamente em alguns minutos."
-        showProjectsLink
-      />
-    ) : (
-      <ProjectNotice
-        headingLevel={1}
-        title="Projeto não encontrado"
-        message="Este projeto não está publicado ou não existe."
-        showProjectsLink
-      />
-    )}
-  </div>
-</BaseLayout>
+        <div class="project__panel">
+          <ContributionPanel project={project} />
+        </div>
+        <div class="project__sections">
+          <ProjectSections project={project} />
+        </div>
+      </div>
+    </>
+  ) : unavailable ? (
+    <ProjectNotice
+      headingLevel={1}
+      title="Projetos temporariamente indisponíveis"
+      message="Não foi possível carregar este projeto agora. Tente novamente em alguns minutos."
+      showProjectsLink
+    />
+  ) : (
+    <ProjectNotice
+      headingLevel={1}
+      title="Projeto não encontrado"
+      message="Este projeto não está publicado ou não existe."
+      showProjectsLink
+    />
+  )}
+</AppLayout>
 
 <style lang="scss">
   @use '../../styles/mixins' as mx;
 
   // One column on small screens, in source order: header, media, panel, sections.
-  // From lg the panel moves to a sticky right column next to everything else.
+  // From xl the panel moves to a sticky right column next to everything else; below that,
+  // the app sidebar leaves too little room for two columns.
   .project {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: var(--spacing-lg);
 
-    @include mx.up(lg) {
+    @include mx.up(xl) {
       grid-template-columns: minmax(0, 1fr) 20rem;
       grid-template-areas:
         'header panel'
@@ -101,15 +100,12 @@ setProjectsCacheHeaders(Astro.response.headers, Boolean(project));
       column-gap: var(--spacing-lg);
       row-gap: var(--spacing-md);
     }
-
-    @include mx.up(xl) {
-      grid-template-columns: minmax(0, 1fr) 22rem;
-      column-gap: var(--spacing-xl);
-    }
   }
 
+  // Same scale as the other app pages' titles (.page-intro__title in styles/app.scss).
   .project__header h1 {
     margin: 0;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
   }
 
   .project__meta {
@@ -127,7 +123,7 @@ setProjectsCacheHeaders(Astro.response.headers, Boolean(project));
     gap: var(--spacing-md);
   }
 
-  @include mx.up(lg) {
+  @include mx.up(xl) {
     .project__header {
       grid-area: header;
     }

@@ -15,3 +15,6 @@ export function safeReturnTo(raw: string | null | undefined, fallback = '/app'):
     return fallback;
   }
 }
+
+/** The sign-in page, sending the visitor to `returnTo` afterwards. */
+export const loginPath = (returnTo: string) => `/entrar?returnTo=${encodeURIComponent(returnTo)}`;
