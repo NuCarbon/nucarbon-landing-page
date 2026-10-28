@@ -6,9 +6,11 @@ interface Props {
   /** tCO₂e per year. */
   total: number;
   trees: number;
+  /** Whose footprint it is: the visitor's own, or one somebody shared (neutral wording). */
+  subject?: 'own' | 'shared';
 }
 
-const { total, trees } = Astro.props;
+const { total, trees, subject = 'own' } = Astro.props;
 ---
 
 <section class="result-total" aria-label="Pegada total estimada">
@@ -17,8 +19,8 @@ const { total, trees } = Astro.props;
     <strong data-total>{formatTonnes(total)}</strong> tCO₂e / ano
   </p>
   <p class="result-total__trees">
-    ≈ <span data-trees>{formatInteger(trees)}</span> árvores em equivalência ilustrativa à sua
-    pegada anual
+    ≈ <span data-trees>{formatInteger(trees)}</span> árvores em equivalência ilustrativa
+    {subject === 'shared' ? 'a esta pegada anual' : 'à sua pegada anual'}
   </p>
 </section>
 

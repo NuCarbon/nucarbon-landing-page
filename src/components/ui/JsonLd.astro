@@ -1,0 +1,12 @@
+---
+// A schema.org JSON-LD block. Build `data` with the helpers in lib/structured-data.
+import { serializeJsonLd, type JsonLd } from '../../lib/structured-data';
+
+interface Props {
+  data: JsonLd | JsonLd[];
+}
+
+const { data } = Astro.props;
+---
+
+<script is:inline type="application/ld+json" set:html={serializeJsonLd(data)} />

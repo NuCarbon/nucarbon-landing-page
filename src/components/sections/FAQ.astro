@@ -10,6 +10,12 @@ const faqItems = [
       'Créditos de carbono representam a redução ou remoção de uma tonelada de CO₂ equivalente da atmosfera, gerada por projetos que seguem critérios técnicos, metodologias reconhecidas e processos de monitoramento e verificação.',
   },
   {
+    question: 'Como calcular minha pegada de carbono?',
+    answer:
+      'Use a calculadora gratuita da Nucarbon: responda a 6 perguntas rápidas sobre moradia, transporte, energia, alimentação e resíduos e veja sua estimativa anual de emissões em toneladas de CO₂ equivalente, com dicas para reduzir.',
+    link: { label: 'Acessar a calculadora', href: '/calculadora' },
+  },
+  {
     question: 'Como posso participar de um projeto de créditos de carbono?',
     answer:
       'Produtores rurais, empresas e organizações podem participar por meio do desenvolvimento ou apoio a projetos de crédito de carbono. A Nucarbon avalia a viabilidade técnica, ambiental e econômica de cada iniciativa.',
@@ -42,7 +48,7 @@ const faqItems = [
 ];
 ---
 
-<section id="faq" class="section faq">
+<section id="faq" class="section faq" data-track-location="landing_faq">
   <div class="container">
     <SectionHeader
       title="Tire suas Dúvidas"

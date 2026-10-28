@@ -30,10 +30,18 @@ export default defineConfig({
   ],
   integrations: [
     sitemap({
+      // Shared results and share images under /calculadora/ are not indexed; the page itself is.
       filter: (page) =>
-        !page.includes('/app') && !page.includes('/entrar') && !page.includes('/checkout'),
+        !page.includes('/app') &&
+        !page.includes('/entrar') &&
+        !page.includes('/checkout') &&
+        !/^\/calculadora\/.+/.test(new URL(page).pathname),
     }),
   ],
+  vite: {
+    // Lets src/server/share-image-assets.ts inline the resvg binary with `?inline`.
+    assetsInclude: ['**/@resvg/resvg-wasm/index_bg.wasm'],
+  },
   devToolbar: {
     enabled: false,
   },

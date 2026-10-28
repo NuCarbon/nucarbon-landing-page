@@ -1,5 +1,5 @@
 // Share targets for the calculator result: UTM-tagged links and the networks' share URLs.
-// Implemented by workstream A; signatures are the contract used by the share modal.
+import { formatTonnes } from './format.ts';
 
 /** Every way a visitor can share a result; also the `utm_source` and the analytics `method`. */
 export type ShareMethod =
@@ -19,14 +19,38 @@ export type ShareNetwork = Extract<
   'whatsapp' | 'x' | 'facebook' | 'linkedin' | 'telegram'
 >;
 
-export function withShareUtm(_url: string | URL, _method: ShareMethod): string {
-  throw new Error('Not implemented');
+/** Adds the calculator share UTM tags, keeping any other query parameters and the hash. */
+export function withShareUtm(url: string | URL, method: ShareMethod): string {
+  const tagged = new URL(url);
+  tagged.searchParams.set('utm_source', method);
+  tagged.searchParams.set('utm_medium', 'social');
+  tagged.searchParams.set('utm_campaign', 'calculator_share');
+  return tagged.toString();
 }
 
-export function shareMessage(_total: number): string {
-  throw new Error('Not implemented');
+/** "Minha pegada de carbono estimada é de 4,8 tCO₂e por ano. Calcule a sua:" */
+export function shareMessage(total: number): string {
+  return `Minha pegada de carbono estimada é de ${formatTonnes(total)} tCO₂e por ano. Calcule a sua:`;
 }
 
-export function socialShareHref(_network: ShareNetwork, _url: string, _text: string): string {
-  throw new Error('Not implemented');
+/** The network's share dialog for `url`, prefilled with `text` where the network supports it. */
+export function socialShareHref(network: ShareNetwork, url: string, text: string): string {
+  switch (network) {
+    case 'whatsapp':
+      return withParams('https://wa.me/', { text: `${text} ${url}` });
+    case 'x':
+      return withParams('https://x.com/intent/post', { text, url });
+    case 'facebook':
+      return withParams('https://www.facebook.com/sharer/sharer.php', { u: url });
+    case 'linkedin':
+      return withParams('https://www.linkedin.com/sharing/share-offsite/', { url });
+    case 'telegram':
+      return withParams('https://t.me/share/url', { url, text });
+  }
+}
+
+function withParams(base: string, params: Record<string, string>): string {
+  const href = new URL(base);
+  for (const [key, value] of Object.entries(params)) href.searchParams.set(key, value);
+  return href.toString();
 }

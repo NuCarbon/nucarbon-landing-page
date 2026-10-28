@@ -1,6 +1,13 @@
 ---
+interface AccordionItem {
+  question: string;
+  answer: string;
+  /** Shown after the answer, e.g. a page that goes deeper. */
+  link?: { label: string; href: string };
+}
+
 interface Props {
-  items: { question: string; answer: string }[];
+  items: AccordionItem[];
   /** Items sharing a name are exclusive: opening one closes the others. */
   name: string;
 }
@@ -16,6 +23,13 @@ const { items, name } = Astro.props;
         <span class="accordion__icon" aria-hidden="true" />
       </summary>
       <p class="accordion__answer">{item.answer}</p>
+      {item.link && (
+        <p class="accordion__link">
+          <a href={item.link.href}>
+            {item.link.label} <span aria-hidden="true">→</span>
+          </a>
+        </p>
+      )}
     </details>
   ))}
 </div>
@@ -90,5 +104,19 @@ const { items, name } = Astro.props;
   .accordion__answer {
     margin: 0;
     padding: 0 var(--spacing-md) var(--spacing-md);
+
+    &:has(+ .accordion__link) {
+      padding-bottom: var(--spacing-xs);
+    }
+  }
+
+  .accordion__link {
+    margin: 0;
+    padding: 0 var(--spacing-md) var(--spacing-md);
+    font-weight: 600;
+
+    a:hover {
+      text-decoration: underline;
+    }
   }
 </style>

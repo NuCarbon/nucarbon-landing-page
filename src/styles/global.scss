@@ -68,6 +68,8 @@
   --container-gutter: 1rem;
   --header-height: 4.5rem;
   --z-sticky: 10;
+  /* Consent banner: above sticky bars, below the header (so its mobile menu covers it) and modals. */
+  --z-consent: 900;
   --z-header: 1000;
   --z-modal: 1100;
 

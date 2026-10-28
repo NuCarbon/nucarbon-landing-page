@@ -20,8 +20,8 @@ export const mainNav: NavLink[] = [
   { label: 'Quem Somos', href: '/#quem-somos' },
   { label: 'Soluções', href: '/#solucoes' },
   { label: 'Projetos', href: '/projetos' },
+  { label: 'Calculadora', href: '/calculadora' },
   { label: 'Créditos de Carbono', href: '/#creditos-carbono' },
-  { label: 'Dúvidas', href: '/#faq' },
   { label: 'Contato', href: '/#contato' },
 ];
 

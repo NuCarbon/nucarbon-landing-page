@@ -130,6 +130,65 @@ Deploy changes manually:
    anyone). Editing the existing deployment keeps its URL.
 3. If the URL changes, update `PUBLIC_GOOGLE_SCRIPT_URL` in `.env` and redeploy the site.
 
+## Analytics
+
+Funnel analytics use Firebase Analytics (GA4) through the `firebase` web SDK, behind the LGPD
+consent banner (`src/components/layout/ConsentBanner.astro`, rendered by every layout).
+
+- **Where it sends:** only on `nucarbon.com.br` and `www.nucarbon.com.br`, outside `astro dev`,
+  and only when `PUBLIC_FIREBASE_MEASUREMENT_ID` is set (it is empty in `.env`; set it in the
+  Netlify UI and redeploy). Everywhere else `track()` logs `[analytics] <event> <params>` with
+  `console.debug` and drops the event.
+- **Loading:** `src/scripts/analytics.ts` imports `firebase/analytics` dynamically when the page is
+  idle; events tracked before that wait in a queue (max 50). Blocked or unsupported browsers make
+  it a silent no-op.
+- **Consent mode:** consent is set before `initializeAnalytics`, with everything denied until the
+  visitor clicks Aceitar, which grants `analytics_storage` only. `ad_storage`, `ad_user_data` and
+  `ad_personalization` always stay denied, and Google signals and ad personalization are off.
+  `LOAD_BEFORE_CONSENT` in `src/lib/analytics.ts` selects advanced mode (`true`: cookieless pings
+  before a choice) or basic mode (`false`: nothing loads until Aceitar); its comment explains the
+  LGPD trade-off.
+- **Stored choice:** `nucarbon:consent` in localStorage, `{ choice, version, updatedAt }`. It is
+  asked again after 12 months or when `CONSENT_VERSION` changes. "Preferências de cookies" in the
+  footer (any `[data-consent-open]` element) reopens the banner.
+- **Privacy:** no calculator answers or user ids are sent, only aggregates. Shared result codes are
+  collapsed out of `page_path`.
+
+Event names and params are typed in `AnalyticsEvents` (`src/lib/analytics.ts`); call
+`track(name, params)` from `src/scripts/analytics.ts`. Links to `/calculadora` are tracked by one
+delegated click listener: the nearest `data-track-location` ancestor gives `location` (`header`,
+`footer`, …, else `unknown`), and links inside `[data-shared-result]` count as
+`shared_result_cta_click`.
+
+| Event                        | Params                                                 | When                                                          |
+| ---------------------------- | ------------------------------------------------------ | ------------------------------------------------------------- |
+| `calculator_view`            | `entry` (`direct` \| `project`), `ref?`                | The calculator opens (`ref` from `?ref=`, sanitized)          |
+| `calculator_start`           | `step_id`                                              | The visitor starts the first step                             |
+| `calculator_step_complete`   | `step_id`, `step_index` (1-based)                      | A step is completed                                           |
+| `calculator_back`            | `step_id`, `step_index`                                | Back from a step                                              |
+| `calculator_complete`        | `total_tonnes` (2 decimals), `largest_category`/`none` | The result is shown                                           |
+| `calculator_restart`         | none                                                   | The visitor starts over from the result                       |
+| `calculator_result_restored` | `source` (`draft` \| `account`)                        | A saved result is shown instead of step 1                     |
+| `share_open`                 | `surface` (`calculator_result`)                        | The share modal opens                                         |
+| `share_click`                | `method`                                               | A share option is chosen                                      |
+| `share_complete`             | `method`                                               | Observable completion only: native, Instagram, copy, download |
+| `shared_result_view`         | `share_version`, `total_tonnes`, `largest_category`    | A shared result page (`/calculadora/resultado/<code>`) opens  |
+| `shared_result_cta_click`    | `location`                                             | A calculator link inside a shared result                      |
+| `calculator_cta_click`       | `location`, `page_path`                                | A calculator link on any other page                           |
+| `login_prompt_shown`         | `context` (`calculator_result`)                        | The login modal opens after a result                          |
+
+**Funnel** (GA4 Explore → Funnel exploration): `calculator_view` → `calculator_start` →
+`calculator_step_complete` with `step_index` 1…6 → `calculator_complete` → `share_open` →
+`share_click` / `share_complete`. **Viral loop:** `shared_result_view` →
+`shared_result_cta_click` → `calculator_view` with `ref = shared_result`.
+
+Register these in GA4 (Admin → Custom definitions) so the params show up in reports:
+
+- Event-scoped custom dimensions: `step_id`, `step_index`, `method`, `location`,
+  `largest_category`, `ref`, `entry`, `source`, `surface`, `context`, `share_version`,
+  `page_path`.
+- Custom metric (standard unit): `total_tonnes`.
+
 ## Before deploying
 
 ```sh
@@ -142,3 +201,7 @@ npm run seed -- --project <productionProjectId>   # dry run against production, 
 
 After a deploy, confirm that `curl -sI https://nucarbon.com.br/projetos` returns the security
 headers from `netlify.toml` and that `/api/dashboard` answers 401 without a token.
+
+Analytics: with `PUBLIC_FIREBASE_MEASUREMENT_ID` set, check that the consent banner appears, that
+events arrive in GA4 DebugView (with the Google Analytics Debugger extension) and that the
+custom definitions above are registered.

@@ -1,0 +1,275 @@
+---
+// Share dialog for a calculator result, opened by openShareModal() (scripts/calculator/share-modal.ts).
+// Hrefs, the preview and the download link are filled in when it opens. Render it at page level,
+// outside any `hidden` ancestor.
+import type { ShareMethod, ShareNetwork } from '../../../lib/share-links';
+import { SHARE_IMAGE_SIZES } from '../../../lib/calculator/share';
+import ModalCloseButton from '../../ui/ModalCloseButton.astro';
+import Skeleton from '../../ui/Skeleton.astro';
+import ShareIcon from './ShareIcon.astro';
+import { shareMethodIcons } from './share-icons';
+
+const networks: { method: ShareNetwork; label: string }[] = [
+  { method: 'whatsapp', label: 'WhatsApp' },
+  { method: 'x', label: 'X' },
+  { method: 'facebook', label: 'Facebook' },
+  { method: 'linkedin', label: 'LinkedIn' },
+  { method: 'telegram', label: 'Telegram' },
+];
+
+/** Shown by the script only when the browser supports them. */
+const optionalButtons: { method: ShareMethod; label: string }[] = [
+  { method: 'instagram_stories', label: 'Instagram Stories' },
+  { method: 'native', label: 'Mais opções' },
+];
+
+const preview = SHARE_IMAGE_SIZES.og;
+---
+
+<dialog class="share-modal" data-share-modal aria-labelledby="share-modal-title">
+  <ModalCloseButton />
+
+  <h2 class="share-modal__title" id="share-modal-title">
+    Compartilhe seu resultado
+  </h2>
+  <p class="share-modal__lead">Convide seus amigos a calcularem a pegada de carbono deles.</p>
+
+  <div class="share-modal__preview" data-share-preview-frame>
+    <span class="share-modal__skeleton">
+      <Skeleton variant="block" height="100%" radius="var(--radius-md)" />
+    </span>
+    <img
+      class="share-modal__image"
+      data-share-preview
+      width={preview.width}
+      height={preview.height}
+      alt="Imagem de compartilhamento com a sua pegada de carbono estimada"
+      decoding="async"
+    />
+  </div>
+
+  <div class="share-modal__methods" role="group" aria-label="Formas de compartilhar">
+    {networks.map(({ method, label }) => (
+      <a class="share-method" data-share-method={method} target="_blank" rel="noopener noreferrer">
+        <span class="share-method__tile">
+          <ShareIcon name={shareMethodIcons[method]} />
+        </span>
+        <span class="share-method__label">
+          {label}
+          <span class="visually-hidden"> (abre em nova aba)</span>
+        </span>
+      </a>
+    ))}
+    {optionalButtons.map(({ method, label }) => (
+      <button type="button" class="share-method" data-share-method={method} hidden>
+        <span class="share-method__tile">
+          <ShareIcon name={shareMethodIcons[method]} />
+        </span>
+        <span class="share-method__label" data-share-method-label>
+          {label}
+        </span>
+      </button>
+    ))}
+    <button type="button" class="share-method" data-share-method="copy_link">
+      <span class="share-method__tile">
+        <ShareIcon name={shareMethodIcons.copy_link} />
+      </span>
+      <span class="share-method__label">Copiar link</span>
+    </button>
+    <a class="share-method" data-share-method="download" download="nucarbon-pegada-de-carbono.png">
+      <span class="share-method__tile">
+        <ShareIcon name={shareMethodIcons.download} />
+      </span>
+      <span class="share-method__label">Baixar imagem</span>
+    </a>
+  </div>
+
+  <p class="share-modal__hint" data-share-instagram-hint hidden>
+    Para publicar nos Stories, baixe a imagem e compartilhe pelo app do Instagram no celular.
+  </p>
+  <p class="share-modal__feedback" role="status" data-share-modal-feedback></p>
+</dialog>
+
+<script>
+  import { initializeShareModal } from '../../../scripts/calculator/share-modal';
+
+  initializeShareModal();
+</script>
+
+<style lang="scss">
+  @use '../../../styles/mixins' as mx;
+
+  // Mobile first: a bottom sheet; from `sm` up, a centered card.
+  .share-modal {
+    width: 100%;
+    max-width: none;
+    max-height: calc(100dvh - var(--spacing-lg));
+    margin: auto auto 0;
+    padding: var(--spacing-lg) var(--spacing-sm) var(--spacing-md);
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: 0;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-raised);
+    color: var(--color-text);
+
+    &[open] {
+      animation: share-sheet-in var(--transition-base);
+    }
+
+    &::backdrop {
+      background: var(--color-overlay);
+    }
+
+    @include mx.up(sm) {
+      width: min(100% - 2 * var(--spacing-sm), 34rem);
+      max-height: calc(100dvh - 2 * var(--spacing-sm));
+      margin: auto;
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-lg);
+
+      &[open] {
+        animation-name: share-modal-in;
+      }
+    }
+
+    @include mx.reduced-motion {
+      &[open] {
+        animation: none;
+      }
+    }
+  }
+
+  .share-modal__title {
+    margin: 0 var(--spacing-xl) var(--spacing-2xs) 0;
+    font-size: 1.375rem;
+  }
+
+  .share-modal__lead {
+    margin: 0 0 var(--spacing-md);
+    color: var(--color-text-muted);
+  }
+
+  .share-modal__preview {
+    position: relative;
+    aspect-ratio: 1200 / 630;
+    margin-bottom: var(--spacing-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-muted);
+  }
+
+  .share-modal__skeleton {
+    position: absolute;
+    inset: 0;
+  }
+
+  .share-modal__image {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+
+    [data-loaded] > & {
+      opacity: 1;
+    }
+  }
+
+  .share-modal__methods {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--spacing-sm) var(--spacing-xs);
+
+    @include mx.up(xs) {
+      grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+    }
+  }
+
+  .share-method {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-2xs);
+    min-width: 0;
+    padding: var(--spacing-2xs);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      color: var(--color-text);
+
+      .share-method__tile {
+        background: var(--color-primary-tint);
+      }
+    }
+
+    &:focus-visible {
+      @include mx.focus-ring;
+    }
+
+    &:disabled {
+      cursor: progress;
+      opacity: 0.6;
+    }
+  }
+
+  .share-method__tile {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: var(--radius-round);
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+    transition: background-color var(--transition-fast);
+  }
+
+  .share-method__label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .share-modal__hint {
+    margin: var(--spacing-md) 0 0;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-muted);
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  .share-modal__feedback {
+    min-height: 1.5em;
+    margin: var(--spacing-sm) 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  @keyframes share-sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes share-modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(var(--spacing-sm));
+    }
+  }
+</style>

@@ -1,0 +1,145 @@
+---
+// A result someone shared: a teaser that sends visitors to the calculator. The total is
+// recomputed from the decoded answers, so a link can't show a forged result.
+export const prerender = false;
+
+import CategoryBreakdown from '../../../components/calculator/results/CategoryBreakdown.astro';
+import MethodologyNote from '../../../components/calculator/results/MethodologyNote.astro';
+import ResultTotal from '../../../components/calculator/results/ResultTotal.astro';
+import CTA from '../../../components/ui/CTA.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { setDeterministicCacheHeaders } from '../../../lib/cache';
+import { calculateFootprint } from '../../../lib/calculator/calculate';
+import {
+  decodeShareCode,
+  SHARE_CODE_VERSION,
+  SHARE_IMAGE_SIZES,
+  shareImagePath,
+} from '../../../lib/calculator/share';
+import { formatTonnes } from '../../../lib/format';
+
+const code = Astro.params.code ?? '';
+const answers = decodeShareCode(code);
+if (!answers) return Astro.redirect('/calculadora?ref=shared_invalid', 302);
+
+const result = calculateFootprint(answers);
+const total = formatTonnes(result.total);
+setDeterministicCacheHeaders(Astro.response.headers);
+---
+
+<BaseLayout
+  title={`Pegada de carbono estimada: ${total} tCO₂e/ano | Calculadora Nucarbon`}
+  description="Veja a estimativa compartilhada e calcule a sua em 2 minutos."
+  className="page"
+  image={shareImagePath(code, 'og')}
+  imageAlt={`Pegada de carbono estimada de ${total} tCO₂e por ano, com a distribuição por categoria`}
+  imageWidth={SHARE_IMAGE_SIZES.og.width}
+  imageHeight={SHARE_IMAGE_SIZES.og.height}
+  noindex
+  follow
+>
+  <div
+    class="container shared-result"
+    data-shared-result
+    data-total={result.total}
+    data-largest={result.largestCategory ?? 'none'}
+    data-version={SHARE_CODE_VERSION}
+  >
+    <header class="shared-result__header">
+      <p class="eyebrow">Resultado compartilhado</p>
+      <h1 class="shared-result__title">Pegada estimada: {total} tCO₂e/ano</h1>
+    </header>
+    <div class="shared-result__layout">
+      <div class="shared-result__total">
+        <ResultTotal total={result.total} trees={result.trees} subject="shared" />
+      </div>
+      <div class="shared-result__column shared-result__details">
+        <CategoryBreakdown categories={result.categories} largest={result.largestCategory} />
+        <MethodologyNote />
+      </div>
+      <div class="shared-result__column shared-result__cta" data-track-location="shared_result">
+        <CTA
+          title="Quanto é a sua pegada?"
+          subtitle="Responda 6 perguntas rápidas e descubra a sua estimativa anual em 2 minutos."
+          label="Calcule a sua"
+          href="/calculadora?ref=shared_result"
+        />
+        <a class="shared-result__method" href="/calculadora#metodologia">
+          Como calculamos
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { CATEGORY_IDS } from '../../../lib/calculator/categories';
+  import { track } from '../../../scripts/analytics';
+
+  const root = document.querySelector<HTMLElement>('[data-shared-result]');
+  if (root) {
+    track('shared_result_view', {
+      share_version: Number(root.dataset.version),
+      total_tonnes: Number(root.dataset.total),
+      largest_category: CATEGORY_IDS.find((id) => id === root.dataset.largest) ?? 'none',
+    });
+  }
+</script>
+
+<style lang="scss">
+  @use '../../../styles/mixins' as mx;
+
+  .shared-result__title {
+    margin: 0 0 var(--spacing-lg);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    letter-spacing: -0.03em;
+  }
+
+  // On small screens the invitation to calculate comes right after the total, above the fold;
+  // from lg up it sits in its own column next to the result.
+  .shared-result__layout {
+    display: grid;
+    grid-template-areas: 'total' 'cta' 'details';
+    gap: var(--spacing-lg);
+
+    @include mx.down(sm) {
+      gap: var(--spacing-md);
+    }
+
+    @include mx.up(lg) {
+      grid-template-areas:
+        'total cta'
+        'details cta';
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      align-items: start;
+      column-gap: var(--spacing-xl);
+    }
+  }
+
+  .shared-result__total {
+    grid-area: total;
+  }
+
+  .shared-result__details {
+    grid-area: details;
+  }
+
+  .shared-result__cta {
+    grid-area: cta;
+  }
+
+  .shared-result__column {
+    display: grid;
+    gap: var(--spacing-lg);
+
+    @include mx.down(sm) {
+      gap: var(--spacing-md);
+    }
+  }
+
+  .shared-result__method {
+    justify-self: center;
+    font-weight: 600;
+  }
+</style>

@@ -1,8 +1,8 @@
 ---
 // The results screen. Rendered with the initial answers and hidden; the
-// controller fills in the visitor's result before showing it.
+// controller fills in the visitor's result before showing it. The page renders
+// the site footer once, below both screens.
 import Header from '../../layout/Header.astro';
-import Footer from '../../layout/Footer.astro';
 import SaveStatus from './SaveStatus.astro';
 import ResultTotal from './ResultTotal.astro';
 import CategoryBreakdown from './CategoryBreakdown.astro';
@@ -23,9 +23,9 @@ const result = calculateFootprint(initialAnswers);
       <div class="results__column">
         <header>
           <p class="eyebrow">Cálculo concluído</p>
-          <h1 class="results__title" tabindex="-1">
+          <h2 class="results__title" tabindex="-1" data-screen-heading>
             Sua pegada de carbono estimada
-          </h1>
+          </h2>
         </header>
         <SaveStatus />
         <ResultTotal total={result.total} trees={result.trees} />
@@ -39,7 +39,6 @@ const result = calculateFootprint(initialAnswers);
       </div>
     </div>
   </main>
-  <Footer />
 </div>
 
 <style lang="scss">
