@@ -11,8 +11,13 @@ export function initializeResultSaving(calculator: HTMLElement) {
       if (!user) return;
       await savePendingDraft(user);
       error.hidden = true;
-    } catch { error.hidden = false; }
+    } catch {
+      error.hidden = false;
+    }
   }
   retry.addEventListener('click', () => void save());
-  return (answers: CalculatorAnswers, newRevision = true) => { if (newRevision) writeDraft(answers); void save(); };
+  return (answers: CalculatorAnswers, newRevision = true) => {
+    if (newRevision) writeDraft(answers);
+    void save();
+  };
 }

@@ -11,13 +11,56 @@ interface Props {
 const { answers, active, label } = Astro.props;
 ---
 
-<section class="calculator-step calculator-step--food" data-step="food" data-step-label={label} hidden={!active} aria-labelledby="food-title">
-  <h1 class="calculator-step__title" id="food-title">Como você descreveria sua alimentação habitual?</h1>
+<section
+  class="calculator-step calculator-step--food"
+  data-step="food"
+  data-step-label={label}
+  hidden={!active}
+  aria-labelledby="food-title"
+>
+  <h1 class="calculator-step__title" id="food-title">
+    Como você descreveria sua alimentação habitual?
+  </h1>
   <div class="calculator-step__options calculator-step__options--food">
-    <OptionCard group="food" value={FoodAnswer.Vegan} label="Vegana" description="Apenas alimentos vegetais, sem carnes ou derivados." icon="vegan" selected={answers.food === FoodAnswer.Vegan} />
-    <OptionCard group="food" value={FoodAnswer.Vegetarian} label="Vegetariana" description="Sem carnes, mas consome ovos e laticínios." icon="egg" selected={answers.food === FoodAnswer.Vegetarian} />
-    <OptionCard group="food" value={FoodAnswer.Flexitarian} label="Flexitariana" description="Base vegetal, consumindo carnes raramente." icon="bowl" selected={answers.food === FoodAnswer.Flexitarian} />
-    <OptionCard group="food" value={FoodAnswer.Moderate} label="Moderada" description="Carne presente na maioria das refeições." icon="meat" selected={answers.food === FoodAnswer.Moderate} />
-    <OptionCard group="food" value={FoodAnswer.High} label="Alto consumo de carne" description="Base proteica focada em carnes todos os dias." icon="meat" selected={answers.food === FoodAnswer.High} />
+    <OptionCard
+      group="food"
+      value={FoodAnswer.Vegan}
+      label="Vegana"
+      description="Apenas alimentos vegetais, sem carnes ou derivados."
+      icon="vegan"
+      selected={answers.food === FoodAnswer.Vegan}
+    />
+    <OptionCard
+      group="food"
+      value={FoodAnswer.Vegetarian}
+      label="Vegetariana"
+      description="Sem carnes, mas consome ovos e laticínios."
+      icon="egg"
+      selected={answers.food === FoodAnswer.Vegetarian}
+    />
+    <OptionCard
+      group="food"
+      value={FoodAnswer.Flexitarian}
+      label="Flexitariana"
+      description="Base vegetal, consumindo carnes raramente."
+      icon="bowl"
+      selected={answers.food === FoodAnswer.Flexitarian}
+    />
+    <OptionCard
+      group="food"
+      value={FoodAnswer.Moderate}
+      label="Moderada"
+      description="Carne presente na maioria das refeições."
+      icon="meat"
+      selected={answers.food === FoodAnswer.Moderate}
+    />
+    <OptionCard
+      group="food"
+      value={FoodAnswer.High}
+      label="Alto consumo de carne"
+      description="Base proteica focada em carnes todos os dias."
+      icon="meat"
+      selected={answers.food === FoodAnswer.High}
+    />
   </div>
 </section>

@@ -11,7 +11,9 @@ const { footprint } = Astro.props;
 
 <div class="footprint-card" data-footprint-card>
   <p>Sua Pegada Anual</p>
-  <strong data-footprint>{footprint ? formatFootprint(footprint.annualEmissionsTonnes) : '—'}</strong>
+  <strong data-footprint>
+    {footprint ? formatFootprint(footprint.annualEmissionsTonnes) : '—'}
+  </strong>
   <span data-footprint-date>{footprint && formatUpdatedAt(footprint.updatedAt)}</span>
   <a href="/calculadora">Recalcular pegada</a>
 </div>

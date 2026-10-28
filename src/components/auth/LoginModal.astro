@@ -1,10 +1,39 @@
 ---
 import LoginForm from './LoginForm.astro';
 ---
-<dialog data-login-modal aria-label="Entrar na Nucarbon"><button type="button" class="close" data-modal-close aria-label="Fechar">×</button><LoginForm titleId="modal-login-title" /></dialog>
-<script>import { initializeLoginModal } from '../../scripts/login-modal'; initializeLoginModal();</script>
+
+<dialog data-login-modal aria-label="Entrar na Nucarbon">
+  <button type="button" class="close" data-modal-close aria-label="Fechar">
+    ×
+  </button>
+  <LoginForm titleId="modal-login-title" />
+</dialog>
+<script>
+  import { initializeLoginModal } from '../../scripts/login-modal';
+  initializeLoginModal();
+</script>
 <style lang="scss">
-  dialog { width:min(95vw,520px); max-height:95vh; padding:20px; border:0; border-radius:22px; background:transparent; overflow:visible; }
-  dialog::backdrop { background:#071c0fc0; }
-  .close { position:absolute; z-index:1; top:26px; right:28px; border:0; background:transparent; color:#315536; font-size:2rem; cursor:pointer; }
+  dialog {
+    width: min(95vw, 520px);
+    max-height: 95vh;
+    padding: 20px;
+    border: 0;
+    border-radius: 22px;
+    background: transparent;
+    overflow: visible;
+  }
+  dialog::backdrop {
+    background: #071c0fc0;
+  }
+  .close {
+    position: absolute;
+    z-index: 1;
+    top: 26px;
+    right: 28px;
+    border: 0;
+    background: transparent;
+    color: #315536;
+    font-size: 2rem;
+    cursor: pointer;
+  }
 </style>

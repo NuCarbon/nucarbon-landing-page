@@ -15,13 +15,13 @@ Set `PUBLIC_FIREBASE_API_KEY`, `PUBLIC_FIREBASE_AUTH_DOMAIN`, `PUBLIC_FIREBASE_P
 
 The application uses one set of root collections:
 
-| Path | Purpose |
-| --- | --- |
-| `projects/{uuid}` | Project content, publication flag, price in cents, and Firestore coordinates and timestamps |
-| `authors/{uuid}` | Community author names |
-| `posts/{uuid}` | Community posts and reactions |
-| `users/{firebaseUid}` | Saved calculator answers, footprint, and any verified impact metrics |
-| `users/{firebaseUid}/orders/{uuid}` | Contribution selections and their status |
+| Path                                | Purpose                                                                                     |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| `projects/{uuid}`                   | Project content, publication flag, price in cents, and Firestore coordinates and timestamps |
+| `authors/{uuid}`                    | Community author names                                                                      |
+| `posts/{uuid}`                      | Community posts and reactions                                                               |
+| `users/{firebaseUid}`               | Saved calculator answers, footprint, and any verified impact metrics                        |
+| `users/{firebaseUid}/orders/{uuid}` | Contribution selections and their status                                                    |
 
 Only published projects appear in public responses. Project records must contain the fields validated by [`_schema.ts`](./netlify/functions/_schema.ts); the API does not fill missing content with generated copy. Keep unpublished projects private while authoring them. The restrictive [`firestore.rules`](./firestore.rules) deny direct browser access, so all data access goes through Netlify Functions.
 

@@ -3,15 +3,13 @@ import Skeleton from '../../ui/Skeleton.astro';
 ---
 
 <div class="metric-grid" aria-hidden="true">
-  {
-    Array.from({ length: 2 }).map(() => (
-      <article class="metric-card skeleton-card">
-        <Skeleton width="36px" height="36px" radius="8px" variant="block" />
-        <div class="skeleton-stack skeleton-stack--compact">
-          <Skeleton width="7rem" height="0.65rem" />
-          <Skeleton width="9rem" height="0.85rem" />
-        </div>
-      </article>
-    ))
-  }
+  {Array.from({ length: 2 }).map(() => (
+    <article class="metric-card skeleton-card">
+      <Skeleton width="36px" height="36px" radius="8px" variant="block" />
+      <div class="skeleton-stack skeleton-stack--compact">
+        <Skeleton width="7rem" height="0.65rem" />
+        <Skeleton width="9rem" height="0.85rem" />
+      </div>
+    </article>
+  ))}
 </div>

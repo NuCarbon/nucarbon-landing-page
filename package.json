@@ -7,7 +7,9 @@
     "dev:netlify": "netlify dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@astrojs/netlify": "^7.0.13",
@@ -20,6 +22,8 @@
   },
   "devDependencies": {
     "netlify": "^27.4.1",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.2",
     "sass": "^1.96.0"
   }
 }

@@ -10,7 +10,9 @@ const { projects = [] } = Astro.props;
 ---
 
 <app-project-grid class="project-grid">
-  {projects.map((project) => <ProjectCard project={project} />)}
+  {projects.map((project) => (
+    <ProjectCard project={project} />
+  ))}
 
   <template data-project-template>
     <ProjectCard />
@@ -18,7 +20,14 @@ const { projects = [] } = Astro.props;
 </app-project-grid>
 
 <script>
-  import { biomeLabels, statusLabels, formatArea, formatProgress, formatLocation, projectImageClass } from '../../../scripts/app/format';
+  import {
+    biomeLabels,
+    statusLabels,
+    formatArea,
+    formatProgress,
+    formatLocation,
+    projectImageClass,
+  } from '../../../scripts/app/format';
   import type { Project } from '../../../types/app';
 
   function setText(root: ParentNode, selector: string, value: string): void {
@@ -27,9 +36,7 @@ const { projects = [] } = Astro.props;
   }
   class ProjectGrid extends HTMLElement {
     set projects(projects: Project[]) {
-      const template = this.querySelector<HTMLTemplateElement>(
-        'template[data-project-template]',
-      );
+      const template = this.querySelector<HTMLTemplateElement>('template[data-project-template]');
 
       if (!template) return;
 
@@ -38,9 +45,7 @@ const { projects = [] } = Astro.props;
       const cards = projects.map((project) => {
         const fragment = template.content.cloneNode(true) as DocumentFragment;
         const image = fragment.querySelector<HTMLElement>('[data-project-image]');
-        const progressBar = fragment.querySelector<HTMLElement>(
-          '[data-project-progress-bar]',
-        );
+        const progressBar = fragment.querySelector<HTMLElement>('[data-project-progress-bar]');
         const progress = Math.min(100, Math.max(0, project.restorationProgress * 100));
 
         if (image) image.className = projectImageClass(project.biome);
@@ -51,11 +56,7 @@ const { projects = [] } = Astro.props;
         setText(fragment, '[data-project-name]', project.name);
         const link = fragment.querySelector<HTMLAnchorElement>('[data-project-link]');
         if (link) link.href = `/projetos/${encodeURIComponent(project.slug)}`;
-        setText(
-          fragment,
-          '[data-project-hectares]',
-          formatArea(project.areaHectares),
-        );
+        setText(fragment, '[data-project-hectares]', formatArea(project.areaHectares));
         setText(fragment, '[data-project-progress]', formatProgress(project.restorationProgress));
         setText(fragment, '[data-project-status]', statusLabels[project.status]);
 

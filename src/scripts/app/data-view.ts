@@ -20,9 +20,7 @@ export abstract class AppDataView<T> extends HTMLElement {
       await this.renderData(data);
       this.finishLoading();
     } catch {
-      const errorTemplate = this.querySelector<HTMLTemplateElement>(
-        'template[data-app-error]',
-      );
+      const errorTemplate = this.querySelector<HTMLTemplateElement>('template[data-app-error]');
 
       if (errorTemplate) {
         this.replaceChildren(errorTemplate.content.cloneNode(true));

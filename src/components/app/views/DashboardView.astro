@@ -23,7 +23,9 @@ import LoadingState from '../../ui/LoadingState.astro';
     <section>
       <h2>Impacto verificado</h2>
       <ImpactMetrics />
-      <p data-metrics-empty hidden>Ainda não há impacto verificado na sua conta.</p>
+      <p data-metrics-empty hidden>
+        Ainda não há impacto verificado na sua conta.
+      </p>
     </section>
 
     <section data-supported-projects hidden>
@@ -32,7 +34,9 @@ import LoadingState from '../../ui/LoadingState.astro';
     </section>
 
     <section class="section-heading">
-      <div><h2>Projetos para conhecer</h2></div>
+      <div>
+        <h2>Projetos para conhecer</h2>
+      </div>
       <a href="/projetos">Ver todos</a>
     </section>
 
@@ -59,10 +63,14 @@ import LoadingState from '../../ui/LoadingState.astro';
       const footprint = this.querySelector<HTMLElement>('[data-footprint]');
       const footprintDate = this.querySelector<HTMLElement>('[data-footprint-date]');
 
-      if (footprint) footprint.textContent = data.footprint ? formatFootprint(data.footprint.annualEmissionsTonnes) : '—';
-      if (footprintDate) footprintDate.textContent = data.footprint
-        ? formatUpdatedAt(data.footprint.updatedAt)
-        : 'Calcule sua pegada para ver seu resultado aqui.';
+      if (footprint)
+        footprint.textContent = data.footprint
+          ? formatFootprint(data.footprint.annualEmissionsTonnes)
+          : '—';
+      if (footprintDate)
+        footprintDate.textContent = data.footprint
+          ? formatUpdatedAt(data.footprint.updatedAt)
+          : 'Calcule sua pegada para ver seu resultado aqui.';
 
       await Promise.all([
         customElements.whenDefined('app-impact-metrics'),
@@ -71,8 +79,11 @@ import LoadingState from '../../ui/LoadingState.astro';
 
       const metrics = this.querySelector<ImpactMetricsElement>('app-impact-metrics');
       const supportedSection = this.querySelector<HTMLElement>('[data-supported-projects]');
-      const supportedProjects = supportedSection?.querySelector<ProjectGridElement>('app-project-grid');
-      const projects = this.querySelector<ProjectGridElement>(':scope > [data-app-content] > app-project-grid');
+      const supportedProjects =
+        supportedSection?.querySelector<ProjectGridElement>('app-project-grid');
+      const projects = this.querySelector<ProjectGridElement>(
+        ':scope > [data-app-content] > app-project-grid',
+      );
 
       if (metrics) metrics.metrics = data.metrics;
       const emptyMetrics = this.querySelector<HTMLElement>('[data-metrics-empty]');

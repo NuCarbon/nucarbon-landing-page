@@ -1,11 +1,27 @@
 // Persisted codes: never renumber or reuse an existing value.
-export enum Biome { AtlanticForest = 1, Cerrado = 2 }
-export enum ProjectStatus { Planting = 1, Monitoring = 2 }
-export enum MetricType { TreesSupported = 1, CarbonOffset = 2 }
-export enum ReactionType { Heart = 1, Seedling = 2, Applause = 3 }
+export enum Biome {
+  AtlanticForest = 1,
+  Cerrado = 2,
+}
+export enum ProjectStatus {
+  Planting = 1,
+  Monitoring = 2,
+}
+export enum MetricType {
+  TreesSupported = 1,
+  CarbonOffset = 2,
+}
+export enum ReactionType {
+  Heart = 1,
+  Seedling = 2,
+  Applause = 3,
+}
 
 export type UUID = `${string}-${string}-${string}-${string}-${string}`;
-export interface Coordinates { latitude: number; longitude: number }
+export interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
 
 export interface Project {
   id: UUID;
@@ -50,8 +66,14 @@ export interface Dashboard {
   supportedProjects: Project[];
 }
 
-export interface Author { id: UUID; displayName: string }
-export interface ReactionCount { type: ReactionType; count: number }
+export interface Author {
+  id: UUID;
+  displayName: string;
+}
+export interface ReactionCount {
+  type: ReactionType;
+  count: number;
+}
 
 export interface CommunityPost {
   id: UUID;

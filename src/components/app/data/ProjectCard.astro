@@ -1,5 +1,12 @@
 ---
-import { biomeLabels, statusLabels, formatArea, formatProgress, formatLocation, projectImageClass } from '../../../scripts/app/format';
+import {
+  biomeLabels,
+  statusLabels,
+  formatArea,
+  formatProgress,
+  formatLocation,
+  projectImageClass,
+} from '../../../scripts/app/format';
 import type { Project } from '../../../types/app';
 
 interface Props {
@@ -16,27 +23,39 @@ const progress = project
   <div
     class={project ? projectImageClass(project.biome) : 'project-image'}
     data-project-image
-  >
-  </div>
+  ></div>
 
   <div class="project-content">
     <p class="project-tags">
       <span data-project-biome>{project && biomeLabels[project.biome]}</span>
       <span data-project-location>{project && formatLocation(project.location)}</span>
     </p>
-    <h3><a data-project-link href={project && `/projetos/${project.slug}`}><span data-project-name>{project?.name}</span></a></h3>
-    <p data-project-hectares>
-      {project && formatArea(project.areaHectares)}
-    </p>
+    <h3>
+      <a data-project-link href={project && `/projetos/${project.slug}`}>
+        <span data-project-name>{project?.name}</span>
+      </a>
+    </h3>
+    <p data-project-hectares>{project && formatArea(project.areaHectares)}</p>
     <div class="project-progress">
       <span>Progresso</span>
-      <strong data-project-progress>{project && formatProgress(project.restorationProgress)}</strong>
-      <i><b data-project-progress-bar style={progress !== undefined && `width: ${progress}%`}></b></i>
+      <strong data-project-progress>
+        {project && formatProgress(project.restorationProgress)}
+      </strong>
+      <i>
+        <b data-project-progress-bar style={progress !== undefined && `width: ${progress}%`}></b>
+      </i>
     </div>
     <small data-project-status>{project && statusLabels[project.status]}</small>
   </div>
 </article>
 <style lang="scss">
-  h3 a { color:inherit; text-decoration:none; }
-  h3 a:hover,h3 a:focus-visible { color:#287739; text-decoration:underline; }
+  h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  h3 a:hover,
+  h3 a:focus-visible {
+    color: #287739;
+    text-decoration: underline;
+  }
 </style>

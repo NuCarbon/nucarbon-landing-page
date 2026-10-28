@@ -12,15 +12,15 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
       <div class="contato-info">
         <h2 class="section-title">Fale Conosco</h2>
         <p>Entre em contato conosco para saber mais sobre nossas soluções ou tirar suas dúvidas.</p>
-        
+
         <div class="info-item-list">
           <div class="info-item">
-            <EmailIcon/>
+            <EmailIcon />
             <a href="mailto:contato@nucarbon.com.br">contato@nucarbon.com.br</a>
           </div>
-          
+
           <div class="info-item">
-            <PhoneIcon/>
+            <PhoneIcon />
             <p>
               <a href="tel:+5519971598636">+55 (19) 97159-8636</a>
               <a href="tel:+5511993960431">+55 (11) 99396-0431</a>
@@ -28,7 +28,7 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
           </div>
         </div>
       </div>
-      
+
       <div class="contato-form">
         <div id="form-message" class="form-message" role="alert" aria-live="polite" hidden></div>
         <form id="contato-form" class="form" action="#" method="POST">
@@ -37,13 +37,13 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
               <label for="nome">Nome Completo *</label>
               <input type="text" id="nome" name="nome" required />
             </div>
-            
+
             <div class="form-group">
               <label for="email">Email *</label>
               <input type="email" id="email" name="email" required />
             </div>
           </div>
-          
+
           <div class="form-group">
             <label for="assunto">Assunto *</label>
             <select id="assunto" name="assunto" required>
@@ -54,13 +54,15 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
               <option value="outro">Outro</option>
             </select>
           </div>
-          
+
           <div class="form-group">
             <label for="mensagem">Mensagem *</label>
             <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
           </div>
-          
-          <Button type="submit" id="submit-btn">Enviar Mensagem</Button>
+
+          <Button type="submit" id="submit-btn">
+            Enviar Mensagem
+          </Button>
         </form>
       </div>
     </div>
@@ -132,216 +134,215 @@ const scriptUrl = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
 </script>
 
 <style lang="scss">
-.contato {
-  background-color: var(--color-bg-secondary);
-  padding: calc(2 * var(--spacing-2xl)) var(--spacing-lg);
+  .contato {
+    background-color: var(--color-bg-secondary);
+    padding: calc(2 * var(--spacing-2xl)) var(--spacing-lg);
 
-  .container {
-    padding: var(--spacing-xl);
-    max-width: 1200px;
-  }
-
-  &-content {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
-  }
-
-  &-info > p {
-    margin-bottom: var(--spacing-md);
-  }
-
-  &-info,
-  &-form {
-    h3 {
-      color: var(--color-primary);
-      margin-bottom: var(--spacing-lg);
-    }
-  }
-
-  .info-item {
-    display: flex;
-    align-items: center;
-
-    &-list {
-      gap: var(--spacing-md);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      margin-bottom: var(--spacing-md);
+    .container {
+      padding: var(--spacing-xl);
+      max-width: 1200px;
     }
 
-    h4 {
-      font-size: 1rem;
-      color: var(--color-text-primary);
-      margin-bottom: var(--spacing-xs);
-      font-weight: 600;
-    }
-
-    a {
-      color: var(--color-primary);
-      text-decoration: none;
-      display: block;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    p {
-      margin: 0;
-      color: var(--color-text-secondary);
-    }
-
-    :global(svg) {
-      width: 2.5rem;
-      height: 2.5rem;
-      border-radius: 2.5rem;
-      margin-right: var(--spacing-sm);
-      background-color: var(--color-primary-accent);
-      padding: var(--spacing-xs);
-      fill: var(--color-primary-light);
-    }
-  }
-
-  .form-message {
-    padding: 0.75rem 1rem;
-    border-radius: var(--border-radius-md);
-    margin-bottom: var(--spacing-md);
-    font-weight: 500;
-
-    &--success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    &--error {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-  }
-
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-
-    &-row {
-      display: flex;
-      flex-direction: column;
+    &-content {
+      display: grid;
+      grid-template-columns: 1fr;
       gap: var(--spacing-md);
     }
 
-    &-group {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-
-      label {
-        margin-bottom: var(--spacing-xs);
-        font-weight: 600;
-        color: var(--color-text-primary);
-      }
-
-      input,
-      select,
-      textarea {
-        padding: 0.75rem;
-        border: 2px solid var(--color-border);
-        border-radius: var(--border-radius-md);
-        font-family: inherit;
-        font-size: 1rem;
-        transition: border-color 0.3s ease;
-        background-color: var(--color-bg-primary);
-
-        &:focus {
-          outline: none;
-          border-color: var(--color-primary);
-        }
-      }
-
-      textarea {
-        resize: vertical;
-        min-height: 120px;
-      }
-    }
-
-    &.disabled {
-      opacity: 0.5;
-      pointer-events: none;
-      cursor: not-allowed;
-
-      :global(.btn) {
-        transform: translateY(-2px);
-        animation: pulse 2s infinite;
-        
-        @keyframes pulse {
-          0% {
-            opacity: 0.5;
-          }
-          50% {
-            opacity: 1;
-          }
-          100% {
-            opacity: 0.5;
-          }
-        }
-      }
-    }
-  }
-
-  @media (min-width: 750px) {
     &-info > p {
       margin-bottom: var(--spacing-md);
     }
 
+    &-info,
+    &-form {
+      h3 {
+        color: var(--color-primary);
+        margin-bottom: var(--spacing-lg);
+      }
+    }
+
     .info-item {
+      display: flex;
+      align-items: center;
+
       &-list {
-        flex-direction: row;
+        gap: var(--spacing-md);
+        display: flex;
+        flex-direction: column;
         justify-content: space-evenly;
         margin-bottom: var(--spacing-md);
       }
-    }
 
-    .form-row {
-      flex-direction: row;
-    }
-  }
+      h4 {
+        font-size: 1rem;
+        color: var(--color-text-primary);
+        margin-bottom: var(--spacing-xs);
+        font-weight: 600;
+      }
 
-  @media (min-width: 900px) {
-    .section-title {
-      text-align: left;
-      &::after {
-        margin: var(--spacing-sm) 0 0;
+      a {
+        color: var(--color-primary);
+        text-decoration: none;
+        display: block;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      p {
+        margin: 0;
+        color: var(--color-text-secondary);
+      }
+
+      :global(svg) {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 2.5rem;
+        margin-right: var(--spacing-sm);
+        background-color: var(--color-primary-accent);
+        padding: var(--spacing-xs);
+        fill: var(--color-primary-light);
       }
     }
 
-    &-content {
-      grid-template-columns: 1fr 2fr;
-      gap: var(--spacing-xl);
-    }
+    .form-message {
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius-md);
+      margin-bottom: var(--spacing-md);
+      font-weight: 500;
 
-    &-info {
-      & > p {
-        margin-bottom: var(--spacing-xl);
+      &--success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
       }
 
-      .info-item {
-        margin-bottom: 0;
+      &--error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    }
 
-        &-list {
-          gap: var(--spacing-lg);
-          flex-direction: column;
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+
+      &-row {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      &-group {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+
+        label {
+          margin-bottom: var(--spacing-xs);
+          font-weight: 600;
+          color: var(--color-text-primary);
+        }
+
+        input,
+        select,
+        textarea {
+          padding: 0.75rem;
+          border: 2px solid var(--color-border);
+          border-radius: var(--border-radius-md);
+          font-family: inherit;
+          font-size: 1rem;
+          transition: border-color 0.3s ease;
+          background-color: var(--color-bg-primary);
+
+          &:focus {
+            outline: none;
+            border-color: var(--color-primary);
+          }
+        }
+
+        textarea {
+          resize: vertical;
+          min-height: 120px;
+        }
+      }
+
+      &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+
+        :global(.btn) {
+          transform: translateY(-2px);
+          animation: pulse 2s infinite;
+
+          @keyframes pulse {
+            0% {
+              opacity: 0.5;
+            }
+            50% {
+              opacity: 1;
+            }
+            100% {
+              opacity: 0.5;
+            }
+          }
         }
       }
     }
 
-    .form-row {
-      flex-direction: row;
+    @media (min-width: 750px) {
+      &-info > p {
+        margin-bottom: var(--spacing-md);
+      }
+
+      .info-item {
+        &-list {
+          flex-direction: row;
+          justify-content: space-evenly;
+          margin-bottom: var(--spacing-md);
+        }
+      }
+
+      .form-row {
+        flex-direction: row;
+      }
+    }
+
+    @media (min-width: 900px) {
+      .section-title {
+        text-align: left;
+        &::after {
+          margin: var(--spacing-sm) 0 0;
+        }
+      }
+
+      &-content {
+        grid-template-columns: 1fr 2fr;
+        gap: var(--spacing-xl);
+      }
+
+      &-info {
+        & > p {
+          margin-bottom: var(--spacing-xl);
+        }
+
+        .info-item {
+          margin-bottom: 0;
+
+          &-list {
+            gap: var(--spacing-lg);
+            flex-direction: column;
+          }
+        }
+      }
+
+      .form-row {
+        flex-direction: row;
+      }
     }
   }
-}
 </style>
-

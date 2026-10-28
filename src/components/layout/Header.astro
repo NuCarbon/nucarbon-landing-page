@@ -10,27 +10,39 @@ interface Props {
 const { transparent = false } = Astro.props;
 ---
 
-<header class={"header" + (transparent ? " transparent" : "")} data-transparent={transparent}>
+<header class={'header' + (transparent ? ' transparent' : '')} data-transparent={transparent}>
   <div class="container">
     <nav class="nav" role="navigation" aria-label="Navegação principal">
       <a href="/" class="logo">
-        <Image src={logo} alt="Logo Nucarbon" width={56} height={56}/>
+        <Image src={logo} alt="Logo Nucarbon" width={56} height={56} />
         <span class="logo-text">Nucarbon</span>
       </a>
-      
+
       <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false">
         <span class="hamburger"></span>
         <span class="hamburger"></span>
         <span class="hamburger"></span>
       </button>
-      
+
       <ul class="nav-menu">
-        <li><a href="/#quem-somos">Quem Somos</a></li>
-        <li><a href="/#solucoes">Soluções</a></li>
-        <li><a href="/projetos">Projetos</a></li>
-        <li><a href="/#creditos-carbono">Créditos de Carbono</a></li>
-        <li><a href="/#faq">Dúvidas</a></li>
-        <li><a href="/#contato">Contato</a></li>
+        <li>
+          <a href="/#quem-somos">Quem Somos</a>
+        </li>
+        <li>
+          <a href="/#solucoes">Soluções</a>
+        </li>
+        <li>
+          <a href="/projetos">Projetos</a>
+        </li>
+        <li>
+          <a href="/#creditos-carbono">Créditos de Carbono</a>
+        </li>
+        <li>
+          <a href="/#faq">Dúvidas</a>
+        </li>
+        <li>
+          <a href="/#contato">Contato</a>
+        </li>
         <HeaderAccount />
       </ul>
     </nav>
@@ -44,7 +56,7 @@ const { transparent = false } = Astro.props;
     const menu = document.querySelector('.nav-menu');
     let lastScrollY = window.scrollY + 1;
     let ticking = false;
-    
+
     // Mobile menu toggle
     if (toggle && menu) {
       toggle.addEventListener('click', () => {
@@ -53,31 +65,35 @@ const { transparent = false } = Astro.props;
         menu.classList.toggle('active');
         toggle.classList.toggle('active');
       });
-      
+
       // Close menu when clicking on a link
       const links = menu.querySelectorAll('a');
-      links.forEach(link => {
+      links.forEach((link) => {
         link.addEventListener('click', () => {
           menu.classList.remove('active');
           toggle.classList.remove('active');
           toggle.setAttribute('aria-expanded', 'false');
 
           header.classList.add('scrolling');
-          window.addEventListener('scrollend', () => {
-            lastScrollY = window.scrollY - 1;
-            updateHeader();
-            header.classList.remove('scrolling');
-          }, { once: true });
+          window.addEventListener(
+            'scrollend',
+            () => {
+              lastScrollY = window.scrollY - 1;
+              updateHeader();
+              header.classList.remove('scrolling');
+            },
+            { once: true },
+          );
         });
       });
     }
-    
+
     // Scroll behavior for header
     function updateHeader() {
       const scrollY = window.scrollY;
       const scrollingDown = scrollY > lastScrollY;
       const scrollingUp = scrollY < lastScrollY;
-      
+
       if (scrollY === 0) {
         header.classList.remove('scrolled', 'hidden');
         if (header.getAttribute('data-transparent') === 'true') {
@@ -90,218 +106,222 @@ const { transparent = false } = Astro.props;
         header.classList.remove('transparent', 'hidden');
         header.classList.add('scrolled');
       }
-      
+
       lastScrollY = scrollY;
       ticking = false;
     }
-    
+
     function onScroll() {
       if (!ticking) {
         window.requestAnimationFrame(updateHeader);
         ticking = true;
       }
     }
-    
+
     // Initial state
     updateHeader();
-    
+
     // Listen to scroll events
     window.addEventListener('scroll', onScroll, { passive: true });
   });
 </script>
 
 <style lang="scss">
-.header {
-  background-color: var(--color-bg-primary);
-  box-shadow: var(--shadow-lg);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-  transform: translateY(0);
-
-  &.scrolled, &.light {
+  .header {
     background-color: var(--color-bg-primary);
+    box-shadow: var(--shadow-lg);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition:
+      background-color 0.3s ease,
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
+    transform: translateY(0);
 
-    .nav-cta {
-      color: white;
-    }
-  }
+    &.scrolled,
+    &.light {
+      background-color: var(--color-bg-primary);
 
-  &.hidden, &.scrolling {
-    transform: translateY(-100%);
-  }
-
-  .nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-  }
-
-  .logo {
-    display: flex;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    text-decoration: none;
-    transition: color 0.3s ease;
-    align-items: center;
-
-    img {
-      width: 28px;
-      height: 28px;
-      margin-right: var(--spacing-xs);
-      filter:
-        drop-shadow( 0.5px  0px 0px var(--color-bg-primary)) 
-        drop-shadow(-0.5px  0px 0px var(--color-bg-primary))
-        drop-shadow( 0px  0.5px 0px var(--color-bg-primary)) 
-        drop-shadow( 0px -0.5px 0px var(--color-bg-primary));
-    }
-
-    span {
-      font-family: var(--font-logo);
-    }
-  }
-
-  .logo-text {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    transition: background 0.3s ease;
-  }
-
-  .nav-menu {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-
-    a {
-      color: var(--color-text-primary);
-      font-weight: 500;
-      transition: color 0.3s ease;
-      text-decoration: none;
-
-      &:hover {
-        color: var(--color-primary);
+      .nav-cta {
+        color: white;
       }
     }
-  }
 
-  .nav-cta {
-    background-color: var(--color-primary);
-    padding: 0.5rem 1rem;
-    border-radius: var(--border-radius-md);
-
-    &:hover {
-      background-color: var(--color-primary-dark);
-      color: white !important;
+    &.hidden,
+    &.scrolling {
+      transform: translateY(-100%);
     }
-  }
 
-  .mobile-menu-toggle {
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-
-    &.active {
-      .hamburger {
-        &:nth-child(1) {
-          transform: translateX(8px) rotate(45deg) translate(0, 10px);
-        }
-
-        &:nth-child(2) {
-          opacity: 0;
-        }
-
-        &:nth-child(3) {
-          transform: translateX(8px) rotate(-45deg) translate(0, -10px);
-        }
-      }
-    }
-  }
-
-  .hamburger {
-    width: 25px;
-    height: 3px;
-    background-color: var(--color-text-primary);
-    transition: all 0.3s ease;
-    border-radius: 2px;
-  }
-
-  @media (max-width: 1120px) {
-    .mobile-menu-toggle {
+    .nav {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+
+    .logo {
+      display: flex;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      align-items: center;
+
+      img {
+        width: 28px;
+        height: 28px;
+        margin-right: var(--spacing-xs);
+        filter: drop-shadow(0.5px 0px 0px var(--color-bg-primary))
+          drop-shadow(-0.5px 0px 0px var(--color-bg-primary))
+          drop-shadow(0px 0.5px 0px var(--color-bg-primary))
+          drop-shadow(0px -0.5px 0px var(--color-bg-primary));
+      }
+
+      span {
+        font-family: var(--font-logo);
+      }
+    }
+
+    .logo-text {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transition: background 0.3s ease;
     }
 
     .nav-menu {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background-color: var(--color-bg-primary);
-      flex-direction: column;
-      padding: 1.5rem;
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-100%);
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      gap: 1rem;
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+      align-items: center;
+      margin: 0;
+      padding: 0;
 
-      &.active {
-        transform: translateY(0);
-        opacity: 1;
-        visibility: visible;
-      }
-    }
-  }
+      a {
+        color: var(--color-text-primary);
+        font-weight: 500;
+        transition: color 0.3s ease;
+        text-decoration: none;
 
-  @media (min-width: 1120px) {
-    &.transparent {
-      background-color: transparent;
-      box-shadow: none;
-
-      .logo {
-        color: white;
-      }
-
-      .logo-text {
-        background: linear-gradient(135deg, white, rgba(255, 255, 255, 0.9));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      .nav-menu {
-        a {
-          color: white;
-
-          &:hover {
-            color: rgba(255, 255, 255, 0.8);
-          }
-        }
-
-        .nav-cta {
-          background-color: white;
+        &:hover {
           color: var(--color-primary);
         }
       }
+    }
 
-      .hamburger {
-        background-color: white;
+    .nav-cta {
+      background-color: var(--color-primary);
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius-md);
+
+      &:hover {
+        background-color: var(--color-primary-dark);
+        color: white !important;
+      }
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+
+      &.active {
+        .hamburger {
+          &:nth-child(1) {
+            transform: translateX(8px) rotate(45deg) translate(0, 10px);
+          }
+
+          &:nth-child(2) {
+            opacity: 0;
+          }
+
+          &:nth-child(3) {
+            transform: translateX(8px) rotate(-45deg) translate(0, -10px);
+          }
+        }
+      }
+    }
+
+    .hamburger {
+      width: 25px;
+      height: 3px;
+      background-color: var(--color-text-primary);
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 1120px) {
+      .mobile-menu-toggle {
+        display: flex;
+      }
+
+      .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--color-bg-primary);
+        flex-direction: column;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        gap: 1rem;
+
+        &.active {
+          transform: translateY(0);
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+    }
+
+    @media (min-width: 1120px) {
+      &.transparent {
+        background-color: transparent;
+        box-shadow: none;
+
+        .logo {
+          color: white;
+        }
+
+        .logo-text {
+          background: linear-gradient(135deg, white, rgba(255, 255, 255, 0.9));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .nav-menu {
+          a {
+            color: white;
+
+            &:hover {
+              color: rgba(255, 255, 255, 0.8);
+            }
+          }
+
+          .nav-cta {
+            background-color: white;
+            color: var(--color-primary);
+          }
+        }
+
+        .hamburger {
+          background-color: white;
+        }
       }
     }
   }
-}
 </style>

@@ -27,17 +27,32 @@
     text-align: center;
   }
 
-  &__options { display: grid; gap: 1.35rem; }
-  &__options--profile { grid-template-columns: repeat(2, 1fr); }
-  &__options--three { grid-template-columns: repeat(3, 1fr); }
-  &__options--transport { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-  &__options--food { grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+  &__options {
+    display: grid;
+    gap: 1.35rem;
+  }
+  &__options--profile {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  &__options--three {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  &__options--transport {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  &__options--food {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+  }
 }
 
 @media (max-width: 900px) {
   .calculator-step {
     &__options--profile,
-    &__options--three { grid-template-columns: 1fr; }
+    &__options--three {
+      grid-template-columns: 1fr;
+    }
   }
 }
 
@@ -46,8 +61,20 @@
     display: flex;
     flex-direction: column;
 
-    &__title { order: 1; max-width: 360px; margin-bottom: 2.4rem; font-size: 1.75rem; line-height: 1.18; }
-    &__options { order: 2; gap: 0.85rem; }
-    &__options--transport { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+    &__title {
+      order: 1;
+      max-width: 360px;
+      margin-bottom: 2.4rem;
+      font-size: 1.75rem;
+      line-height: 1.18;
+    }
+    &__options {
+      order: 2;
+      gap: 0.85rem;
+    }
+    &__options--transport {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
   }
 }

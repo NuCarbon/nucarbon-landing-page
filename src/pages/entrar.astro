@@ -2,7 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LoginForm from '../components/auth/LoginForm.astro';
 ---
-<BaseLayout title="Entrar | Nucarbon" className="login-page"><LoginForm /></BaseLayout>
+
+<BaseLayout title="Entrar | Nucarbon" className="login-page">
+  <LoginForm />
+</BaseLayout>
 <script>
   import { authReady, signInWithGoogle } from '../scripts/auth';
   import { savePendingDraft } from '../scripts/calculator/draft';
@@ -25,4 +28,12 @@ import LoginForm from '../components/auth/LoginForm.astro';
     }
   });
 </script>
-<style lang="scss">:global(.login-page) { min-height:75vh; display:grid; place-items:center; padding:120px 20px 60px; background:#f7f8f4; }</style>
+<style lang="scss">
+  :global(.login-page) {
+    min-height: 75vh;
+    display: grid;
+    place-items: center;
+    padding: 120px 20px 60px;
+    background: #f7f8f4;
+  }
+</style>

@@ -11,14 +11,22 @@ import { initialAnswers } from '../scripts/calculator/state';
     <section class="calculator__flow" data-calculator-flow>
       <header class="calculator__header">
         <CalculatorLogo />
-        <p class="calculator__step-label">Etapa <span data-current-step>1</span> de {calculatorSteps.length} <strong data-step-name>[{calculatorSteps[0].label}]</strong></p>
+        <p class="calculator__step-label">
+          Etapa <span data-current-step>1</span> de {calculatorSteps.length}{' '}
+          <strong data-step-name>[{calculatorSteps[0].label}]</strong>
+        </p>
       </header>
 
       <div class="calculator__progress" aria-label="Progresso do cálculo">
         <span class="calculator__progress-value" data-progress></span>
       </div>
       <div class="calculator__dots" aria-hidden="true">
-        {calculatorSteps.map(({ id }, index) => <span class:list={['calculator__dot', { 'calculator__dot--active': index === 0 }]} data-dot={id}></span>)}
+        {calculatorSteps.map(({ id }, index) => (
+          <span
+            class:list={['calculator__dot', { 'calculator__dot--active': index === 0 }]}
+            data-dot={id}
+          ></span>
+        ))}
       </div>
 
       <form class="calculator__form" data-calculator-form>
@@ -28,8 +36,12 @@ import { initialAnswers } from '../scripts/calculator/state';
       </form>
 
       <nav class="calculator__actions" aria-label="Navegação da calculadora">
-        <button class="calculator__back" type="button" data-back>Voltar</button>
-        <button class="calculator__continue" type="button" data-continue>Continuar</button>
+        <button class="calculator__back" type="button" data-back>
+          Voltar
+        </button>
+        <button class="calculator__continue" type="button" data-continue>
+          Continuar
+        </button>
       </nav>
     </section>
 
@@ -108,8 +120,15 @@ import { initialAnswers } from '../scripts/calculator/state';
       border-radius: 50%;
       background: #ddddda;
 
-      &--complete { background: var(--calculator-green); }
-      &--active { width: 11px; height: 11px; margin-top: -2px; background: var(--calculator-green); }
+      &--complete {
+        background: var(--calculator-green);
+      }
+      &--active {
+        width: 11px;
+        height: 11px;
+        margin-top: -2px;
+        background: var(--calculator-green);
+      }
     }
 
     &__form {
@@ -140,7 +159,11 @@ import { initialAnswers } from '../scripts/calculator/state';
       cursor: pointer;
     }
 
-    &__back { padding: 0.75rem 0; background: transparent; color: var(--calculator-muted); }
+    &__back {
+      padding: 0.75rem 0;
+      background: transparent;
+      color: var(--calculator-muted);
+    }
 
     &__continue {
       min-width: 165px;
@@ -149,30 +172,62 @@ import { initialAnswers } from '../scripts/calculator/state';
       background: var(--calculator-green);
       color: #fff;
 
-      &:hover { background: var(--calculator-green-dark); }
+      &:hover {
+        background: var(--calculator-green-dark);
+      }
     }
   }
 
   @media (max-width: 900px) {
     .calculator {
-      &__header { width: calc(100% - 2rem); padding: 1.6rem 0 1.2rem; }
-      &__progress { width: calc(100% - 2rem); }
-      &__step-label strong { display: none; }
-      &__form { padding: 2.2rem 1.25rem 4rem; }
-      &__actions { min-height: 96px; padding: 1.25rem; }
+      &__header {
+        width: calc(100% - 2rem);
+        padding: 1.6rem 0 1.2rem;
+      }
+      &__progress {
+        width: calc(100% - 2rem);
+      }
+      &__step-label strong {
+        display: none;
+      }
+      &__form {
+        padding: 2.2rem 1.25rem 4rem;
+      }
+      &__actions {
+        min-height: 96px;
+        padding: 1.25rem;
+      }
     }
   }
 
   @media (max-width: 600px) {
     .calculator {
-      &__header { padding-top: 1.5rem; }
-      &__step-label { font-size: 1rem; }
-      &__progress { height: 6px; }
-      &__dots { padding-top: 13px; }
-      &__form { padding-top: 1.9rem; }
-      &__actions { min-height: 96px; }
-      &__back, &__continue { font-size: 1rem; }
-      &__continue { min-width: 136px; padding: 0.85rem 1.4rem; }
+      &__header {
+        padding-top: 1.5rem;
+      }
+      &__step-label {
+        font-size: 1rem;
+      }
+      &__progress {
+        height: 6px;
+      }
+      &__dots {
+        padding-top: 13px;
+      }
+      &__form {
+        padding-top: 1.9rem;
+      }
+      &__actions {
+        min-height: 96px;
+      }
+      &__back,
+      &__continue {
+        font-size: 1rem;
+      }
+      &__continue {
+        min-width: 136px;
+        padding: 0.85rem 1.4rem;
+      }
     }
   }
 </style>

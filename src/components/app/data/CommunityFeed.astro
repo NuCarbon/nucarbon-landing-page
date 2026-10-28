@@ -10,7 +10,9 @@ const { posts = [] } = Astro.props;
 ---
 
 <app-community-feed class="community-feed">
-  {posts.map((post) => <CommunityPost post={post} />)}
+  {posts.map((post) => (
+    <CommunityPost post={post} />
+  ))}
 
   <template data-post-template>
     <CommunityPost />
@@ -28,9 +30,7 @@ const { posts = [] } = Astro.props;
 
   class CommunityFeed extends HTMLElement {
     set posts(posts: CommunityPost[]) {
-      const template = this.querySelector<HTMLTemplateElement>(
-        'template[data-post-template]',
-      );
+      const template = this.querySelector<HTMLTemplateElement>('template[data-post-template]');
 
       if (!template) return;
 

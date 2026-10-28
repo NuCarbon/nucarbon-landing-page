@@ -1,12 +1,12 @@
 ---
-import CalculatorLogo from "./CalculatorLogo.astro";
-import CalculatorIcon from "./CalculatorIcon.astro";
+import CalculatorLogo from './CalculatorLogo.astro';
+import CalculatorIcon from './CalculatorIcon.astro';
 import {
   calculateFootprint,
   categoryDetails,
   formatTonnes,
-} from "../../scripts/calculator/calculate";
-import { initialAnswers } from "../../scripts/calculator/state";
+} from '../../scripts/calculator/calculate';
+import { initialAnswers } from '../../scripts/calculator/state';
 
 const initialResult = calculateFootprint(initialAnswers);
 const { categories } = initialResult;
@@ -14,18 +14,20 @@ const { categories } = initialResult;
 
 <section class="result" data-result hidden>
   <header class="result__header">
-    <span class="result__mobile-mark" aria-hidden="true"
-      ><CalculatorIcon name="leaf" /></span
-    >
+    <span class="result__mobile-mark" aria-hidden="true">
+      <CalculatorIcon name="leaf" />
+    </span>
     <CalculatorLogo />
     <nav class="result__nav" aria-label="Navegação principal">
-      <a href="/#quem-somos">Como funciona</a><a href="/projetos"
-        >Projetos</a
-      ><a href="/app/comunidade">Comunidade</a>
+      <a href="/#quem-somos">Como funciona</a>
+      <a href="/projetos">Projetos</a>
+      <a href="/app/comunidade">Comunidade</a>
     </nav>
     <div class="result__account">
-      <a href="/entrar">Entrar</a><button type="button" data-recalculate
-        >Calcular pegada</button>
+      <a href="/entrar">Entrar</a>
+      <button type="button" data-recalculate>
+        Calcular pegada
+      </button>
     </div>
   </header>
 
@@ -33,143 +35,138 @@ const { categories } = initialResult;
     <div class="result__summary">
       <p class="result__eyebrow">Cálculo concluído</p>
       <h1 class="result__title">Sua pegada de carbono estimada</h1>
-      <div class="result__save" data-save-error hidden><p role="alert">Não foi possível salvar seu cálculo.</p><button type="button" data-save-retry>Tentar novamente</button></div>
+      <div class="result__save" data-save-error hidden>
+        <p role="alert">Não foi possível salvar seu cálculo.</p>
+        <button type="button" data-save-retry>
+          Tentar novamente
+        </button>
+      </div>
       <section class="result-total" aria-label="Pegada total estimada">
-        <span class="result-total__icon"><CalculatorIcon name="tree" /></span>
+        <span class="result-total__icon">
+          <CalculatorIcon name="tree" />
+        </span>
         <div>
           <p class="result-total__number">
-            <strong data-total>{formatTonnes(initialResult.total)}</strong> tCO₂e
-            / ano
-          </p><p class="result-total__trees">
-            ≈ <span data-trees
-              >{initialResult.trees.toLocaleString("pt-BR")}</span
-            > árvores em equivalência ilustrativa à sua pegada anual
+            <strong data-total>{formatTonnes(initialResult.total)}</strong> tCO₂e / ano
+          </p>
+          <p class="result-total__trees">
+            ≈ <span data-trees>{initialResult.trees.toLocaleString('pt-BR')}</span> árvores em
+            equivalência ilustrativa à sua pegada anual
           </p>
         </div>
       </section>
 
       <section class="result-breakdown">
         <h2 class="result-breakdown__title">
-          Distribuição <span class="result-breakdown__desktop-word"
-            >por Categoria</span
-          ><span class="result-breakdown__mobile-word">estimada</span>
+          Distribuição <span class="result-breakdown__desktop-word">por Categoria</span>
+          <span class="result-breakdown__mobile-word">estimada</span>
         </h2>
-        {
-          categories.map((category) => (
-            <div class="result-breakdown__item" data-category={category.id}>
-              <div class="result-breakdown__label">
-                <>
-                  <strong>{categoryDetails[category.id].label}</strong>
-                  <span data-category-value>
-                    {formatTonnes(category.tonnes)} tCO₂e
-                  </span>
-                </>
-              </div>
-              <div class="result-breakdown__track">
-                <span
-                  data-category-bar
-                  class:list={[
-                    "result-breakdown__bar",
-                    {
-                      "result-breakdown__bar--danger":
-                        category.id === initialResult.tips[0]?.id,
-                    },
-                  ]}
-                  style={`--bar-width:${category.percentage}%`}
-                />
-              </div>
+        {categories.map((category) => (
+          <div class="result-breakdown__item" data-category={category.id}>
+            <div class="result-breakdown__label">
+              <>
+                <strong>{categoryDetails[category.id].label}</strong>
+                <span data-category-value>{formatTonnes(category.tonnes)} tCO₂e</span>
+              </>
             </div>
-          ))
-        }
+            <div class="result-breakdown__track">
+              <span
+                data-category-bar
+                class:list={[
+                  'result-breakdown__bar',
+                  {
+                    'result-breakdown__bar--danger': category.id === initialResult.tips[0]?.id,
+                  },
+                ]}
+                style={`--bar-width:${category.percentage}%`}
+              />
+            </div>
+          </div>
+        ))}
       </section>
     </div>
 
     <aside class="result__insights">
       <section class="result-alert">
-        <span class="result-alert__icon">!</span><div>
-          <h2 data-attention-title>{initialResult.attention.title}</h2><p
-            data-attention-description
-          >
-            {initialResult.attention.description}
-          </p>
+        <span class="result-alert__icon">!</span>
+        <div>
+          <h2 data-attention-title>{initialResult.attention.title}</h2>
+          <p data-attention-description>{initialResult.attention.description}</p>
         </div>
       </section>
       <section class="result-tips" data-tips-section>
         <h2>Como reduzir sua pegada</h2>
         <div class="result-tips__list" data-tips-list>
-          {
-            [...categories]
-              .sort((a, b) => b.tonnes - a.tonnes)
-              .map((category) => {
-                const tip = initialResult.tips.find(
-                  (item) => item.id === category.id,
-                );
-                return (
-                  <article
-                    class="result-tip"
-                    data-tip={category.id}
-                    hidden={!tip}
-                  >
-                    <span>
-                      <CalculatorIcon
-                        name={categoryDetails[category.id].icon}
-                      />
-                    </span>
-                    <div>
-                      <>
-                        <h3 data-tip-title>{tip?.title}</h3>
-                        <p data-tip-description>{tip?.description}</p>
-                      </>
-                    </div>
-                  </article>
-                );
-              })
-          }
+          {[...categories]
+            .sort((a, b) => b.tonnes - a.tonnes)
+            .map((category) => {
+              const tip = initialResult.tips.find((item) => item.id === category.id);
+              return (
+                <article class="result-tip" data-tip={category.id} hidden={!tip}>
+                  <span>
+                    <CalculatorIcon name={categoryDetails[category.id].icon} />
+                  </span>
+                  <div>
+                    <>
+                      <h3 data-tip-title>{tip?.title}</h3>
+                      <p data-tip-description>{tip?.description}</p>
+                    </>
+                  </div>
+                </article>
+              );
+            })}
         </div>
       </section>
-      <a class="result__projects" href="/projetos"
-        >Conhecer projetos de restauração</a
-      >
+      <a class="result__projects" href="/projetos">
+        Conhecer projetos de restauração
+      </a>
       <div class="result__secondary-actions">
-        <button type="button" data-recalculate>Recalcular</button><button
-          type="button"
-          data-share
-          >Compartilhar <span class="result__desktop-word">resultado</span
-          ></button>
+        <button type="button" data-recalculate>
+          Recalcular
+        </button>
+        <button type="button" data-share>
+          Compartilhar <span class="result__desktop-word">resultado</span>
+        </button>
       </div>
       <p class="result__note">
-        <span><CalculatorIcon name="info" /></span>Estimativa baseada em fatores
-        médios. Os valores e a equivalência em árvores não representam uma
-        medição validada.
+        <span>
+          <CalculatorIcon name="info" />
+        </span>
+        Estimativa baseada em fatores médios. Os valores e a equivalência em árvores não representam
+        uma medição validada.
       </p>
     </aside>
   </div>
 
   <footer class="result-footer">
     <div class="result-footer__brand">
-      <CalculatorLogo /><p>
-        Acelerando a transição ecológica brasileira por meio de tecnologia,
-        dados científicos e restauração ecológica de nossos biomas originais.
+      <CalculatorLogo />
+      <p>
+        Acelerando a transição ecológica brasileira por meio de tecnologia, dados científicos e
+        restauração ecológica de nossos biomas originais.
       </p>
     </div>
     <div class="result-footer__links">
       <div>
-        <strong>Plataforma</strong><a href="/#quem-somos">Como funciona</a><a
-          href="/calculadora">Calculadora</a
-        ><a href="/projetos">Projetos ativos</a>
-      </div><div>
-        <strong>Recursos</strong><a href="/#faq">Metodologia</a><a
-          href="/#contato">Blog</a
-        ><a href="/#creditos-carbono">Relatórios tCO₂e</a>
-      </div><div>
-        <strong>Contato</strong><a href="/#contato">Suporte</a><a
-          href="/#contato">Parcerias B2B</a
-        ><a href="/#contato">Fale conosco</a>
+        <strong>Plataforma</strong>
+        <a href="/#quem-somos">Como funciona</a>
+        <a href="/calculadora">Calculadora</a>
+        <a href="/projetos">Projetos ativos</a>
+      </div>
+      <div>
+        <strong>Recursos</strong>
+        <a href="/#faq">Metodologia</a>
+        <a href="/#contato">Blog</a>
+        <a href="/#creditos-carbono">Relatórios tCO₂e</a>
+      </div>
+      <div>
+        <strong>Contato</strong>
+        <a href="/#contato">Suporte</a>
+        <a href="/#contato">Parcerias B2B</a>
+        <a href="/#contato">Fale conosco</a>
       </div>
     </div>
-    <p class="result-footer__copyright">
-      © 2026 NuCarbon S.A. Todos os direitos reservados.
-    </p>
+    <p class="result-footer__copyright">© 2026 NuCarbon S.A. Todos os direitos reservados.</p>
   </footer>
 </section>
 
@@ -178,7 +175,9 @@ const { categories } = initialResult;
     margin-bottom: 1.5rem;
     color: var(--calculator-muted);
 
-    p { margin: 0 0 0.5rem; }
+    p {
+      margin: 0 0 0.5rem;
+    }
     button {
       border: 0;
       border-radius: 999px;

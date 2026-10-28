@@ -1,7 +1,7 @@
 ---
-import { Image } from "astro:assets";
+import { Image } from 'astro:assets';
 
-import forestPortrait from "../../images/forest-portrait-2.jpg";
+import forestPortrait from '../../images/forest-portrait-2.jpg';
 ---
 
 <section id="quem-somos" class="section quem-somos">
@@ -11,15 +11,24 @@ import forestPortrait from "../../images/forest-portrait-2.jpg";
       <div class="quem-somos-content">
         <div class="quem-somos-text">
           <p>
-            A Nucarbon atua na geração de créditos de carbono por meio de projetos agroflorestais, conectando produtores rurais, empresas e investidores em iniciativas que conciliam valor econômico, impacto social e benefícios ambientais mensuráveis. Nosso trabalho começa no campo e se estende ao mercado, sempre orientado por metodologias consistentes, critérios técnicos rigorosos e processos claros.
+            A Nucarbon atua na geração de créditos de carbono por meio de projetos agroflorestais,
+            conectando produtores rurais, empresas e investidores em iniciativas que conciliam valor
+            econômico, impacto social e benefícios ambientais mensuráveis. Nosso trabalho começa no
+            campo e se estende ao mercado, sempre orientado por metodologias consistentes, critérios
+            técnicos rigorosos e processos claros.
           </p>
           <p>
-            Contamos com uma equipe multidisciplinar, com experiência em meio ambiente, agronomia, inteligência artificial e mercado de carbono, o que nos permite acompanhar todo o ciclo dos projetos — da análise de viabilidade à gestão contínua. Adotamos práticas que priorizam rastreabilidade, métricas confiáveis e governança, sustentadas por monitoramento em tempo real, porque acreditamos que credibilidade e qualidade são essenciais para o avanço do setor.
+            Contamos com uma equipe multidisciplinar, com experiência em meio ambiente, agronomia,
+            inteligência artificial e mercado de carbono, o que nos permite acompanhar todo o ciclo
+            dos projetos — da análise de viabilidade à gestão contínua. Adotamos práticas que
+            priorizam rastreabilidade, métricas confiáveis e governança, sustentadas por
+            monitoramento em tempo real, porque acreditamos que credibilidade e qualidade são
+            essenciais para o avanço do setor.
           </p>
         </div>
 
         <div class="quem-somos-content-image">
-          <Image 
+          <Image
             src={forestPortrait}
             alt="Agrofloresta em Poços de Caldas, Projeto café gato-mourisco"
             width={1000}
@@ -31,20 +40,26 @@ import forestPortrait from "../../images/forest-portrait-2.jpg";
         <h3>Nossa História</h3>
         <div class="quem-somos-subcontent-text">
           <p>
-            A <b>Nucarbon</b> nasceu do propósito de contribuir para um mercado de crédito de carbono que opere de forma responsável, com critérios sólidos e resultados climáticos concretos. Desde o início, assumimos o compromisso de fortalecer um ecossistema mais confiável, inclusivo e eficaz.
+            A <b>Nucarbon</b> nasceu do propósito de contribuir para um mercado de crédito de
+            carbono que opere de forma responsável, com critérios sólidos e resultados climáticos
+            concretos. Desde o início, assumimos o compromisso de fortalecer um ecossistema mais
+            confiável, inclusivo e eficaz.
           </p>
           <p>
-            Seguimos empenhados em contribuir para a descarbonização da economia por meio de soluções tecnológicas, transparentes e orientadas a resultados, apoiando a evolução do mercado de carbono e ampliando seu impacto positivo no longo prazo.
+            Seguimos empenhados em contribuir para a descarbonização da economia por meio de
+            soluções tecnológicas, transparentes e orientadas a resultados, apoiando a evolução do
+            mercado de carbono e ampliando seu impacto positivo no longo prazo.
           </p>
         </div>
-        
+
         <h3>Nossa Missão</h3>
         <div class="quem-somos-subcontent-text">
           <p>
-            Promover integridade e impacto climático real no mercado de crédito de carbono por meio de tecnologia, transparência e rigor técnico.
+            Promover integridade e impacto climático real no mercado de crédito de carbono por meio
+            de tecnologia, transparência e rigor técnico.
           </p>
         </div>
-          
+
         <h3>Nossos Valores</h3>
         <div class="quem-somos-subcontent-text">
           <ul class="valores-list">
@@ -58,7 +73,7 @@ import forestPortrait from "../../images/forest-portrait-2.jpg";
     </div>
 
     <div class="quem-somos-image">
-      <Image 
+      <Image
         src={forestPortrait}
         alt="Agrofloresta em Poços de Caldas, Projeto café gato-mourisco"
         width={1200}
@@ -67,173 +82,172 @@ import forestPortrait from "../../images/forest-portrait-2.jpg";
   </div>
 </section>
 
-<style lang="scss">  
-.quem-somos {
-  --bullet-size: 9px;
-  --bullet-spacing: var(--spacing-xs);
+<style lang="scss">
+  .quem-somos {
+    --bullet-size: 9px;
+    --bullet-spacing: var(--spacing-xs);
 
-  background-color: var(--color-bg-primary);
-
-  h3 {
-    display: flex;
-    text-align: left;
-    align-items: center;
-    margin-bottom: var(--spacing-md);
-
-    &::before {
-      background-color: var(--color-primary);
-      width: var(--bullet-size);
-      height: var(--bullet-size);
-      border-radius: var(--bullet-size);
-      margin-right: var(--bullet-spacing);
-      content: "";
-
-      box-shadow: 0 0 6px var(--color-primary-light);
-    }
-  }
-
-  &-content {
-    display: flex;
-    gap: var(--spacing-md);
-    align-items: center;
-
-    &-image {
-      display: none;
-    }
-  }
-  
-  &-subcontent {
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      background-color: var(--color-primary);
-      width: 1px;
-      top: 16px;
-      height: calc(100% + var(--spacing-lg));
-      left: calc(var(--bullet-size) / 2 - 0.5px);
-    }
+    background-color: var(--color-bg-primary);
 
     h3 {
-      color: var(--color-primary);
-      margin-top: var(--spacing-lg);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    &-text {
-      position: relative;
-      margin-left: calc(var(--bullet-size) + var(--bullet-spacing));
-    }
-  }
-
-  &-image {
-    display: none;
-  }
-
-  img {
-    width: 100%;
-    height: -webkit-fill-available;
-    height: stretch;
-    object-fit: cover;
-    border-radius: var(--border-radius-lg);
-  }
-
-  .valores-list {
-    display: flex;
-    flex-wrap: wrap;
-    list-style: none;
-    padding-left: 0;
-    max-width: 500px;
-
-    li {
-      padding: var(--spacing-sm);
-      padding-left: 1.5rem;
-      position: relative;
-      color: var(--color-text-secondary);
-      flex-basis: 50%;
+      display: flex;
+      text-align: left;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
 
       &::before {
-        content: '✓';
-        position: absolute;
-        left: 0;
-        color: var(--color-primary);
-        font-weight: bold;
+        background-color: var(--color-primary);
+        width: var(--bullet-size);
+        height: var(--bullet-size);
+        border-radius: var(--bullet-size);
+        margin-right: var(--bullet-spacing);
+        content: '';
+
+        box-shadow: 0 0 6px var(--color-primary-light);
       }
     }
-  }
 
-  // .image-placeholder {
-  //   width: 100%;
-  //   aspect-ratio: 16/3;
-  //   background-color: var(--color-bg-accent);
-  //   border-radius: var(--border-radius-lg);
-  //   display: flex;
-  //   flex-direction: column;
-  //   align-items: center;
-  //   justify-content: center;
-  //   color: var(--color-text-light);
-  //   text-align: center;
-  //   padding: var(--spacing-lg);
-  // }
-
-  @media (min-width: 768px) {
-    .container {
+    &-content {
       display: flex;
-    }
+      gap: var(--spacing-md);
+      align-items: center;
 
-    &-content {
-      flex-direction: row-reverse;
-
-      &-image {
-        display: block;
-        height: stretch;
-        min-width: 40%;
-        height: 450px;
-      }
-    }
-
-    &-subcontent {
-      max-width: 800px;
-
-      &::before {
-        height: calc(100% + var(--spacing-lg) + 16px);
-      }
-    }
-  }
-
-  @media (min-width: 920px) {
-    &-content {
-      &-image {
-        min-width: 50%;
-        height: 500px;
-      }
-    }
-  }
-
-  @media (min-width: 1024px) {
-    --bullet-size: 13px;
-    --bullet-spacing: var(--spacing-md);
-
-    .container {
-      display: flex;
-      gap: var(--spacing-xl);
-
-      &-main-content {
-        max-width: 600px;
-      }
-    }
-
-    &-content {
       &-image {
         display: none;
       }
     }
 
+    &-subcontent {
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        background-color: var(--color-primary);
+        width: 1px;
+        top: 16px;
+        height: calc(100% + var(--spacing-lg));
+        left: calc(var(--bullet-size) / 2 - 0.5px);
+      }
+
+      h3 {
+        color: var(--color-primary);
+        margin-top: var(--spacing-lg);
+        margin-bottom: var(--spacing-sm);
+      }
+
+      &-text {
+        position: relative;
+        margin-left: calc(var(--bullet-size) + var(--bullet-spacing));
+      }
+    }
+
     &-image {
-      display: block;
+      display: none;
+    }
+
+    img {
+      width: 100%;
+      height: -webkit-fill-available;
+      height: stretch;
+      object-fit: cover;
+      border-radius: var(--border-radius-lg);
+    }
+
+    .valores-list {
+      display: flex;
+      flex-wrap: wrap;
+      list-style: none;
+      padding-left: 0;
+      max-width: 500px;
+
+      li {
+        padding: var(--spacing-sm);
+        padding-left: 1.5rem;
+        position: relative;
+        color: var(--color-text-secondary);
+        flex-basis: 50%;
+
+        &::before {
+          content: '✓';
+          position: absolute;
+          left: 0;
+          color: var(--color-primary);
+          font-weight: bold;
+        }
+      }
+    }
+
+    // .image-placeholder {
+    //   width: 100%;
+    //   aspect-ratio: 16/3;
+    //   background-color: var(--color-bg-accent);
+    //   border-radius: var(--border-radius-lg);
+    //   display: flex;
+    //   flex-direction: column;
+    //   align-items: center;
+    //   justify-content: center;
+    //   color: var(--color-text-light);
+    //   text-align: center;
+    //   padding: var(--spacing-lg);
+    // }
+
+    @media (min-width: 768px) {
+      .container {
+        display: flex;
+      }
+
+      &-content {
+        flex-direction: row-reverse;
+
+        &-image {
+          display: block;
+          height: stretch;
+          min-width: 40%;
+          height: 450px;
+        }
+      }
+
+      &-subcontent {
+        max-width: 800px;
+
+        &::before {
+          height: calc(100% + var(--spacing-lg) + 16px);
+        }
+      }
+    }
+
+    @media (min-width: 920px) {
+      &-content {
+        &-image {
+          min-width: 50%;
+          height: 500px;
+        }
+      }
+    }
+
+    @media (min-width: 1024px) {
+      --bullet-size: 13px;
+      --bullet-spacing: var(--spacing-md);
+
+      .container {
+        display: flex;
+        gap: var(--spacing-xl);
+
+        &-main-content {
+          max-width: 600px;
+        }
+      }
+
+      &-content {
+        &-image {
+          display: none;
+        }
+      }
+
+      &-image {
+        display: block;
+      }
     }
   }
-}
 </style>
-

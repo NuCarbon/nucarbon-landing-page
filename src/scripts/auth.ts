@@ -14,13 +14,9 @@ export const authReady = new Promise<User | null>((resolve) => {
   unsubscribe = onAuthStateChanged(auth, finish, () => finish(null));
 });
 
-export function showAuthenticatedUser(
-  user: User,
-  root: ParentNode = document,
-): void {
+export function showAuthenticatedUser(user: User, root: ParentNode = document): void {
   const firstName = user.displayName?.trim().split(/\s+/)[0] || 'você';
-  const initial =
-    user.displayName?.trim().charAt(0) || user.email?.trim().charAt(0) || 'V';
+  const initial = user.displayName?.trim().charAt(0) || user.email?.trim().charAt(0) || 'V';
 
   root
     .querySelectorAll<HTMLElement>('[data-user-name], [data-greeting-name]')

@@ -24,7 +24,9 @@ const { title, active = 'dashboard' } = Astro.props;
     <div class="app-shell">
       <AppHeader />
       <AppNavigation active={active} placement="sidebar" />
-      <main class="app-main"><slot /></main>
+      <main class="app-main">
+        <slot />
+      </main>
       <AppNavigation active={active} placement="bottom" />
     </div>
     <script>

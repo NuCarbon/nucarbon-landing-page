@@ -10,7 +10,9 @@ const { metrics = [] } = Astro.props;
 ---
 
 <app-impact-metrics class="metric-grid">
-  {metrics.map((metric) => <ImpactMetric metric={metric} />)}
+  {metrics.map((metric) => (
+    <ImpactMetric metric={metric} />
+  ))}
 
   <template data-metric-template>
     <ImpactMetric />
@@ -23,9 +25,7 @@ const { metrics = [] } = Astro.props;
 
   class ImpactMetrics extends HTMLElement {
     set metrics(metrics: ImpactMetric[]) {
-      const template = this.querySelector<HTMLTemplateElement>(
-        'template[data-metric-template]',
-      );
+      const template = this.querySelector<HTMLTemplateElement>('template[data-metric-template]');
 
       if (!template) return;
 

@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createCalculatorFlow, EnergyAnswer, FoodAnswer, TransportAnswer } from '../src/scripts/calculator/state.ts';
+import {
+  createCalculatorFlow,
+  EnergyAnswer,
+  FoodAnswer,
+  TransportAnswer,
+} from '../src/scripts/calculator/state.ts';
 
 test('navigation follows configured order and keeps choices when going back or restarting', () => {
   const flow = createCalculatorFlow(['food', 'profile', 'transport']);

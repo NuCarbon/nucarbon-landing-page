@@ -13,20 +13,30 @@ export default authenticated(async (_request, _context, user) => {
     database.collection('users').doc(user.uid).collection('supportedProjects').limit(20).get(),
   ]);
 
-  const userData = userDocument.data() as (Partial<UserCalculation> & { impactMetrics?: ImpactMetric[] }) | undefined;
+  const userData = userDocument.data() as
+    (Partial<UserCalculation> & { impactMetrics?: ImpactMetric[] }) | undefined;
   const saved = userData?.footprint;
-  const metrics = (Array.isArray(userData?.impactMetrics) ? userData.impactMetrics : []).filter((metric) =>
-    Object.values(MetricType).includes(metric.type) && Number.isFinite(metric.value) && metric.value >= 0,
+  const metrics = (Array.isArray(userData?.impactMetrics) ? userData.impactMetrics : []).filter(
+    (metric) =>
+      Object.values(MetricType).includes(metric.type) &&
+      Number.isFinite(metric.value) &&
+      metric.value >= 0,
   );
-  const supportedIds = new Set(supports.docs.filter((doc) => doc.data().status === 'active' && doc.data().projectId === doc.id).map((doc) => doc.id));
+  const supportedIds = new Set(
+    supports.docs
+      .filter((doc) => doc.data().status === 'active' && doc.data().projectId === doc.id)
+      .map((doc) => doc.id),
+  );
   const supportedProjects = allProjects.filter((project) => supportedIds.has(project.id));
   const projects = allProjects.filter((project) => !supportedIds.has(project.id)).slice(0, 2);
 
   return json({
-    footprint: saved ? {
-      annualEmissionsTonnes: saved.annualEmissionsTonnes,
-      updatedAt: saved.updatedAt.toMillis(),
-    } : null,
+    footprint: saved
+      ? {
+          annualEmissionsTonnes: saved.annualEmissionsTonnes,
+          updatedAt: saved.updatedAt.toMillis(),
+        }
+      : null,
     metrics,
     projects,
     supportedProjects,

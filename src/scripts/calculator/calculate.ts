@@ -1,5 +1,10 @@
 import {
-  EnergyAnswer, FoodAnswer, HomeAnswer, ProfileAnswer, TransportAnswer, WasteAnswer,
+  EnergyAnswer,
+  FoodAnswer,
+  HomeAnswer,
+  ProfileAnswer,
+  TransportAnswer,
+  WasteAnswer,
   type CalculatorAnswers,
 } from './state.ts';
 
@@ -78,12 +83,18 @@ export interface CalculationResult {
 }
 
 const round = (value: number) => Math.round(value * 100) / 100;
-export const formatTonnes = (value: number) => value.toLocaleString('pt-BR', {
-  minimumFractionDigits: 2, maximumFractionDigits: 2,
-});
+export const formatTonnes = (value: number) =>
+  value.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
 function reductionTips(answers: CalculatorAnswers): Record<CategoryId, ReductionTip> {
-  const personalVehicle = [TransportAnswer.Gas, TransportAnswer.Ethanol, TransportAnswer.Motorcycle].includes(answers.transport);
+  const personalVehicle = [
+    TransportAnswer.Gas,
+    TransportAnswer.Ethanol,
+    TransportAnswer.Motorcycle,
+  ].includes(answers.transport);
   const plantBased = [FoodAnswer.Vegan, FoodAnswer.Vegetarian].includes(answers.food);
   return {
     transport: {
@@ -96,12 +107,14 @@ function reductionTips(answers: CalculatorAnswers): Record<CategoryId, Reduction
     home: {
       id: 'home',
       title: 'Aproveite melhor sua moradia',
-      description: 'Priorize ventilação e iluminação naturais e concentre o uso dos ambientes para reduzir a demanda da casa.',
+      description:
+        'Priorize ventilação e iluminação naturais e concentre o uso dos ambientes para reduzir a demanda da casa.',
     },
     energy: {
       id: 'energy',
       title: 'Reduza o consumo de energia',
-      description: 'Identifique os aparelhos que mais consomem, ajuste o tempo de uso e evite equipamentos ligados sem necessidade.',
+      description:
+        'Identifique os aparelhos que mais consomem, ajuste o tempo de uso e evite equipamentos ligados sem necessidade.',
     },
     food: {
       id: 'food',
@@ -112,10 +125,14 @@ function reductionTips(answers: CalculatorAnswers): Record<CategoryId, Reduction
     },
     waste: {
       id: 'waste',
-      title: answers.waste === WasteAnswer.Recycle ? 'Reduza antes de reciclar' : 'Separe e reduza os resíduos',
-      description: answers.waste === WasteAnswer.Recycle
-        ? 'Prefira produtos reutilizáveis e com menos embalagem. Considere compostar os resíduos orgânicos.'
-        : 'Separe os recicláveis, procure a coleta seletiva local e reduza descartáveis no dia a dia.',
+      title:
+        answers.waste === WasteAnswer.Recycle
+          ? 'Reduza antes de reciclar'
+          : 'Separe e reduza os resíduos',
+      description:
+        answers.waste === WasteAnswer.Recycle
+          ? 'Prefira produtos reutilizáveis e com menos embalagem. Considere compostar os resíduos orgânicos.'
+          : 'Separe os recicláveis, procure a coleta seletiva local e reduza descartáveis no dia a dia.',
     },
   };
 }
@@ -127,7 +144,8 @@ export function calculateFootprint(
   const distance = Number.isFinite(answers.distance) ? Math.max(0, answers.distance) : 0;
   const multiplier = coef.profile[answers.profile];
   const annual: Record<CategoryId, number> = {
-    transport: distance * coef.weeksPerYear * coef.transport[answers.transport] / coef.kilogramsPerTonne,
+    transport:
+      (distance * coef.weeksPerYear * coef.transport[answers.transport]) / coef.kilogramsPerTonne,
     home: coef.home[answers.home],
     energy: coef.energy[answers.energy],
     food: coef.food[answers.food],
@@ -135,11 +153,15 @@ export function calculateFootprint(
   };
 
   const categories: CategoryResult[] = (Object.keys(annual) as CategoryId[]).map((id) => ({
-    id, tonnes: round(annual[id] * multiplier), percentage: 0,
+    id,
+    tonnes: round(annual[id] * multiplier),
+    percentage: 0,
   }));
 
   const total = round(categories.reduce((sum, category) => sum + category.tonnes, 0));
-  categories.forEach((category) => { category.percentage = total > 0 ? category.tonnes / total * 100 : 0; });
+  categories.forEach((category) => {
+    category.percentage = total > 0 ? (category.tonnes / total) * 100 : 0;
+  });
 
   const ranked = [...categories].sort((a, b) => b.tonnes - a.tonnes);
   const largest = ranked[0];
@@ -149,13 +171,20 @@ export function calculateFootprint(
     total,
     trees: Math.ceil(total / coef.treeAbsorption),
     categories,
-    attention: total > 0 ? {
-      title: `Foco de atenção: ${categoryDetails[largest.id].label}`,
-      description: `${categoryDetails[largest.id].label} representa ${Math.round(largest.percentage)}% da sua pegada estimada (${formatTonnes(largest.tonnes)} tCO₂e/ano). ${tipsByCategory[largest.id].description}`,
-    } : {
-      title: 'Nenhuma emissão estimada',
-      description: 'Com as respostas e os fatores atuais, o cálculo não identificou emissões.',
-    },
-    tips: ranked.filter((category) => category.tonnes > 0).slice(0, 3).map((category) => tipsByCategory[category.id]),
+    attention:
+      total > 0
+        ? {
+            title: `Foco de atenção: ${categoryDetails[largest.id].label}`,
+            description: `${categoryDetails[largest.id].label} representa ${Math.round(largest.percentage)}% da sua pegada estimada (${formatTonnes(largest.tonnes)} tCO₂e/ano). ${tipsByCategory[largest.id].description}`,
+          }
+        : {
+            title: 'Nenhuma emissão estimada',
+            description:
+              'Com as respostas e os fatores atuais, o cálculo não identificou emissões.',
+          },
+    tips: ranked
+      .filter((category) => category.tonnes > 0)
+      .slice(0, 3)
+      .map((category) => tipsByCategory[category.id]),
   };
 }

@@ -2,8 +2,13 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { calculateFootprint, coefficients } from '../src/scripts/calculator/calculate.ts';
 import {
-  initialAnswers, ProfileAnswer, HomeAnswer, TransportAnswer,
-  EnergyAnswer, FoodAnswer, WasteAnswer,
+  initialAnswers,
+  ProfileAnswer,
+  HomeAnswer,
+  TransportAnswer,
+  EnergyAnswer,
+  FoodAnswer,
+  WasteAnswer,
 } from '../src/scripts/calculator/state.ts';
 
 test('every input affects the result', () => {
@@ -17,7 +22,11 @@ test('every input affects the result', () => {
     food: FoodAnswer.Vegan,
     waste: WasteAnswer.Trash,
   })) {
-    assert.notEqual(calculateFootprint({ ...initialAnswers, [key]: value }).total, baseline.total, key);
+    assert.notEqual(
+      calculateFootprint({ ...initialAnswers, [key]: value }).total,
+      baseline.total,
+      key,
+    );
   }
 });
 
@@ -25,7 +34,10 @@ test('total, category shares, and tree equivalence agree', () => {
   const result = calculateFootprint(initialAnswers);
   const sum = result.categories.reduce((total, category) => total + category.tonnes, 0);
   assert.equal(result.total, Math.round(sum * 100) / 100);
-  assert.ok(Math.abs(result.categories.reduce((total, category) => total + category.percentage, 0) - 100) < 1e-8);
+  assert.ok(
+    Math.abs(result.categories.reduce((total, category) => total + category.percentage, 0) - 100) <
+      1e-8,
+  );
   assert.equal(result.trees, Math.ceil(result.total / coefficients.treeAbsorption));
 });
 
@@ -36,13 +48,22 @@ test('attention and tips follow the largest categories and refresh for new answe
   const cycling = calculateFootprint({ ...initialAnswers, transport: TransportAnswer.Bike });
   assert.match(cycling.attention.title, /Alimentação/);
   assert.ok(cycling.tips.every((tip) => tip.id !== 'transport'));
-  assert.deepEqual(cycling.tips.map((tip) => tip.id), [...cycling.categories]
-    .sort((a, b) => b.tonnes - a.tonnes).slice(0, 3).map((category) => category.id));
+  assert.deepEqual(
+    cycling.tips.map((tip) => tip.id),
+    [...cycling.categories]
+      .sort((a, b) => b.tonnes - a.tonnes)
+      .slice(0, 3)
+      .map((category) => category.id),
+  );
   assert.deepEqual(calculateFootprint({ ...initialAnswers, distance: 500 }), driving);
 });
 
 test('food advice respects an already plant-based diet', () => {
-  const result = calculateFootprint({ ...initialAnswers, transport: TransportAnswer.Bike, food: FoodAnswer.Vegan });
+  const result = calculateFootprint({
+    ...initialAnswers,
+    transport: TransportAnswer.Bike,
+    food: FoodAnswer.Vegan,
+  });
   const tip = result.tips.find((item) => item.id === 'food');
   assert.equal(tip.title, 'Evite desperdício de alimentos');
   assert.doesNotMatch(tip.description, /refeições com carne/);

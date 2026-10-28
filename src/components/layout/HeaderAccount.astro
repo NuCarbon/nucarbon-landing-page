@@ -1,27 +1,18 @@
 ---
-import Skeleton from "../ui/Skeleton.astro";
+import Skeleton from '../ui/Skeleton.astro';
 ---
 
 <li class="nav-account" data-header-account aria-live="polite">
-  <span
-    class="nav-auth-loading"
-    data-auth-loading
-    role="status"
-    aria-label="Verificando sessão"
-  >
+  <span class="nav-auth-loading" data-auth-loading role="status" aria-label="Verificando sessão">
     <Skeleton width="30px" height="30px" variant="circle" />
     <Skeleton width="4.5rem" height="0.75rem" />
   </span>
 
-  <a href="/entrar" class="nav-cta" data-auth-guest hidden>Entrar</a>
+  <a href="/entrar" class="nav-cta" data-auth-guest hidden>
+    Entrar
+  </a>
 
-  <a
-    href="/app"
-    class="nav-profile"
-    data-auth-user
-    hidden
-    aria-label="Abrir meu painel"
-  >
+  <a href="/app" class="nav-profile" data-auth-user hidden aria-label="Abrir meu painel">
     <img data-user-avatar alt="" hidden />
     <span class="nav-profile-fallback" data-user-initial hidden></span>
     <span data-user-name>Minha conta</span>
@@ -29,11 +20,11 @@ import Skeleton from "../ui/Skeleton.astro";
 </li>
 
 <script>
-  import { authReady, showAuthenticatedUser } from "../../scripts/auth";
+  import { authReady, showAuthenticatedUser } from '../../scripts/auth';
 
   async function initializeHeaderAccount(account: HTMLElement): Promise<void> {
     if (account.dataset.authInitialized) return;
-    account.dataset.authInitialized = "true";
+    account.dataset.authInitialized = 'true';
 
     const user = await authReady;
 
@@ -42,8 +33,8 @@ import Skeleton from "../ui/Skeleton.astro";
       return;
     }
 
-    const loading = account.querySelector<HTMLElement>("[data-auth-loading]");
-    const guest = account.querySelector<HTMLElement>("[data-auth-guest]");
+    const loading = account.querySelector<HTMLElement>('[data-auth-loading]');
+    const guest = account.querySelector<HTMLElement>('[data-auth-guest]');
 
     if (loading) loading.hidden = true;
     if (guest) guest.hidden = false;
@@ -51,12 +42,12 @@ import Skeleton from "../ui/Skeleton.astro";
 
   function initializeAccounts(): void {
     document
-      .querySelectorAll<HTMLElement>("[data-header-account]")
+      .querySelectorAll<HTMLElement>('[data-header-account]')
       .forEach((account) => void initializeHeaderAccount(account));
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializeAccounts, {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeAccounts, {
       once: true,
     });
   } else {

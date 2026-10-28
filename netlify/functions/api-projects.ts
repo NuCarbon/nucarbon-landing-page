@@ -11,7 +11,9 @@ export default async (request: Request) => {
       return project ? json({ project }) : json({ error: 'Not found' }, { status: 404 });
     }
     return json({ projects: await readProjects() });
-  } catch { return unavailable(); }
+  } catch {
+    return unavailable();
+  }
 };
 
 export const config: Config = { path: '/api/projects' };

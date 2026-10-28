@@ -12,14 +12,23 @@ export function renderResults(root: HTMLElement, result: CalculationResult): voi
   const largest = [...result.categories].sort((a, b) => b.tonnes - a.tonnes)[0];
   for (const category of result.categories) {
     const row = root.querySelector<HTMLElement>(`[data-category="${category.id}"]`)!;
-    row.querySelector('[data-category-value]')!.textContent = `${formatTonnes(category.tonnes)} tCO₂e`;
+    row.querySelector('[data-category-value]')!.textContent =
+      `${formatTonnes(category.tonnes)} tCO₂e`;
     const bar = row.querySelector<HTMLElement>('[data-category-bar]')!;
     bar.style.setProperty('--bar-width', `${category.percentage}%`);
-    bar.classList.toggle('result-breakdown__bar--danger', result.total > 0 && category.id === largest.id);
-    row.setAttribute('aria-label', `${categoryDetails[category.id].label}: ${formatTonnes(category.tonnes)} tCO₂e, ${Math.round(category.percentage)}%`);
+    bar.classList.toggle(
+      'result-breakdown__bar--danger',
+      result.total > 0 && category.id === largest.id,
+    );
+    row.setAttribute(
+      'aria-label',
+      `${categoryDetails[category.id].label}: ${formatTonnes(category.tonnes)} tCO₂e, ${Math.round(category.percentage)}%`,
+    );
   }
 
-  root.querySelectorAll<HTMLElement>('[data-tip]').forEach((tip) => { tip.hidden = true; });
+  root.querySelectorAll<HTMLElement>('[data-tip]').forEach((tip) => {
+    tip.hidden = true;
+  });
 
   const list = root.querySelector<HTMLElement>('[data-tips-list]')!;
   for (const tip of result.tips) {

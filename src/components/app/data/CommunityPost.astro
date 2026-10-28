@@ -11,7 +11,9 @@ const { post } = Astro.props;
 
 <article class="community-post">
   <header>
-    <div class="post-avatar" data-post-avatar>{post?.author.displayName.charAt(0)}</div>
+    <div class="post-avatar" data-post-avatar>
+      {post?.author.displayName.charAt(0)}
+    </div>
     <div>
       <strong data-post-author>{post?.author.displayName}</strong>
       <small data-post-timestamp>{post && formatDate(post.createdAt)}</small>

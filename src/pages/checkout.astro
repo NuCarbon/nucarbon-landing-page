@@ -1,13 +1,40 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
+
 <BaseLayout title="Revisar contribuição | Nucarbon" noindex className="checkout-page">
   <section class="checkout-card" data-checkout aria-live="polite">
-    <h1>Revisar contribuição</h1><p>O pagamento ainda não está disponível. Nenhum valor será cobrado.</p>
+    <h1>Revisar contribuição</h1>
+    <p>O pagamento ainda não está disponível. Nenhum valor será cobrado.</p>
     <p data-checkout-status>Carregando sua seleção…</p>
-    <div data-order hidden><h2 data-project></h2><dl><dt>Quantidade</dt><dd data-quantity></dd><dt>Preço por tonelada</dt><dd data-price></dd><dt>Total estimado</dt><dd data-total></dd></dl><button type="button" data-confirm>Registrar interesse</button></div>
-    <div data-receipt hidden><h2>Interesse registrado</h2><p>Seu interesse foi registrado. Ainda não houve cobrança, compensação ou emissão de certificado.</p><p>Número: <strong data-order-id></strong></p><a href="/projetos">Explorar projetos</a></div>
-    <a href="/projetos" data-back>Voltar aos projetos</a>
+    <div data-order hidden>
+      <h2 data-project></h2>
+      <dl>
+        <dt>Quantidade</dt>
+        <dd data-quantity></dd>
+        <dt>Preço por tonelada</dt>
+        <dd data-price></dd>
+        <dt>Total estimado</dt>
+        <dd data-total></dd>
+      </dl>
+      <button type="button" data-confirm>
+        Registrar interesse
+      </button>
+    </div>
+    <div data-receipt hidden>
+      <h2>Interesse registrado</h2>
+      <p>
+        Seu interesse foi registrado. Ainda não houve cobrança, compensação ou emissão de
+        certificado.
+      </p>
+      <p>
+        Número: <strong data-order-id></strong>
+      </p>
+      <a href="/projetos">Explorar projetos</a>
+    </div>
+    <a href="/projetos" data-back>
+      Voltar aos projetos
+    </a>
   </section>
 </BaseLayout>
 <script>
@@ -16,46 +43,122 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const status = root.querySelector<HTMLElement>('[data-checkout-status]')!;
   const orderBlock = root.querySelector<HTMLElement>('[data-order]')!;
   const receipt = root.querySelector<HTMLElement>('[data-receipt]')!;
-  const money = (cents:number) => new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(cents/100);
+  const money = (cents: number) =>
+    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cents / 100);
   const user = await authReady;
   if (!user) location.replace('/entrar');
   else {
     try {
-      const headers = { Authorization:`Bearer ${await user.getIdToken()}`, 'Content-Type':'application/json' };
+      const headers = {
+        Authorization: `Bearer ${await user.getIdToken()}`,
+        'Content-Type': 'application/json',
+      };
       let id = sessionStorage.getItem('nucarbon:checkout-order');
       let response: Response;
       if (id) response = await fetch(`/api/checkouts?id=${encodeURIComponent(id)}`, { headers });
       else {
         const intent = JSON.parse(sessionStorage.getItem('nucarbon:checkout-intent') || 'null');
-        if (!intent || Date.now() - intent.createdAt > 30 * 60 * 1000 || Date.now() < intent.createdAt) throw new Error('Sua seleção expirou. Escolha o projeto novamente.');
-        response = await fetch('/api/checkouts', { method:'POST', headers, body:JSON.stringify(intent) });
+        if (
+          !intent ||
+          Date.now() - intent.createdAt > 30 * 60 * 1000 ||
+          Date.now() < intent.createdAt
+        )
+          throw new Error('Sua seleção expirou. Escolha o projeto novamente.');
+        response = await fetch('/api/checkouts', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(intent),
+        });
       }
-      if (!response.ok) throw new Error('Não foi possível carregar sua seleção. Escolha o projeto novamente.');
+      if (!response.ok)
+        throw new Error('Não foi possível carregar sua seleção. Escolha o projeto novamente.');
       const { order } = await response.json();
       sessionStorage.setItem('nucarbon:checkout-order', order.id);
       sessionStorage.removeItem('nucarbon:checkout-intent');
       status.hidden = true;
       root.querySelector<HTMLElement>('[data-project]')!.textContent = order.projectName;
-      root.querySelector<HTMLElement>('[data-quantity]')!.textContent = `${order.quantityTonnes.toLocaleString('pt-BR')} tCO₂e`;
-      root.querySelector<HTMLElement>('[data-price]')!.textContent = money(order.pricePerTonneCents);
+      root.querySelector<HTMLElement>('[data-quantity]')!.textContent =
+        `${order.quantityTonnes.toLocaleString('pt-BR')} tCO₂e`;
+      root.querySelector<HTMLElement>('[data-price]')!.textContent = money(
+        order.pricePerTonneCents,
+      );
       root.querySelector<HTMLElement>('[data-total]')!.textContent = money(order.totalCents);
-      if (order.status === 'registered') { receipt.hidden = false; root.querySelector<HTMLElement>('[data-order-id]')!.textContent = order.id; }
-      else if (order.expiresAt < Date.now()) throw new Error('Esta seleção expirou. Escolha o projeto novamente.');
+      if (order.status === 'registered') {
+        receipt.hidden = false;
+        root.querySelector<HTMLElement>('[data-order-id]')!.textContent = order.id;
+      } else if (order.expiresAt < Date.now())
+        throw new Error('Esta seleção expirou. Escolha o projeto novamente.');
       else orderBlock.hidden = false;
-      root.querySelector<HTMLButtonElement>('[data-confirm]')!.addEventListener('click', async (event) => {
-        const button = event.currentTarget as HTMLButtonElement;
-        button.disabled = true;
-        try {
-          const confirmed = await fetch(`/api/checkouts?id=${encodeURIComponent(order.id)}`, { method:'POST', headers, body:JSON.stringify({ action:'confirm' }) });
-          if (!confirmed.ok) throw new Error('Não foi possível confirmar. Tente novamente.');
-          orderBlock.hidden = true; receipt.hidden = false;
-          root.querySelector<HTMLElement>('[data-order-id]')!.textContent = order.id;
-        } catch (cause) { status.textContent = cause instanceof Error ? cause.message : 'Erro ao confirmar.'; status.hidden = false; button.disabled = false; }
-      });
-    } catch (cause) { status.textContent = cause instanceof Error ? cause.message : 'Checkout indisponível.'; }
+      root
+        .querySelector<HTMLButtonElement>('[data-confirm]')!
+        .addEventListener('click', async (event) => {
+          const button = event.currentTarget as HTMLButtonElement;
+          button.disabled = true;
+          try {
+            const confirmed = await fetch(`/api/checkouts?id=${encodeURIComponent(order.id)}`, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify({ action: 'confirm' }),
+            });
+            if (!confirmed.ok) throw new Error('Não foi possível confirmar. Tente novamente.');
+            orderBlock.hidden = true;
+            receipt.hidden = false;
+            root.querySelector<HTMLElement>('[data-order-id]')!.textContent = order.id;
+          } catch (cause) {
+            status.textContent = cause instanceof Error ? cause.message : 'Erro ao confirmar.';
+            status.hidden = false;
+            button.disabled = false;
+          }
+        });
+    } catch (cause) {
+      status.textContent = cause instanceof Error ? cause.message : 'Checkout indisponível.';
+    }
   }
 </script>
 <style lang="scss">
-  :global(.checkout-page) { min-height:75vh; display:grid; place-items:center; padding:130px 20px 80px; background:#f8f9f5; }
-  .checkout-card { width:min(100%,600px); padding:30px; border-radius:20px; background:white; box-shadow:0 15px 40px #1b422119; } h1,h2 { color:#245e2d; } dl { display:grid; grid-template-columns:1fr auto; gap:12px; } dd { margin:0; font-weight:700; } button { width:100%; padding:14px; margin:16px 0; border:0; border-radius:100px; background:#287739; color:white; font:inherit; font-weight:700; cursor:pointer; } button:disabled { opacity:.6; } a { color:#267135; }
+  :global(.checkout-page) {
+    min-height: 75vh;
+    display: grid;
+    place-items: center;
+    padding: 130px 20px 80px;
+    background: #f8f9f5;
+  }
+  .checkout-card {
+    width: min(100%, 600px);
+    padding: 30px;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 15px 40px #1b422119;
+  }
+  h1,
+  h2 {
+    color: #245e2d;
+  }
+  dl {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+  }
+  dd {
+    margin: 0;
+    font-weight: 700;
+  }
+  button {
+    width: 100%;
+    padding: 14px;
+    margin: 16px 0;
+    border: 0;
+    border-radius: 100px;
+    background: #287739;
+    color: white;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.6;
+  }
+  a {
+    color: #267135;
+  }
 </style>

@@ -1,8 +1,8 @@
 ---
 export const prerender = false;
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { readProjects } from "../../../netlify/functions/_repository";
-import { biomeLabels } from "../../scripts/app/format";
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { readProjects } from '../../../netlify/functions/_repository';
+import { biomeLabels } from '../../scripts/app/format';
 
 let projects = [] as Awaited<ReturnType<typeof readProjects>>;
 let unavailable = false;
@@ -22,61 +22,53 @@ try {
   className="projects-page"
 >
   <div class="wrap">
-    <nav aria-label="Caminho"><a href="/">Início</a> › Projetos</nav><h1>
-      Projetos de restauração
-    </h1><p>
-      Explore projetos publicados e escolha uma forma de contribuir.
-    </p>
-    {
-      unavailable ? (
-        <p role="alert">
-          Projetos temporariamente indisponíveis. Tente novamente mais tarde.
-        </p>
-      ) : projects.length ? (
-        <div class="grid">
-          {projects.map((project) => (
-            <article>
-              <a href={`/projetos/${project.slug}`}>
-                <img
-                  src={project.gallery[0]?.url}
-                  alt={project.gallery[0]?.alt ?? ""}
-                />
-                <div>
-                  <small>
-                    {biomeLabels[project.biome]} · {project.municipality},{" "}
-                    {project.state}
-                  </small>
-                  <h2>{project.name}</h2>
-                  <p>{project.summary}</p>
-                  <strong>Conhecer projeto →</strong>
-                </div>
-              </a>
-            </article>
-          ))}
-        </div>
-      ) : (
-        <p>Nenhum projeto publicado no momento.</p>
-      )
-    }
+    <nav aria-label="Caminho">
+      <a href="/">Início</a> › Projetos
+    </nav>
+    <h1>Projetos de restauração</h1>
+    <p>Explore projetos publicados e escolha uma forma de contribuir.</p>
+    {unavailable ? (
+      <p role="alert">Projetos temporariamente indisponíveis. Tente novamente mais tarde.</p>
+    ) : projects.length ? (
+      <div class="grid">
+        {projects.map((project) => (
+          <article>
+            <a href={`/projetos/${project.slug}`}>
+              <img src={project.gallery[0]?.url} alt={project.gallery[0]?.alt ?? ''} />
+              <div>
+                <small>
+                  {biomeLabels[project.biome]} · {project.municipality}, {project.state}
+                </small>
+                <h2>{project.name}</h2>
+                <p>{project.summary}</p>
+                <strong>Conhecer projeto →</strong>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p>Nenhum projeto publicado no momento.</p>
+    )}
   </div>
   <script
     is:inline
     type="application/ld+json"
     set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
       itemListElement: [
         {
-          "@type": "ListItem",
+          '@type': 'ListItem',
           position: 1,
-          name: "Início",
-          item: "https://nucarbon.com.br/",
+          name: 'Início',
+          item: 'https://nucarbon.com.br/',
         },
         {
-          "@type": "ListItem",
+          '@type': 'ListItem',
           position: 2,
-          name: "Projetos",
-          item: "https://nucarbon.com.br/projetos",
+          name: 'Projetos',
+          item: 'https://nucarbon.com.br/projetos',
         },
       ],
     })}

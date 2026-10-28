@@ -9,6 +9,8 @@ const { description, overline } = Astro.props;
 
 <header class="page-intro">
   {overline && <p class="overline">{overline}</p>}
-  <h1><slot /></h1>
+  <h1>
+    <slot />
+  </h1>
   <p>{description}</p>
 </header>

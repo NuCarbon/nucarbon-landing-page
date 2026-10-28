@@ -11,12 +11,54 @@ interface Props {
 const { answers, active, label } = Astro.props;
 ---
 
-<section class="calculator-step calculator-step--profile" data-step="profile" data-step-label={label} hidden={!active} aria-labelledby="profile-title">
-  <h1 class="calculator-step__title" id="profile-title">Qual o seu perfil de cálculo?</h1>
+<section
+  class="calculator-step calculator-step--profile"
+  data-step="profile"
+  data-step-label={label}
+  hidden={!active}
+  aria-labelledby="profile-title"
+>
+  <h1 class="calculator-step__title" id="profile-title">
+    Qual o seu perfil de cálculo?
+  </h1>
   <div class="calculator-step__options calculator-step__options--profile">
-    <OptionCard group="profile" value={ProfileAnswer.Person} label="Pessoa física" description="Hábitos pessoais de transporte, moradia e consumo." icon="person" selected={answers.profile === ProfileAnswer.Person} />
-    <OptionCard group="profile" value={ProfileAnswer.Family} label="Família" description="Cálculo consolidado para todos os membros da residência." icon="home" disabled badge="Em breve" badgeTone="neutral" />
-    <OptionCard group="profile" value={ProfileAnswer.Company} label="Empresa" description="Diagnóstico de emissões operacionais e escritórios." icon="building" disabled badge="Em breve" badgeTone="neutral" />
-    <OptionCard group="profile" value={ProfileAnswer.Event} label="Evento" description="Estime emissões geradas por celebrações ou congressos." icon="calendar" disabled badge="Em breve" badgeTone="neutral" />
+    <OptionCard
+      group="profile"
+      value={ProfileAnswer.Person}
+      label="Pessoa física"
+      description="Hábitos pessoais de transporte, moradia e consumo."
+      icon="person"
+      selected={answers.profile === ProfileAnswer.Person}
+    />
+    <OptionCard
+      group="profile"
+      value={ProfileAnswer.Family}
+      label="Família"
+      description="Cálculo consolidado para todos os membros da residência."
+      icon="home"
+      disabled
+      badge="Em breve"
+      badgeTone="neutral"
+    />
+    <OptionCard
+      group="profile"
+      value={ProfileAnswer.Company}
+      label="Empresa"
+      description="Diagnóstico de emissões operacionais e escritórios."
+      icon="building"
+      disabled
+      badge="Em breve"
+      badgeTone="neutral"
+    />
+    <OptionCard
+      group="profile"
+      value={ProfileAnswer.Event}
+      label="Evento"
+      description="Estime emissões geradas por celebrações ou congressos."
+      icon="calendar"
+      disabled
+      badge="Em breve"
+      badgeTone="neutral"
+    />
   </div>
 </section>

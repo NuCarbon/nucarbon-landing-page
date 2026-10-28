@@ -5,11 +5,7 @@ interface Props {
   [attribute: string]: unknown;
 }
 
-const {
-  label = 'Carregando',
-  size = 'medium',
-  ...attributes
-} = Astro.props;
+const { label = 'Carregando', size = 'medium', ...attributes } = Astro.props;
 ---
 
 <span

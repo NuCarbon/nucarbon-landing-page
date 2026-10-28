@@ -1,6 +1,6 @@
 ---
-import CalculatorIcon from "./CalculatorIcon.astro";
-import type { CalculatorAnswers, StepId } from "../../scripts/calculator/state";
+import CalculatorIcon from './CalculatorIcon.astro';
+import type { CalculatorAnswers, StepId } from '../../scripts/calculator/state';
 
 interface Props {
   group: StepId;
@@ -9,7 +9,7 @@ interface Props {
   description?: string;
   icon: string;
   badge?: string;
-  badgeTone?: "green" | "neutral" | "warning" | "danger";
+  badgeTone?: 'green' | 'neutral' | 'warning' | 'danger';
   selected?: boolean;
   compact?: boolean;
   disabled?: boolean;
@@ -22,7 +22,7 @@ const {
   description,
   icon,
   badge,
-  badgeTone = "green",
+  badgeTone = 'green',
   selected = false,
   compact = false,
   disabled = false,
@@ -31,11 +31,11 @@ const {
 
 <label
   class:list={[
-    "option-card",
+    'option-card',
     {
-      "option-card--selected": selected,
-      "option-card--compact": compact,
-      "option-card--disabled": disabled,
+      'option-card--selected': selected,
+      'option-card--compact': compact,
+      'option-card--disabled': disabled,
     },
   ]}
 >
@@ -47,22 +47,15 @@ const {
     checked={selected}
     disabled={disabled}
   />
-  <span class="option-card__icon"><CalculatorIcon name={icon} /></span>
+  <span class="option-card__icon">
+    <CalculatorIcon name={icon} />
+  </span>
   <span class="option-card__content">
     <span class="option-card__heading">
       <span class="option-card__label">{label}</span>
-      {
-        badge && (
-          <span
-            class:list={[
-              "option-card__badge",
-              `option-card__badge--${badgeTone}`,
-            ]}
-          >
-            {badge}
-          </span>
-        )
-      }
+      {badge && (
+        <span class:list={['option-card__badge', `option-card__badge--${badgeTone}`]}>{badge}</span>
+      )}
     </span>
     {description && <span class="option-card__description">{description}</span>}
   </span>
@@ -75,8 +68,8 @@ const {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-areas:
-      "icon . radio"
-      "content content content";
+      'icon . radio'
+      'content content content';
     align-items: center;
     gap: 1.05rem;
     min-height: 178px;
@@ -220,7 +213,7 @@ const {
 
   @media (max-width: 600px) {
     .option-card {
-      grid-template-areas: "icon content radio";
+      grid-template-areas: 'icon content radio';
       align-items: center;
       min-height: 90px;
       padding: 1rem;

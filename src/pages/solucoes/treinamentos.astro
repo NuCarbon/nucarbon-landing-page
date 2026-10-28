@@ -4,7 +4,7 @@ import Card from '../../components/ui/Card.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout 
+<BaseLayout
   title="Treinamentos - Nucarbon"
   description="Oferecemos treinamentos especializados em créditos de carbono, projetos agroflorestais e gestão sustentável. Cursos desenvolvidos por especialistas e adaptados às necessidades específicas de cada público."
   className="services-page"
@@ -24,9 +24,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <div class="content-section">
         <h2>Nossos Programas de Treinamento</h2>
         <p>
-          A Nucarbon oferece programas de treinamento e capacitação desenvolvidos 
-          por especialistas com ampla experiência em créditos de carbono, projetos agroflorestais e 
-          gestão sustentável. Nossos cursos são adaptados às necessidades específicas de cada público, 
+          A Nucarbon oferece programas de treinamento e capacitação desenvolvidos por especialistas
+          com ampla experiência em créditos de carbono, projetos agroflorestais e gestão
+          sustentável. Nossos cursos são adaptados às necessidades específicas de cada público,
           desde produtores rurais até profissionais técnicos e gestores.
         </p>
       </div>
@@ -37,8 +37,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <Card title="Introdução aos Créditos de Carbono" smallTitle>
             <p class="course-level">Nível: Básico</p>
             <p>
-              Curso introdutório sobre o mercado de créditos de carbono, 
-              conceitos fundamentais, oportunidades e como participar de projetos.
+              Curso introdutório sobre o mercado de créditos de carbono, conceitos fundamentais,
+              oportunidades e como participar de projetos.
             </p>
             <ul class="course-topics feature-list">
               <li>Conceitos básicos de créditos de carbono</li>
@@ -51,8 +51,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <Card title="Projetos Agroflorestais: Planejamento e Implementação" smallTitle>
             <p class="course-level">Nível: Intermediário</p>
             <p>
-              Treinamento prático sobre desenvolvimento e implementação de 
-              sistemas agroflorestais, incluindo seleção de espécies, manejo e monitoramento.
+              Treinamento prático sobre desenvolvimento e implementação de sistemas agroflorestais,
+              incluindo seleção de espécies, manejo e monitoramento.
             </p>
             <ul class="course-topics feature-list">
               <li>Princípios de sistemas agroflorestais</li>
@@ -65,8 +65,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <Card title="Elaboração de PDDs e Sistemas MRV" smallTitle>
             <p class="course-level">Nível: Avançado</p>
             <p>
-              Curso técnico sobre elaboração de Documentos de Concepção de 
-              Projetos (PDD) e implementação de sistemas de Monitoramento, Relatório e Verificação (MRV).
+              Curso técnico sobre elaboração de Documentos de Concepção de Projetos (PDD) e
+              implementação de sistemas de Monitoramento, Relatório e Verificação (MRV).
             </p>
             <ul class="course-topics feature-list">
               <li>Estrutura e conteúdo de PDDs</li>
@@ -79,8 +79,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <Card title="Gestão de Riscos em Projetos de Carbono" smallTitle>
             <p class="course-level">Nível: Intermediário/Avançado</p>
             <p>
-              Treinamento sobre identificação, avaliação e gestão de riscos 
-              em projetos de créditos de carbono, incluindo riscos de vazamento (leakage).
+              Treinamento sobre identificação, avaliação e gestão de riscos em projetos de créditos
+              de carbono, incluindo riscos de vazamento (leakage).
             </p>
             <ul class="course-topics feature-list">
               <li>Tipos de riscos em projetos de carbono</li>
@@ -94,9 +94,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
       <div class="content-section section-highlight">
         <h2>Metodologia de Ensino</h2>
-        <p>
-          Nossos treinamentos combinam teoria e prática, utilizando:
-        </p>
+        <p>Nossos treinamentos combinam teoria e prática, utilizando:</p>
         <ul class="methodology-list feature-list">
           <li>Aulas expositivas com especialistas do setor</li>
           <li>Estudos de caso reais de projetos implementados</li>
@@ -116,108 +114,107 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
             <h4>Online</h4>
             <p>Cursos à distância com aulas ao vivo e material disponível 24/7</p>
           </div> -->
-          <Card title="In-Company">
-            Treinamentos personalizados para equipes e organizações
-          </Card>
+          <Card title="In-Company">Treinamentos personalizados para equipes e organizações</Card>
         </div>
       </div>
 
       <div class="cta-section">
         <h2>Interessado em Nossos Treinamentos?</h2>
-        <p>Entre em contato para conhecer nossa programação e solicitar um orçamento personalizado.</p>
-        <Button href="/#contato">Solicitar Informações</a>
+        <p>
+          Entre em contato para conhecer nossa programação e solicitar um orçamento personalizado.
+        </p>
+        <Button href="/#contato">Solicitar Informações</Button>
       </div>
     </div>
   </section>
 </BaseLayout>
 
 <style lang="scss">
-.treinamentos {
-  .content-section {
-    margin-bottom: var(--spacing-2xl);
-  }
-
-  .content-section h2 {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-md);
-  }
-
-  .courses-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-lg);
-    margin-top: var(--spacing-lg);
-  }
-
-  .course-card {
-    background-color: var(--color-bg-primary);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .course-card h3 {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-xs);
-    font-size: 1.25rem;
-  }
-
-  .course-level {
-    font-size: 0.875rem;
-    color: var(--color-text-light);
-    font-weight: 600;
-    margin-bottom: var(--spacing-sm);
-    text-transform: uppercase;
-  }
-
-  .course-topics  > li {
-    font-size: 0.9rem;
-
-    &::before {
-      content: '•';
+  .treinamentos {
+    .content-section {
+      margin-bottom: var(--spacing-2xl);
     }
-  }
 
-  .methodology-list li::before {
-    content: '✓';
-  }
+    .content-section h2 {
+      color: var(--color-primary);
+      margin-bottom: var(--spacing-md);
+    }
 
-  .modalities-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-lg);
-    margin-top: var(--spacing-lg);
-  }
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-lg);
+      margin-top: var(--spacing-lg);
+    }
 
-  .modality-item {
-    background-color: var(--color-bg-primary);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
-    text-align: center;
-  }
+    .course-card {
+      background-color: var(--color-bg-primary);
+      padding: var(--spacing-lg);
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+    }
 
-  .modality-item h4 {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-sm);
-  }
+    .course-card h3 {
+      color: var(--color-primary);
+      margin-bottom: var(--spacing-xs);
+      font-size: 1.25rem;
+    }
 
-  .cta-section {
-    text-align: center;
-    padding: var(--spacing-xl);
-    background-color: var(--color-bg-secondary);
-    border-radius: var(--border-radius-lg);
-    margin-top: var(--spacing-xl);
-  }
+    .course-level {
+      font-size: 0.875rem;
+      color: var(--color-text-light);
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+      text-transform: uppercase;
+    }
 
-  @media (max-width: 768px) {
-    .courses-grid,
+    .course-topics > li {
+      font-size: 0.9rem;
+
+      &::before {
+        content: '•';
+      }
+    }
+
+    .methodology-list li::before {
+      content: '✓';
+    }
+
     .modalities-grid {
-      grid-template-columns: 1fr;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-lg);
+      margin-top: var(--spacing-lg);
+    }
+
+    .modality-item {
+      background-color: var(--color-bg-primary);
+      padding: var(--spacing-lg);
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+    }
+
+    .modality-item h4 {
+      color: var(--color-primary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .cta-section {
+      text-align: center;
+      padding: var(--spacing-xl);
+      background-color: var(--color-bg-secondary);
+      border-radius: var(--border-radius-lg);
+      margin-top: var(--spacing-xl);
+    }
+
+    @media (max-width: 768px) {
+      .courses-grid,
+      .modalities-grid {
+        grid-template-columns: 1fr;
+      }
     }
   }
-}
 </style>
-

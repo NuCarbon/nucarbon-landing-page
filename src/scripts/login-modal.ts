@@ -7,13 +7,21 @@ let previousFocus: HTMLElement | null = null;
 
 export async function openLoginModal(onSuccess?: () => void | Promise<void>): Promise<void> {
   const user = await authReady;
-  if (user) { await savePendingDraft(user); await onSuccess?.(); return; }
+  if (user) {
+    await savePendingDraft(user);
+    await onSuccess?.();
+    return;
+  }
   const dialog = document.querySelector<HTMLDialogElement>('[data-login-modal]');
-  if (!dialog) { location.assign('/entrar'); return; }
+  if (!dialog) {
+    location.assign('/entrar');
+    return;
+  }
   continuation = onSuccess;
   previousFocus = document.activeElement as HTMLElement;
   dialog.querySelector<HTMLElement>('[data-login-error]')!.hidden = true;
-  dialog.querySelector<HTMLButtonElement>('[data-google-sign-in]')!.textContent = 'Continuar com Google';
+  dialog.querySelector<HTMLButtonElement>('[data-google-sign-in]')!.textContent =
+    'Continuar com Google';
   dialog.showModal();
   dialog.querySelector<HTMLButtonElement>('[data-google-sign-in]')?.focus();
 }
@@ -21,13 +29,19 @@ export async function openLoginModal(onSuccess?: () => void | Promise<void>): Pr
 export function initializeLoginModal() {
   const dialog = document.querySelector<HTMLDialogElement>('[data-login-modal]');
   if (!dialog) return;
-  dialog.addEventListener('close', () => { continuation = undefined; previousFocus?.focus(); });
-  dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener('close', () => {
+    continuation = undefined;
+    previousFocus?.focus();
+  });
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
   dialog.querySelector('[data-modal-close]')?.addEventListener('click', () => dialog.close());
   const button = dialog.querySelector<HTMLButtonElement>('[data-google-sign-in]')!;
   const error = dialog.querySelector<HTMLElement>('[data-login-error]')!;
   button.addEventListener('click', async () => {
-    button.disabled = true; error.hidden = true;
+    button.disabled = true;
+    error.hidden = true;
     try {
       if (!auth.currentUser) await signInWithGoogle();
       const user = auth.currentUser;
@@ -41,9 +55,12 @@ export function initializeLoginModal() {
       dialog.close();
       await resume?.();
     } catch (cause) {
-      error.textContent = cause instanceof Error ? cause.message : 'Não foi possível entrar. Tente novamente.';
+      error.textContent =
+        cause instanceof Error ? cause.message : 'Não foi possível entrar. Tente novamente.';
       error.hidden = false;
       button.textContent = 'Tentar novamente';
-    } finally { button.disabled = false; }
+    } finally {
+      button.disabled = false;
+    }
   });
 }

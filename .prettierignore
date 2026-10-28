@@ -1,0 +1,14 @@
+dist/
+.astro/
+.netlify/
+node_modules/
+package-lock.json
+deno.lock
+public/
+src/assets/
+netlify/functions/*.zip
+netlify/functions/manifest.json
+.env*
+*.png
+*.jpg
+*.jpeg

@@ -1,7 +1,12 @@
 import { Timestamp } from 'firebase-admin/firestore';
 import { calculateFootprint } from '../../src/scripts/calculator/calculate.ts';
 import {
-  EnergyAnswer, FoodAnswer, HomeAnswer, ProfileAnswer, TransportAnswer, WasteAnswer,
+  EnergyAnswer,
+  FoodAnswer,
+  HomeAnswer,
+  ProfileAnswer,
+  TransportAnswer,
+  WasteAnswer,
   type CalculatorAnswers,
 } from '../../src/scripts/calculator/state.ts';
 import type { AuthenticatedHandler } from './_api';
@@ -10,9 +15,22 @@ import type { AuthenticatedHandler } from './_api';
 const codes = {
   profile: { [ProfileAnswer.Person]: 1 },
   home: { [HomeAnswer.Apartment]: 1, [HomeAnswer.SmallHouse]: 2, [HomeAnswer.LargeHouse]: 3 },
-  transport: { [TransportAnswer.Gas]: 1, [TransportAnswer.Ethanol]: 2, [TransportAnswer.Electric]: 3, [TransportAnswer.Motorcycle]: 4, [TransportAnswer.Public]: 5, [TransportAnswer.Bike]: 6 },
+  transport: {
+    [TransportAnswer.Gas]: 1,
+    [TransportAnswer.Ethanol]: 2,
+    [TransportAnswer.Electric]: 3,
+    [TransportAnswer.Motorcycle]: 4,
+    [TransportAnswer.Public]: 5,
+    [TransportAnswer.Bike]: 6,
+  },
   energy: { [EnergyAnswer.Low]: 1, [EnergyAnswer.Medium]: 2, [EnergyAnswer.High]: 3 },
-  food: { [FoodAnswer.Vegan]: 1, [FoodAnswer.Vegetarian]: 2, [FoodAnswer.Flexitarian]: 3, [FoodAnswer.Moderate]: 4, [FoodAnswer.High]: 5 },
+  food: {
+    [FoodAnswer.Vegan]: 1,
+    [FoodAnswer.Vegetarian]: 2,
+    [FoodAnswer.Flexitarian]: 3,
+    [FoodAnswer.Moderate]: 4,
+    [FoodAnswer.High]: 5,
+  },
   waste: { [WasteAnswer.Recycle]: 1, [WasteAnswer.Sometimes]: 2, [WasteAnswer.Trash]: 3 },
 };
 
@@ -28,13 +46,21 @@ export function decodeAnswers(stored: Record<string, number>): CalculatorAnswers
 }
 
 export function parseAnswers(value: unknown): CalculatorAnswers {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid answers');
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('Invalid answers');
   const answers = value as Record<string, unknown>;
   if (Object.keys(answers).length !== 7) throw new Error('Invalid answer fields');
   for (const [key, options] of Object.entries(codes)) {
-    if (typeof answers[key] !== 'string' || !Object.hasOwn(options, answers[key])) throw new Error(`Invalid ${key}`);
+    if (typeof answers[key] !== 'string' || !Object.hasOwn(options, answers[key]))
+      throw new Error(`Invalid ${key}`);
   }
-  if (typeof answers.distance !== 'number' || !Number.isFinite(answers.distance) || answers.distance < 0 || answers.distance > 500 || answers.distance % 10 !== 0) {
+  if (
+    typeof answers.distance !== 'number' ||
+    !Number.isFinite(answers.distance) ||
+    answers.distance < 0 ||
+    answers.distance > 500 ||
+    answers.distance % 10 !== 0
+  ) {
     throw new Error('Invalid weekly distance');
   }
   return { ...answers } as unknown as CalculatorAnswers;
@@ -42,16 +68,21 @@ export function parseAnswers(value: unknown): CalculatorAnswers {
 
 export function buildUserCalculation(answers: CalculatorAnswers, updatedAt: Timestamp) {
   const result = calculateFootprint(answers);
-  const storedAnswers = Object.fromEntries(Object.entries(codes).map(([key, options]) => [
-    key, (options as Record<string, number>)[answers[key as keyof typeof codes]],
-  ]));
+  const storedAnswers = Object.fromEntries(
+    Object.entries(codes).map(([key, options]) => [
+      key,
+      (options as Record<string, number>)[answers[key as keyof typeof codes]],
+    ]),
+  );
   return {
     footprint: { annualEmissionsTonnes: result.total, updatedAt },
     calculator: {
       answers: { ...storedAnswers, weeklyDistanceKm: answers.distance },
       annualEmissionsTonnes: result.total,
       treeEquivalent: result.trees,
-      categoryEmissionsTonnes: Object.fromEntries(result.categories.map(({ id, tonnes }) => [id, tonnes])),
+      categoryEmissionsTonnes: Object.fromEntries(
+        result.categories.map(({ id, tonnes }) => [id, tonnes]),
+      ),
       updatedAt,
     },
   };
@@ -63,16 +94,20 @@ export function createSaveCalculationHandler(
   persist: (uid: string, calculation: UserCalculation) => Promise<void>,
   now = () => Timestamp.now(),
 ): AuthenticatedHandler {
-  const respond = (body: unknown, status: number) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } });
+  const respond = (body: unknown, status: number) =>
+    Response.json(body, { status, headers: { 'cache-control': 'no-store' } });
   return async (request, _context, user) => {
-    if (request.method !== 'POST') return new Response(null, { status: 405, headers: { Allow: 'POST' } });
-    if (!request.headers.get('content-type')?.startsWith('application/json')) return respond({ error: 'Expected JSON' }, 415);
+    if (request.method !== 'POST')
+      return new Response(null, { status: 405, headers: { Allow: 'POST' } });
+    if (!request.headers.get('content-type')?.startsWith('application/json'))
+      return respond({ error: 'Expected JSON' }, 415);
     let answers: CalculatorAnswers;
     try {
       const raw = await request.text();
       if (raw.length > 4096) return respond({ error: 'Request too large' }, 413);
       const body = JSON.parse(raw);
-      if (!body || Object.keys(body).length !== 1 || !Object.hasOwn(body, 'answers')) throw new Error('Invalid request');
+      if (!body || Object.keys(body).length !== 1 || !Object.hasOwn(body, 'answers'))
+        throw new Error('Invalid request');
       answers = parseAnswers(body.answers);
     } catch {
       return respond({ error: 'Invalid calculator answers' }, 400);
@@ -80,9 +115,14 @@ export function createSaveCalculationHandler(
     // Identity comes only from the verified token. Never trust client totals or UIDs.
     const calculation = buildUserCalculation(answers, now());
     await persist(user.uid, calculation);
-    return respond({ footprint: {
-      annualEmissionsTonnes: calculation.footprint.annualEmissionsTonnes,
-      updatedAt: calculation.footprint.updatedAt.toMillis(),
-    } }, 200);
+    return respond(
+      {
+        footprint: {
+          annualEmissionsTonnes: calculation.footprint.annualEmissionsTonnes,
+          updatedAt: calculation.footprint.updatedAt.toMillis(),
+        },
+      },
+      200,
+    );
   };
 }

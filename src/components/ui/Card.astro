@@ -13,88 +13,91 @@ const { title, href, class: className = '', smallTitle, centerText, icon: Icon }
 
 <div class={`card ${className}`}>
   {title && (
-    <h4 class={`card-title ${smallTitle ? "card-title-small" : ""}`}>
+    <h4 class={`card-title ${smallTitle ? 'card-title-small' : ''}`}>
       {Icon && <Icon class="card-icon" />}
       {title}
     </h4>
   )}
-  <div class={`card-content ${centerText ? "card-content-centered" : ""}`}>
+  <div class={`card-content ${centerText ? 'card-content-centered' : ''}`}>
     <slot />
   </div>
   {href && (
     <div class="card-footer">
-      <a href={href} class="card-link">Saiba mais →</a>
+      <a href={href} class="card-link">
+        Saiba mais →
+      </a>
     </div>
   )}
 </div>
 
 <style lang="scss">
-.card {
-  background: white;
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  &-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+  .card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-
-    &-small {
-      font-size: 1.2rem;
-      text-align: left;
-      align-items: flex-start;
-    }
-
-    :global(svg) {
-      width: 4rem;
-      height: 4rem;
-      margin-bottom: var(--spacing-sm);
-      border-radius: var(--border-radius-lg);
-      background-color: var(--color-primary-accent);
-      padding: var(--spacing-sm);
-      fill: var(--color-primary-light);
-    }
-  }
-
-  &-content {
-    flex: 1;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-
-    &-centered {
-      text-align: center;
-    }
-  }
-
-  &-footer {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  &-link {
-    color: var(--color-primary);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
 
     &:hover {
-      color: var(--color-primary-dark);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+
+      &-small {
+        font-size: 1.2rem;
+        text-align: left;
+        align-items: flex-start;
+      }
+
+      :global(svg) {
+        width: 4rem;
+        height: 4rem;
+        margin-bottom: var(--spacing-sm);
+        border-radius: var(--border-radius-lg);
+        background-color: var(--color-primary-accent);
+        padding: var(--spacing-sm);
+        fill: var(--color-primary-light);
+      }
+    }
+
+    &-content {
+      flex: 1;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+
+      &-centered {
+        text-align: center;
+      }
+    }
+
+    &-footer {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    &-link {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--color-primary-dark);
+      }
     }
   }
-}
 </style>
-

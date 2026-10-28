@@ -1,6 +1,6 @@
 ---
-import forestHero from "../../images/forest-hero-2.jpg";
-import Button from "../ui/Button.astro";
+import forestHero from '../../images/forest-hero-2.jpg';
+import Button from '../ui/Button.astro';
 const backgroundUrl = `url(${forestHero.src})`;
 ---
 
@@ -11,54 +11,60 @@ const backgroundUrl = `url(${forestHero.src})`;
       Soluções sustentáveis em créditos de carbono e projetos agroflorestais
     </p>
     <div class="hero-cta">
-      <Button href="#solucoes" variant="primary-inverse">Conheça Nossas Soluções</Button>
-      <Button href="#contato" variant="outline-inverse">Entre em Contato</Button>
+      <Button href="#solucoes" variant="primary-inverse">
+        Conheça Nossas Soluções
+      </Button>
+      <Button href="#contato" variant="outline-inverse">
+        Entre em Contato
+      </Button>
     </div>
   </div>
 </section>
 
 <style lang="scss" define:vars={{ backgroundUrl }}>
-.hero {
-  background: linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-bg-primary) 100%), var(--backgroundUrl);
-  background-size: cover;
-  background-blend-mode: multiply;
-  background-position: center center;
-  color: white;
-  padding: calc(var(--spacing-2xl) + 80px) 0 var(--spacing-2xl);
-  text-align: center;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &-title {
-    font-size: clamp(4rem, 8vw, 8rem);
-    font-weight: 700;
-    margin-bottom: var(--spacing-md);
+  .hero {
+    background:
+      linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-bg-primary) 100%),
+      var(--backgroundUrl);
+    background-size: cover;
+    background-blend-mode: multiply;
+    background-position: center center;
     color: white;
-    font-family: var(--font-logo);
-  }
-
-  &-subtitle {
-    font-size: clamp(1.25rem, 2.5vw, 2rem);
-    margin-bottom: var(--spacing-xl);
-    color: rgba(255, 255, 255, 0.95);
-    max-width: 70vw;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  &-cta {
+    padding: calc(var(--spacing-2xl) + 80px) 0 var(--spacing-2xl);
+    text-align: center;
+    min-height: 100vh;
     display: flex;
-    gap: var(--spacing-md);
+    align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
-  }
 
-  @media (min-width: 700px) {
+    &-title {
+      font-size: clamp(4rem, 8vw, 8rem);
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+      color: white;
+      font-family: var(--font-logo);
+    }
+
     &-subtitle {
-      max-width: min(650px, 60vw);
+      font-size: clamp(1.25rem, 2.5vw, 2rem);
+      margin-bottom: var(--spacing-xl);
+      color: rgba(255, 255, 255, 0.95);
+      max-width: 70vw;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    &-cta {
+      display: flex;
+      gap: var(--spacing-md);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    @media (min-width: 700px) {
+      &-subtitle {
+        max-width: min(650px, 60vw);
+      }
     }
   }
-}
 </style>

@@ -1,20 +1,62 @@
 ---
 const { titleId = 'login-title' } = Astro.props;
 ---
+
 <section class="login-card" data-login-form aria-labelledby={titleId}>
   <p class="eyebrow">Sua jornada de impacto</p>
   <h1 id={titleId}>Entre na Nucarbon</h1>
   <p>Continue com Google para entrar ou criar sua conta.</p>
-  <button type="button" data-google-sign-in>Continuar com Google</button>
+  <button type="button" data-google-sign-in>
+    Continuar com Google
+  </button>
   <p data-login-error role="alert" hidden></p>
 </section>
 <style lang="scss">
-  .login-card { width:min(100%,480px); padding:2rem; border:1px solid #dce6da; border-radius:20px; background:white; box-shadow:0 18px 50px #163b1a22; text-align:center; }
-  h1 { color:#1d5d2c; margin:.25rem 0; font-size:2rem; }
-  p { color:#4f5c50; }
-  .eyebrow { color:#277739; font-size:.8rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
-  button { width:100%; margin-top:12px; padding:13px; border:1px solid #aac9ae; border-radius:100px; background:#fff; color:#174f24; font:inherit; font-weight:700; cursor:pointer; }
-  button:hover,button:focus-visible { background:#e9f5ea; }
-  button:disabled { opacity:.6; cursor:wait; }
-  [data-login-error] { color:#b42318; }
+  .login-card {
+    width: min(100%, 480px);
+    padding: 2rem;
+    border: 1px solid #dce6da;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 18px 50px #163b1a22;
+    text-align: center;
+  }
+  h1 {
+    color: #1d5d2c;
+    margin: 0.25rem 0;
+    font-size: 2rem;
+  }
+  p {
+    color: #4f5c50;
+  }
+  .eyebrow {
+    color: #277739;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 13px;
+    border: 1px solid #aac9ae;
+    border-radius: 100px;
+    background: #fff;
+    color: #174f24;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button:hover,
+  button:focus-visible {
+    background: #e9f5ea;
+  }
+  button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  [data-login-error] {
+    color: #b42318;
+  }
 </style>

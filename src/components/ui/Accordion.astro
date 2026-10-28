@@ -19,7 +19,9 @@ const { items } = Astro.props;
         id={`accordion-header-${index}`}
       >
         <span class="accordion-question">{item.question}</span>
-        <span class="accordion-icon" aria-hidden="true">+</span>
+        <span class="accordion-icon" aria-hidden="true">
+          +
+        </span>
       </button>
       <div
         class="accordion-content"
@@ -36,13 +38,13 @@ const { items } = Astro.props;
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const accordionHeaders = document.querySelectorAll('.accordion-header');
-    
+
     accordionHeaders.forEach((header) => {
       header.addEventListener('click', () => {
         const content = header.nextElementSibling as HTMLElement;
         const icon = header.querySelector('.accordion-icon') as HTMLElement;
         const isExpanded = header.getAttribute('aria-expanded') === 'true';
-        
+
         // Close all other items
         accordionHeaders.forEach((otherHeader) => {
           if (otherHeader !== header) {
@@ -53,7 +55,7 @@ const { items } = Astro.props;
             if (otherIcon) otherIcon.textContent = '+';
           }
         });
-        
+
         // Toggle current item
         header.setAttribute('aria-expanded', String(!isExpanded));
         content.hidden = isExpanded;
@@ -120,4 +122,3 @@ const { items } = Astro.props;
     }
   }
 </style>
-
