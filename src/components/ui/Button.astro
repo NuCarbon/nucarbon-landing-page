@@ -25,6 +25,7 @@ const {
   ...attributes
 } = Astro.props;
 const classes = ['btn', `btn--${variant}`, `btn--${size}`, { 'btn--block': block }, className];
+const { type = 'button', ...buttonAttributes } = attributes as HTMLAttributes<'button'>;
 ---
 
 {'href' in attributes && attributes.href !== undefined ? (
@@ -32,7 +33,7 @@ const classes = ['btn', `btn--${variant}`, `btn--${size}`, { 'btn--block': block
     <slot />
   </a>
 ) : (
-  <button class:list={classes} type="button" {...(attributes as HTMLAttributes<'button'>)}>
+  <button class:list={classes} type={type} {...buttonAttributes}>
     <slot />
   </button>
 )}

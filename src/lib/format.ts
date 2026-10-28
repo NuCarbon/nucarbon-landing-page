@@ -4,7 +4,6 @@ import {
   MetricType,
   ProjectStatus,
   ReactionType,
-  type Coordinates,
   type ImpactMetric,
   type Project,
   type ReactionCount,
@@ -45,7 +44,6 @@ export const formatMoney = (cents: number) => currency.format(cents / 100);
 export const formatHectares = (value: number) => `${decimal.format(value)} hectares`;
 /** A 0–1 ratio to "65%". */
 export const formatPercent = (ratio: number) => percent.format(ratio);
-export const formatProgress = formatPercent;
 
 export const formatDate = (timestamp: number) => date.format(timestamp);
 export const formatUpdatedAt = (timestamp: number) => `Atualizado em ${date.format(timestamp)}`;
@@ -90,14 +88,3 @@ export function formatMetric(metric: ImpactMetric): FormattedMetric | null {
       return null;
   }
 }
-
-/** @deprecated Use formatHectares. Removed once the app project card is replaced. */
-export const formatArea = (value: number) => `${decimal.format(value)} hectares em restauração`;
-
-/** @deprecated Coordinates are no longer displayed. Removed once the app project card is replaced. */
-export const formatLocation = ({ latitude, longitude }: Coordinates) =>
-  `${Math.abs(latitude).toFixed(4)}° ${latitude < 0 ? 'S' : 'N'}, ${Math.abs(longitude).toFixed(4)}° ${longitude < 0 ? 'O' : 'L'}`;
-
-/** @deprecated Project cards use gallery images. Removed once the app project card is replaced. */
-export const projectImageClass = (biome: Biome) =>
-  biome === Biome.Cerrado ? 'project-image project-image-cerrado' : 'project-image';
