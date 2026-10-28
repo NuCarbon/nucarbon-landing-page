@@ -1,28 +1,30 @@
 ---
-import Header from '../components/layout/Header.astro';
-import Footer from '../components/layout/Footer.astro';
 import '../styles/global.scss';
-import SiteHead from '../components/layout/SiteHead.astro';
 import LoginModal from '../components/auth/LoginModal.astro';
+import Footer from '../components/layout/Footer.astro';
+import Header from '../components/layout/Header.astro';
+import SiteHead from '../components/layout/SiteHead.astro';
 
 interface Props {
   title: string;
   description?: string;
+  /** Class for <main>. */
   className?: string;
   canonical?: string;
   image?: string;
   noindex?: boolean;
+  /** For pages that open with a dark hero under the header. */
   transparentHeader?: boolean;
 }
 
 const {
   title,
+  description,
   className,
   canonical,
   image,
   noindex = false,
   transparentHeader = false,
-  description,
 } = Astro.props;
 ---
 
@@ -38,11 +40,35 @@ const {
     />
   </head>
   <body>
+    <a class="skip-link" href="#conteudo">
+      Pular para o conteúdo
+    </a>
     <Header transparent={transparentHeader} />
-    <main class={className}>
+    <main id="conteudo" class={className}>
       <slot />
     </main>
     <Footer />
     <LoginModal />
   </body>
 </html>
+
+<style lang="scss">
+  @use '../styles/mixins' as mx;
+
+  .skip-link {
+    position: fixed;
+    top: var(--spacing-xs);
+    left: var(--spacing-xs);
+    z-index: calc(var(--z-header) + 1);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-raised);
+    color: var(--color-primary-dark);
+    font-weight: 600;
+
+    &:not(:focus) {
+      @include mx.visually-hidden;
+    }
+  }
+</style>

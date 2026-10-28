@@ -1,20 +1,21 @@
 ---
-import Card from '../ui/Card.astro';
-import ForestIcon from '../icons/Forest.astro';
-import EducationIcon from '../icons/School.astro';
-import AnalyticsIcon from '../icons/Analytics.astro';
 import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import CardGrid from '../solutions/CardGrid.astro';
+import AnalyticsIcon from '../icons/Analytics.astro';
+import ForestIcon from '../icons/Forest.astro';
+import SchoolIcon from '../icons/School.astro';
 ---
 
-<section id="solucoes" class="section nossas-solucoes">
+<section id="solucoes" class="section solutions">
   <div class="container">
-    <h2 class="section-title">Nossas Soluções</h2>
-    <p class="section-subtitle">
-      Soluções estruturadas em crédito de carbono e agroflorestas, com foco em integridade,
-      qualidade técnica e impacto socioambiental.
-    </p>
+    <SectionHeader
+      title="Nossas Soluções"
+      subtitle="Soluções estruturadas em crédito de carbono e agroflorestas, com foco em integridade, qualidade técnica e impacto socioambiental."
+    />
 
-    <div class="solucoes-grid grid grid-3">
+    <CardGrid>
       <Card title="Projetos de Carbono" icon={AnalyticsIcon} href="/solucoes/projetos-carbono">
         <p>
           Atuamos no desenvolvimento completo de projetos de crédito de carbono, desde a análise de
@@ -39,7 +40,7 @@ import Button from '../ui/Button.astro';
         </p>
       </Card>
 
-      <Card title="Treinamentos" icon={EducationIcon} href="/solucoes/treinamentos">
+      <Card title="Treinamentos" icon={SchoolIcon} href="/solucoes/treinamentos">
         <p>
           Oferecemos treinamentos e ações de capacitação em temas ambientais, agroflorestais e de
           sustentabilidade, adaptados a diferentes públicos, como empresas, escolas, comunidades e
@@ -49,25 +50,17 @@ import Button from '../ui/Button.astro';
           nacional e internacional.
         </p>
       </Card>
-    </div>
+    </CardGrid>
 
-    <div class="solucoes-cta">
+    <div class="solutions__cta">
       <Button href="/#contato">Entre em contato</Button>
     </div>
   </div>
 </section>
 
 <style lang="scss">
-  .nossas-solucoes {
-    background-color: var(--color-bg-secondary);
-  }
-
-  .solucoes-grid {
-    margin-bottom: var(--spacing-xl);
-  }
-
-  .solucoes-cta {
-    text-align: center;
+  .solutions__cta {
     margin-top: var(--spacing-xl);
+    text-align: center;
   }
 </style>

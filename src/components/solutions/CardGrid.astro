@@ -1,0 +1,39 @@
+---
+interface Props {
+  columns?: 2 | 3;
+}
+
+const { columns = 3 } = Astro.props;
+---
+
+<div class:list={['card-grid', `card-grid--${columns}`]}>
+  <slot />
+</div>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .card-grid {
+    display: grid;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+
+    @include mx.up(md) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--spacing-lg);
+    }
+  }
+
+  // Three cards: two plus a full-width one on tablets, one row on desktop.
+  .card-grid--3 {
+    @include mx.between(md, lg) {
+      > :global(:last-child:nth-child(odd)) {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @include mx.up(lg) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

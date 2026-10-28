@@ -1,220 +1,126 @@
 ---
-import Button from '../../components/ui/Button.astro';
 import Card from '../../components/ui/Card.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import CTA from '../../components/ui/CTA.astro';
+import FeatureList from '../../components/ui/FeatureList.astro';
+import CardGrid from '../../components/solutions/CardGrid.astro';
+import ContentSection from '../../components/solutions/ContentSection.astro';
+import SolutionPageLayout from '../../layouts/SolutionPageLayout.astro';
+
+const courses = [
+  {
+    title: 'Introdução aos Créditos de Carbono',
+    level: 'Básico',
+    description:
+      'Curso introdutório sobre o mercado de créditos de carbono, conceitos fundamentais, oportunidades e como participar de projetos.',
+    topics: [
+      'Conceitos básicos de créditos de carbono',
+      'Mercado voluntário vs. regulado',
+      'Tipos de projetos elegíveis',
+      'Processo de desenvolvimento de projetos',
+    ],
+  },
+  {
+    title: 'Projetos Agroflorestais: Planejamento e Implementação',
+    level: 'Intermediário',
+    description:
+      'Treinamento prático sobre desenvolvimento e implementação de sistemas agroflorestais, incluindo seleção de espécies, manejo e monitoramento.',
+    topics: [
+      'Princípios de sistemas agroflorestais',
+      'Seleção e combinação de espécies',
+      'Planejamento técnico e implementação',
+      'Manejo e monitoramento',
+    ],
+  },
+  {
+    title: 'Elaboração de PDDs e Sistemas MRV',
+    level: 'Avançado',
+    description:
+      'Curso técnico sobre elaboração de Documentos de Concepção de Projetos (PDD) e implementação de sistemas de Monitoramento, Relatório e Verificação (MRV).',
+    topics: [
+      'Estrutura e conteúdo de PDDs',
+      'Metodologias de linha de base',
+      'Desenvolvimento de sistemas MRV',
+      'Inventários de GEE e carbono',
+    ],
+  },
+  {
+    title: 'Gestão de Riscos em Projetos de Carbono',
+    level: 'Intermediário/Avançado',
+    description:
+      'Treinamento sobre identificação, avaliação e gestão de riscos em projetos de créditos de carbono, incluindo riscos de vazamento (leakage).',
+    topics: [
+      'Tipos de riscos em projetos de carbono',
+      'Riscos de vazamento (leakage)',
+      'Estratégias de mitigação',
+      'Monitoramento e gestão contínua',
+    ],
+  },
+];
 ---
 
-<BaseLayout
+<SolutionPageLayout
   title="Treinamentos - Nucarbon"
   description="Oferecemos treinamentos especializados em créditos de carbono, projetos agroflorestais e gestão sustentável. Cursos desenvolvidos por especialistas e adaptados às necessidades específicas de cada público."
-  className="services-page"
-  transparentHeader={true}
+  heading="Treinamentos e Capacitação"
+  subtitle="Capacitação especializada em créditos de carbono e projetos sustentáveis"
 >
-  <section class="page-header">
-    <div class="container">
-      <h1>Treinamentos e Capacitação</h1>
-      <p class="page-subtitle">
-        Capacitação especializada em créditos de carbono e projetos sustentáveis
-      </p>
-    </div>
-  </section>
+  <ContentSection title="Nossos Programas de Treinamento">
+    <p>
+      A Nucarbon oferece programas de treinamento e capacitação desenvolvidos por especialistas com
+      ampla experiência em créditos de carbono, projetos agroflorestais e gestão sustentável. Nossos
+      cursos são adaptados às necessidades específicas de cada público, desde produtores rurais até
+      profissionais técnicos e gestores.
+    </p>
+  </ContentSection>
 
-  <section class="section treinamentos">
-    <div class="container">
-      <div class="content-section">
-        <h2>Nossos Programas de Treinamento</h2>
-        <p>
-          A Nucarbon oferece programas de treinamento e capacitação desenvolvidos por especialistas
-          com ampla experiência em créditos de carbono, projetos agroflorestais e gestão
-          sustentável. Nossos cursos são adaptados às necessidades específicas de cada público,
-          desde produtores rurais até profissionais técnicos e gestores.
-        </p>
-      </div>
+  <ContentSection title="Cursos Disponíveis">
+    <CardGrid columns={2}>
+      {courses.map((course) => (
+        <Card title={course.title}>
+          <p class="course-level">Nível: {course.level}</p>
+          <p>{course.description}</p>
+          <FeatureList items={course.topics} marker="dot" />
+        </Card>
+      ))}
+    </CardGrid>
+  </ContentSection>
 
-      <div class="content-section">
-        <h2>Cursos Disponíveis</h2>
-        <div class="courses-grid">
-          <Card title="Introdução aos Créditos de Carbono" smallTitle>
-            <p class="course-level">Nível: Básico</p>
-            <p>
-              Curso introdutório sobre o mercado de créditos de carbono, conceitos fundamentais,
-              oportunidades e como participar de projetos.
-            </p>
-            <ul class="course-topics feature-list">
-              <li>Conceitos básicos de créditos de carbono</li>
-              <li>Mercado voluntário vs. regulado</li>
-              <li>Tipos de projetos elegíveis</li>
-              <li>Processo de desenvolvimento de projetos</li>
-            </ul>
-          </Card>
+  <ContentSection title="Metodologia de Ensino" highlight>
+    <p>Nossos treinamentos combinam teoria e prática, utilizando:</p>
+    <FeatureList
+      items={[
+        'Aulas expositivas com especialistas do setor',
+        'Estudos de caso reais de projetos implementados',
+        'Exercícios práticos e atividades em grupo',
+        'Material didático completo e atualizado',
+        'Suporte pós-treinamento para dúvidas',
+      ]}
+    />
+  </ContentSection>
 
-          <Card title="Projetos Agroflorestais: Planejamento e Implementação" smallTitle>
-            <p class="course-level">Nível: Intermediário</p>
-            <p>
-              Treinamento prático sobre desenvolvimento e implementação de sistemas agroflorestais,
-              incluindo seleção de espécies, manejo e monitoramento.
-            </p>
-            <ul class="course-topics feature-list">
-              <li>Princípios de sistemas agroflorestais</li>
-              <li>Seleção e combinação de espécies</li>
-              <li>Planejamento técnico e implementação</li>
-              <li>Manejo e monitoramento</li>
-            </ul>
-          </Card>
+  <ContentSection title="Modalidades de Treinamento">
+    <CardGrid columns={2}>
+      <Card title="Presencial">
+        Treinamentos presenciais em locais estratégicos ou na propriedade do cliente
+      </Card>
+      <Card title="In-Company">Treinamentos personalizados para equipes e organizações</Card>
+    </CardGrid>
+  </ContentSection>
 
-          <Card title="Elaboração de PDDs e Sistemas MRV" smallTitle>
-            <p class="course-level">Nível: Avançado</p>
-            <p>
-              Curso técnico sobre elaboração de Documentos de Concepção de Projetos (PDD) e
-              implementação de sistemas de Monitoramento, Relatório e Verificação (MRV).
-            </p>
-            <ul class="course-topics feature-list">
-              <li>Estrutura e conteúdo de PDDs</li>
-              <li>Metodologias de linha de base</li>
-              <li>Desenvolvimento de sistemas MRV</li>
-              <li>Inventários de GEE e carbono</li>
-            </ul>
-          </Card>
-
-          <Card title="Gestão de Riscos em Projetos de Carbono" smallTitle>
-            <p class="course-level">Nível: Intermediário/Avançado</p>
-            <p>
-              Treinamento sobre identificação, avaliação e gestão de riscos em projetos de créditos
-              de carbono, incluindo riscos de vazamento (leakage).
-            </p>
-            <ul class="course-topics feature-list">
-              <li>Tipos de riscos em projetos de carbono</li>
-              <li>Riscos de vazamento (leakage)</li>
-              <li>Estratégias de mitigação</li>
-              <li>Monitoramento e gestão contínua</li>
-            </ul>
-          </Card>
-        </div>
-      </div>
-
-      <div class="content-section section-highlight">
-        <h2>Metodologia de Ensino</h2>
-        <p>Nossos treinamentos combinam teoria e prática, utilizando:</p>
-        <ul class="methodology-list feature-list">
-          <li>Aulas expositivas com especialistas do setor</li>
-          <li>Estudos de caso reais de projetos implementados</li>
-          <li>Exercícios práticos e atividades em grupo</li>
-          <li>Material didático completo e atualizado</li>
-          <li>Suporte pós-treinamento para dúvidas</li>
-        </ul>
-      </div>
-
-      <div class="content-section">
-        <h2>Modalidades de Treinamento</h2>
-        <div class="modalities-grid">
-          <Card title="Presencial">
-            Treinamentos presenciais em locais estratégicos ou na propriedade do cliente
-          </Card>
-          <!-- <div class="modality-item">
-            <h4>Online</h4>
-            <p>Cursos à distância com aulas ao vivo e material disponível 24/7</p>
-          </div> -->
-          <Card title="In-Company">Treinamentos personalizados para equipes e organizações</Card>
-        </div>
-      </div>
-
-      <div class="cta-section">
-        <h2>Interessado em Nossos Treinamentos?</h2>
-        <p>
-          Entre em contato para conhecer nossa programação e solicitar um orçamento personalizado.
-        </p>
-        <Button href="/#contato">Solicitar Informações</Button>
-      </div>
-    </div>
-  </section>
-</BaseLayout>
+  <CTA
+    title="Interessado em Nossos Treinamentos?"
+    subtitle="Entre em contato para conhecer nossa programação e solicitar um orçamento personalizado."
+    label="Solicitar Informações"
+  />
+</SolutionPageLayout>
 
 <style lang="scss">
-  .treinamentos {
-    .content-section {
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .content-section h2 {
-      color: var(--color-primary);
-      margin-bottom: var(--spacing-md);
-    }
-
-    .courses-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--spacing-lg);
-      margin-top: var(--spacing-lg);
-    }
-
-    .course-card {
-      background-color: var(--color-bg-primary);
-      padding: var(--spacing-lg);
-      border-radius: var(--border-radius-lg);
-      box-shadow: var(--shadow-sm);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .course-card h3 {
-      color: var(--color-primary);
-      margin-bottom: var(--spacing-xs);
-      font-size: 1.25rem;
-    }
-
-    .course-level {
-      font-size: 0.875rem;
-      color: var(--color-text-light);
-      font-weight: 600;
-      margin-bottom: var(--spacing-sm);
-      text-transform: uppercase;
-    }
-
-    .course-topics > li {
-      font-size: 0.9rem;
-
-      &::before {
-        content: '•';
-      }
-    }
-
-    .methodology-list li::before {
-      content: '✓';
-    }
-
-    .modalities-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: var(--spacing-lg);
-      margin-top: var(--spacing-lg);
-    }
-
-    .modality-item {
-      background-color: var(--color-bg-primary);
-      padding: var(--spacing-lg);
-      border-radius: var(--border-radius-lg);
-      box-shadow: var(--shadow-sm);
-      text-align: center;
-    }
-
-    .modality-item h4 {
-      color: var(--color-primary);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .cta-section {
-      text-align: center;
-      padding: var(--spacing-xl);
-      background-color: var(--color-bg-secondary);
-      border-radius: var(--border-radius-lg);
-      margin-top: var(--spacing-xl);
-    }
-
-    @media (max-width: 768px) {
-      .courses-grid,
-      .modalities-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+  .course-level {
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-subtle);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 </style>

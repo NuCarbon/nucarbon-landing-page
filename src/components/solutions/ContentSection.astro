@@ -1,0 +1,46 @@
+---
+interface Props {
+  title: string;
+  id?: string;
+  /** Renders the section as a bordered white panel. */
+  highlight?: boolean;
+}
+
+const { title, id, highlight = false } = Astro.props;
+---
+
+<section id={id} class:list={['content-section', { 'content-section--highlight': highlight }]}>
+  <h2 class="content-section__title">{title}</h2>
+  <slot />
+</section>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .content-section {
+    > :global(:last-child) {
+      margin-bottom: 0;
+    }
+
+    > :global(h3) {
+      margin: var(--spacing-lg) 0 var(--spacing-sm);
+      color: var(--color-primary);
+      font-size: 1.25rem;
+    }
+  }
+
+  .content-section--highlight {
+    @include mx.surface;
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+
+    @include mx.up(md) {
+      padding: var(--spacing-xl);
+    }
+  }
+
+  .content-section__title {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-primary);
+  }
+</style>

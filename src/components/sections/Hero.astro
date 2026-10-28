@@ -1,70 +1,75 @@
 ---
+import { getImage } from 'astro:assets';
 import forestHero from '../../images/forest-hero-2.jpg';
 import Button from '../ui/Button.astro';
-const backgroundUrl = `url(${forestHero.src})`;
+import { site } from '../../data/site';
+
+// The source photo is 8064px wide; ship resized WebP backgrounds instead.
+const [small, large] = await Promise.all([
+  getImage({ src: forestHero, width: 960, format: 'webp' }),
+  getImage({ src: forestHero, width: 1920, format: 'webp' }),
+]);
+const heroImageSmall = `url(${small.src})`;
+const heroImageLarge = `url(${large.src})`;
 ---
 
 <section class="hero">
   <div class="container">
-    <h1 class="hero-title">Nucarbon</h1>
-    <p class="hero-subtitle">
+    <h1 class="hero__title">{site.name}</h1>
+    <p class="hero__subtitle">
       Soluções sustentáveis em créditos de carbono e projetos agroflorestais
     </p>
-    <div class="hero-cta">
-      <Button href="#solucoes" variant="primary-inverse">
+    <div class="hero__actions">
+      <Button href="#solucoes" variant="primary-inverse" size="lg">
         Conheça Nossas Soluções
       </Button>
-      <Button href="#contato" variant="outline-inverse">
+      <Button href="#contato" variant="outline-inverse" size="lg">
         Entre em Contato
       </Button>
     </div>
   </div>
 </section>
 
-<style lang="scss" define:vars={{ backgroundUrl }}>
+<style lang="scss" define:vars={{ heroImageSmall, heroImageLarge }}>
+  @use '../../styles/mixins' as mx;
+
   .hero {
-    background:
-      linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-bg-primary) 100%),
-      var(--backgroundUrl);
-    background-size: cover;
-    background-blend-mode: multiply;
-    background-position: center center;
-    color: white;
-    padding: calc(var(--spacing-2xl) + 80px) 0 var(--spacing-2xl);
-    text-align: center;
-    min-height: 100vh;
+    --hero-image: var(--heroImageSmall);
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: calc(var(--header-height) + var(--spacing-2xl)) 0 var(--spacing-2xl);
+    background:
+      linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-surface) 100%),
+      var(--hero-image) center / cover;
+    background-blend-mode: multiply;
+    color: var(--color-on-dark);
+    text-align: center;
 
-    &-title {
-      font-size: clamp(4rem, 8vw, 8rem);
-      font-weight: 700;
-      margin-bottom: var(--spacing-md);
-      color: white;
-      font-family: var(--font-logo);
+    @include mx.up(md) {
+      --hero-image: var(--heroImageLarge);
     }
+  }
 
-    &-subtitle {
-      font-size: clamp(1.25rem, 2.5vw, 2rem);
-      margin-bottom: var(--spacing-xl);
-      color: rgba(255, 255, 255, 0.95);
-      max-width: 70vw;
-      margin-left: auto;
-      margin-right: auto;
-    }
+  .hero__title {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-on-dark);
+    font-size: clamp(4rem, 8vw, 8rem);
+  }
 
-    &-cta {
-      display: flex;
-      gap: var(--spacing-md);
-      justify-content: center;
-      flex-wrap: wrap;
-    }
+  .hero__subtitle {
+    max-width: 650px;
+    margin: 0 auto var(--spacing-xl);
+    color: var(--color-on-dark);
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+  }
 
-    @media (min-width: 700px) {
-      &-subtitle {
-        max-width: min(650px, 60vw);
-      }
-    }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-md);
   }
 </style>

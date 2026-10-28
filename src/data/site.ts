@@ -35,6 +35,12 @@ export const footerNav: NavLink[] = [
   { label: 'Contato', href: '/#contato' },
 ];
 
+export const solutionNav: NavLink[] = [
+  { label: 'Projetos de Carbono', href: '/solucoes/projetos-carbono' },
+  { label: 'Projetos Agroflorestais', href: '/solucoes/projetos-agroflorestais' },
+  { label: 'Treinamentos', href: '/solucoes/treinamentos' },
+];
+
 export const contact = {
   email: 'contato@nucarbon.com.br',
   phones: [

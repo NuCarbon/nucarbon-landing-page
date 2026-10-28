@@ -1,0 +1,47 @@
+---
+/** Green banner at the top of content pages; sits under the transparent header. */
+interface Props {
+  heading: string;
+  subtitle?: string;
+}
+
+const { heading, subtitle } = Astro.props;
+---
+
+<section class="page-header">
+  <div class="container">
+    <h1 class="page-header__heading">{heading}</h1>
+    {subtitle && <p class="page-header__subtitle">{subtitle}</p>}
+  </div>
+</section>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    min-height: 22rem;
+    padding: calc(var(--header-height) + var(--spacing-xl)) 0 var(--spacing-xl);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: var(--color-on-dark);
+    text-align: center;
+
+    @include mx.up(md) {
+      min-height: 28rem;
+      padding-bottom: var(--spacing-2xl);
+    }
+  }
+
+  .page-header__heading {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-on-dark);
+  }
+
+  .page-header__subtitle {
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--color-on-dark-muted);
+    font-size: clamp(1.125rem, 2vw, 1.25rem);
+  }
+</style>

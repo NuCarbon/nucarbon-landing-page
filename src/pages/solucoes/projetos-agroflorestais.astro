@@ -1,248 +1,163 @@
 ---
-import Button from '../../components/ui/Button.astro';
 import Card from '../../components/ui/Card.astro';
 import CTA from '../../components/ui/CTA.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import FeatureList from '../../components/ui/FeatureList.astro';
+import CardGrid from '../../components/solutions/CardGrid.astro';
+import ContentSection from '../../components/solutions/ContentSection.astro';
+import SolutionPageLayout from '../../layouts/SolutionPageLayout.astro';
+
+const incomeSources = [
+  {
+    title: 'Produtos de Curto Prazo',
+    text: 'Cultivos anuais e perenes que começam a produzir nos primeiros anos (hortaliças, frutas, grãos, etc.)',
+  },
+  {
+    title: 'Produtos de Médio Prazo',
+    text: 'Espécies que começam a produzir entre 3 a 7 anos (algumas frutíferas, madeiras de rápido crescimento, etc.)',
+  },
+  {
+    title: 'Produtos de Longo Prazo',
+    text: 'Madeiras nobres e outras espécies que atingem valor comercial após 7 anos ou mais',
+  },
+  {
+    title: 'Créditos de Carbono',
+    text: 'Receita adicional proveniente da venda de créditos de carbono gerados pelo projeto',
+  },
+];
+
+const incomeTimeline = [
+  {
+    title: 'Anos 1-2',
+    text: 'Receita principalmente de cultivos anuais e algumas hortaliças/perenes de rápido crescimento',
+  },
+  {
+    title: 'Anos 3-5',
+    text: 'Aumento da receita com início da produção de frutíferas e primeiros créditos de carbono',
+  },
+  {
+    title: 'Anos 6-10',
+    text: 'Consolidação da produção diversificada e receita estável de créditos de carbono',
+  },
+  {
+    title: 'Anos 10+',
+    text: 'Receita adicional de madeiras nobres e produtos de alto valor agregado',
+  },
+];
 ---
 
-<BaseLayout
+<SolutionPageLayout
   title="Projetos Agroflorestais - Nucarbon"
   description="Desenvolvemos projetos agroflorestais que combinam produção agrícola com conservação florestal, gerando múltiplos benefícios econômicos e ambientais."
-  className="services-page"
-  transparentHeader={true}
+  heading="Projetos Agroflorestais"
+  subtitle="Soluções integradas que unem produção agrícola e conservação ambiental"
 >
-  <section class="page-header">
-    <div class="container">
-      <h1>Projetos Agroflorestais</h1>
-      <p class="page-subtitle">
-        Soluções integradas que unem produção agrícola e conservação ambiental
+  <ContentSection title="O que são Projetos Agroflorestais?">
+    <p>
+      Os projetos agroflorestais são sistemas de uso da terra que combinam árvores com cultivos
+      agrícolas e/ou criação de animais de forma integrada e sustentável. Esta abordagem permite que
+      produtores rurais gerem múltiplas fontes de renda enquanto contribuem para a conservação do
+      meio ambiente e a geração de créditos de carbono.
+    </p>
+    <p>
+      Nossa equipe especializada desenvolve projetos agroflorestais personalizados, considerando as
+      características específicas de cada propriedade, clima, solo e objetivos do produtor.
+    </p>
+  </ContentSection>
+
+  <ContentSection title="Nossas Soluções em Projetos Agroflorestais">
+    <CardGrid>
+      <Card title="Análise e Planejamento">
+        <p>
+          Realizamos análise completa da propriedade, incluindo caracterização do solo, clima,
+          topografia e recursos disponíveis. Com base nesses dados, desenvolvemos um plano técnico
+          detalhado para implementação do sistema agroflorestal.
+        </p>
+      </Card>
+      <Card title="Implementação">
+        <p>
+          Acompanhamos a implementação do projeto, fornecendo orientação técnica sobre seleção de
+          espécies, espaçamento, manejo e práticas de conservação do solo.
+        </p>
+      </Card>
+      <Card title="Acompanhamento Técnico">
+        <p>
+          Oferecemos acompanhamento contínuo para garantir o sucesso do projeto, incluindo
+          monitoramento do desenvolvimento das espécies, manejo integrado de pragas e doenças, e
+          ajustes necessários ao longo do tempo.
+        </p>
+      </Card>
+    </CardGrid>
+  </ContentSection>
+
+  <ContentSection title="Previsão de Renda" highlight>
+    <p>
+      Uma das grandes vantagens dos sistemas agroflorestais é a possibilidade de gerar receita a
+      partir de múltiplos produtos ao longo do tempo. Desenvolvemos análises detalhadas de previsão
+      de lucro baseadas nos produtos que podem ser gerados pela agrofloresta.
+    </p>
+
+    <h3>Como Funciona a Previsão de Renda?</h3>
+    <p>Nossa metodologia de previsão de renda considera:</p>
+    <FeatureList items={incomeSources} />
+
+    <div class="income-example">
+      <h3>Exemplo de Fluxo de Receita</h3>
+      <p>Em um projeto agroflorestal típico, o produtor pode esperar:</p>
+      <FeatureList items={incomeTimeline} marker="arrow" />
+      <p class="note">
+        <strong>Nota:</strong> Os valores específicos variam conforme a região, espécies escolhidas,
+        tamanho da área e condições de mercado. Nossa equipe desenvolve análises personalizadas para
+        cada projeto.
       </p>
     </div>
-  </section>
+  </ContentSection>
 
-  <section class="section projetos-agroflorestais">
-    <div class="container">
-      <div class="content-section">
-        <h2>O que são Projetos Agroflorestais?</h2>
-        <p>
-          Os projetos agroflorestais são sistemas de uso da terra que combinam árvores com cultivos
-          agrícolas e/ou criação de animais de forma integrada e sustentável. Esta abordagem permite
-          que produtores rurais gerem múltiplas fontes de renda enquanto contribuem para a
-          conservação do meio ambiente e a geração de créditos de carbono.
-        </p>
-        <p>
-          Nossa equipe especializada desenvolve projetos agroflorestais personalizados, considerando
-          as características específicas de cada propriedade, clima, solo e objetivos do produtor.
-        </p>
-      </div>
+  <ContentSection title="Benefícios dos Projetos Agroflorestais">
+    <CardGrid>
+      <Card title="Econômicos" align="center">
+        Diversificação de fontes de renda e aumento da rentabilidade da propriedade
+      </Card>
+      <Card title="Ambientais" align="center">
+        Conservação do solo, água e biodiversidade, além de sequestro de carbono
+      </Card>
+      <Card title="Sociais" align="center">
+        Melhoria da qualidade de vida e segurança alimentar das comunidades
+      </Card>
+    </CardGrid>
+  </ContentSection>
 
-      <div class="content-section">
-        <h2>Nossas Soluções em Projetos Agroflorestais</h2>
-        <div class="services-grid">
-          <Card title="Análise e Planejamento">
-            <p>
-              Realizamos análise completa da propriedade, incluindo caracterização do solo, clima,
-              topografia e recursos disponíveis. Com base nesses dados, desenvolvemos um plano
-              técnico detalhado para implementação do sistema agroflorestal.
-            </p>
-          </Card>
-
-          <Card title="Implementação">
-            <p>
-              Acompanhamos a implementação do projeto, fornecendo orientação técnica sobre seleção
-              de espécies, espaçamento, manejo e práticas de conservação do solo.
-            </p>
-          </Card>
-
-          <Card title="Acompanhamento Técnico">
-            <p>
-              Oferecemos acompanhamento contínuo para garantir o sucesso do projeto, incluindo
-              monitoramento do desenvolvimento das espécies, manejo integrado de pragas e doenças, e
-              ajustes necessários ao longo do tempo.
-            </p>
-          </Card>
-        </div>
-      </div>
-
-      <div class="content-section section-highlight">
-        <h2>Previsão de Renda</h2>
-        <p>
-          Uma das grandes vantagens dos sistemas agroflorestais é a possibilidade de gerar receita a
-          partir de múltiplos produtos ao longo do tempo. Desenvolvemos análises detalhadas de
-          previsão de lucro baseadas nos produtos que podem ser gerados pela agrofloresta.
-        </p>
-
-        <h3>Como Funciona a Previsão de Renda?</h3>
-        <p>Nossa metodologia de previsão de renda considera:</p>
-        <ul class="feature-list">
-          <li>
-            <strong>Produtos de Curto Prazo:</strong> Cultivos anuais e perenes que começam a
-            produzir nos primeiros anos (hortaliças, frutas, grãos, etc.)
-          </li>
-          <li>
-            <strong>Produtos de Médio Prazo:</strong> Espécies que começam a produzir entre 3 a 7
-            anos (algumas frutíferas, madeiras de rápido crescimento, etc.)
-          </li>
-          <li>
-            <strong>Produtos de Longo Prazo:</strong> Madeiras nobres e outras espécies que atingem
-            valor comercial após 7 anos ou mais
-          </li>
-          <li>
-            <strong>Créditos de Carbono:</strong> Receita adicional proveniente da venda de créditos
-            de carbono gerados pelo projeto
-          </li>
-        </ul>
-
-        <div class="profit-calculation">
-          <h3>Exemplo de Fluxo de Receita</h3>
-          <p>Em um projeto agroflorestal típico, o produtor pode esperar:</p>
-          <ul class="profit-timeline">
-            <li>
-              <strong>Anos 1-2:</strong> Receita principalmente de cultivos anuais e algumas
-              hortaliças/perenes de rápido crescimento
-            </li>
-            <li>
-              <strong>Anos 3-5:</strong> Aumento da receita com início da produção de frutíferas e
-              primeiros créditos de carbono
-            </li>
-            <li>
-              <strong>Anos 6-10:</strong> Consolidação da produção diversificada e receita estável
-              de créditos de carbono
-            </li>
-            <li>
-              <strong>Anos 10+:</strong> Receita adicional de madeiras nobres e produtos de alto
-              valor agregado
-            </li>
-          </ul>
-          <p class="note">
-            <strong>Nota:</strong> Os valores específicos variam conforme a região, espécies
-            escolhidas, tamanho da área e condições de mercado. Nossa equipe desenvolve análises
-            personalizadas para cada projeto.
-          </p>
-        </div>
-      </div>
-
-      <div class="content-section">
-        <h2>Benefícios dos Projetos Agroflorestais</h2>
-        <div class="benefits-grid">
-          <Card title="Econômicos" centerText>
-            Diversificação de fontes de renda e aumento da rentabilidade da propriedade
-          </Card>
-          <Card title="Ambientais" centerText>
-            Conservação do solo, água e biodiversidade, além de sequestro de carbono
-          </Card>
-          <Card title="Sociais" centerText>
-            Melhoria da qualidade de vida e segurança alimentar das comunidades
-          </Card>
-        </div>
-      </div>
-
-      <CTA
-        title="Interessado em Desenvolver um Projeto?"
-        subtitle="Entre em contato conosco para uma análise inicial sem compromisso."
-        cta="Solicitar Análise"
-      />
-    </div>
-  </section>
-</BaseLayout>
+  <CTA
+    title="Interessado em Desenvolver um Projeto?"
+    subtitle="Entre em contato conosco para uma análise inicial sem compromisso."
+    label="Solicitar Análise"
+  />
+</SolutionPageLayout>
 
 <style lang="scss">
-  .projetos-agroflorestais {
-    .content-section {
-      margin-bottom: var(--spacing-2xl);
+  @use '../../styles/mixins' as mx;
 
-      h2 {
-        color: var(--color-primary);
-        margin-bottom: var(--spacing-md);
-      }
+  .income-example {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg);
 
-      h3 {
-        color: var(--color-primary);
-        margin-top: var(--spacing-lg);
-        margin-bottom: var(--spacing-sm);
-      }
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: var(--spacing-lg);
-      margin-top: var(--spacing-lg);
-    }
-
-    .feature-list {
-      list-style: none;
-      padding-left: 0;
-      margin: var(--spacing-md) 0;
-
-      & > li {
-        padding: var(--spacing-sm) 0;
-        padding-left: 1.5rem;
-        position: relative;
-        color: var(--color-text-secondary);
-
-        &::before {
-          content: '✓';
-          position: absolute;
-          left: 0;
-          color: var(--color-primary);
-          font-weight: bold;
-        }
-      }
-    }
-
-    .profit-calculation {
-      background-color: var(--color-bg-primary);
+    @include mx.up(md) {
       padding: var(--spacing-lg);
-      border-radius: var(--border-radius-lg);
-      margin-top: var(--spacing-lg);
     }
 
-    .profit-timeline {
-      list-style: none;
-      padding-left: 0;
-      margin: var(--spacing-md) 0;
-
-      & > li {
-        padding: var(--spacing-sm) 0;
-        padding-left: 1.5rem;
-        position: relative;
-        color: var(--color-text-secondary);
-
-        &::before {
-          content: '→';
-          position: absolute;
-          left: 0;
-          color: var(--color-primary);
-          font-weight: bold;
-        }
-      }
+    h3 {
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-primary);
+      font-size: 1.25rem;
     }
+  }
 
-    .note {
-      margin-top: var(--spacing-md);
-      padding: var(--spacing-md);
-      background-color: var(--color-bg-accent);
-      border-left: 4px solid var(--color-primary);
-      border-radius: var(--border-radius-sm);
-    }
-
-    .benefits-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: var(--spacing-lg);
-      margin-top: var(--spacing-lg);
-
-      :global(.card-title) {
-        color: var(--color-primary);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .services-grid,
-      .benefits-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+  .note {
+    margin: var(--spacing-md) 0 0;
+    padding: var(--spacing-md);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-primary-soft);
   }
 </style>

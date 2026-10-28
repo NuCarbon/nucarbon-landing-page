@@ -1,6 +1,7 @@
 ---
 import Accordion from '../ui/Accordion.astro';
 import Button from '../ui/Button.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
 
 const faqItems = [
   {
@@ -43,17 +44,16 @@ const faqItems = [
 
 <section id="faq" class="section faq">
   <div class="container">
-    <h2 class="section-title">Tire suas Dúvidas</h2>
-    <p class="section-subtitle">
-      Encontre respostas para as principais dúvidas sobre créditos de carbono, projetos
-      agroflorestais e a atuação da Nucarbon.
-    </p>
+    <SectionHeader
+      title="Tire suas Dúvidas"
+      subtitle="Encontre respostas para as principais dúvidas sobre créditos de carbono, projetos agroflorestais e a atuação da Nucarbon."
+    />
 
-    <div class="faq-content">
-      <Accordion items={faqItems} />
+    <div class="faq__list">
+      <Accordion items={faqItems} name="faq" />
     </div>
 
-    <div class="faq-cta">
+    <div class="faq__cta">
       <p>Não encontrou sua dúvida?</p>
       <Button href="#contato" variant="outline">
         Entre em Contato
@@ -64,21 +64,19 @@ const faqItems = [
 
 <style lang="scss">
   .faq {
-    background-color: var(--color-bg-primary);
+    background-color: var(--color-surface);
+  }
 
-    &-content {
-      max-width: 800px;
-      margin: 0 auto var(--spacing-xl);
-    }
+  .faq__list {
+    max-width: 800px;
+    margin: 0 auto var(--spacing-xl);
+  }
 
-    &-cta {
-      text-align: center;
-      padding-top: var(--spacing-lg);
+  .faq__cta {
+    text-align: center;
 
-      p {
-        margin-bottom: var(--spacing-md);
-        color: var(--color-text-secondary);
-      }
+    p {
+      margin-bottom: var(--spacing-md);
     }
   }
 </style>

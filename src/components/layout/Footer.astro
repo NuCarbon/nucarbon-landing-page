@@ -1,158 +1,126 @@
 ---
-import Image from 'astro/components/Image.astro';
-import logo from '../../images/logo.png';
+import Logo from '../ui/Logo.astro';
+import { contact, footerNav, site, solutionNav } from '../../data/site';
 
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
   <div class="container">
-    <div class="footer-content">
-      <div class="footer-section">
-        <div class="footer-logo">
-          <Image src={logo} alt="Logo Nucarbon" width={56} height={56} />
-          <h3 class="footer-title">Nucarbon</h3>
-        </div>
-        <p class="footer-description">
-          Soluções sustentáveis em créditos de carbono e projetos agroflorestais.
-        </p>
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <Logo tone="inverse" />
+        <p class="footer__tagline">{site.tagline}</p>
       </div>
 
-      <div class="footer-section">
-        <h4 class="footer-heading">Links</h4>
-        <ul class="footer-links">
-          <li>
-            <a href="/#quem-somos">Quem Somos</a>
-          </li>
-          <li>
-            <a href="/#solucoes">Nossas Soluções</a>
-          </li>
-          <li>
-            <a href="/#creditos-carbono">Créditos de Carbono</a>
-          </li>
-          <li>
-            <a href="/projetos">Projetos</a>
-          </li>
+      <nav aria-labelledby="footer-links-heading">
+        <h2 id="footer-links-heading" class="footer__heading">
+          Links
+        </h2>
+        <ul class="footer__list">
+          {footerNav.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))}
         </ul>
-      </div>
+      </nav>
 
-      <div class="footer-section">
-        <h4 class="footer-heading">Contato</h4>
-        <ul class="footer-contact">
+      <nav aria-labelledby="footer-solutions-heading">
+        <h2 id="footer-solutions-heading" class="footer__heading">
+          Soluções
+        </h2>
+        <ul class="footer__list">
+          {solutionNav.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="footer__heading">Contato</h2>
+        <ul class="footer__list">
           <li>
-            <strong>Email:</strong>
-            <a href="mailto:contato@nucarbon.com.br">contato@nucarbon.com.br</a>
+            <a href={`mailto:${contact.email}`}>{contact.email}</a>
           </li>
-          <li>
-            <strong>Telefones:</strong>
-            <a href="tel:+5519971598636">+55 (19) 97159-8636</a>
-            <br />
-            <a href="tel:+5511993960431">+55 (11) 99396-0431</a>
-          </li>
+          {contact.phones.map((phone) => (
+            <li>
+              <a href={phone.href}>{phone.label}</a>
+            </li>
+          ))}
         </ul>
       </div>
     </div>
 
-    <div class="footer-bottom">
-      <p>&copy; {year} Nucarbon. Todos os direitos reservados.</p>
-    </div>
+    <p class="footer__bottom">
+      &copy; {year} {site.name}. Todos os direitos reservados.
+    </p>
   </div>
 </footer>
 
 <style lang="scss">
+  @use '../../styles/mixins' as mx;
+
   .footer {
-    background-color: #165728;
-    color: var(--color-bg-primary);
     padding: var(--spacing-2xl) 0 var(--spacing-lg);
+    background-color: var(--color-primary-dark);
+    color: var(--color-on-dark-muted);
+  }
 
-    &-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: var(--spacing-xl);
-      margin-bottom: var(--spacing-xl);
+  .footer__grid {
+    display: grid;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
 
-      @media (max-width: 768px) {
-        grid-template-columns: 1fr;
+    @include mx.up(sm) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include mx.up(lg) {
+      grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .footer__tagline {
+    max-width: 22rem;
+    margin: var(--spacing-sm) 0 0;
+    color: var(--color-on-dark-muted);
+  }
+
+  .footer__heading {
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-primary-tint);
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .footer__list {
+    display: grid;
+    gap: var(--spacing-xs);
+    padding: 0;
+    list-style: none;
+
+    a {
+      color: var(--color-on-dark-muted);
+      overflow-wrap: anywhere;
+
+      &:hover {
+        color: var(--color-on-dark);
+        text-decoration: underline;
       }
     }
+  }
 
-    &-logo {
-      display: flex;
-      align-items: center;
-      margin-bottom: var(--spacing-sm);
-
-      & > img {
-        width: 28px;
-        height: 28px;
-        margin-right: var(--spacing-xs);
-      }
-    }
-
-    &-title {
-      font-size: 1.5rem;
-      font-family: var(--font-logo);
-      color: var(--color-primary-light);
-      margin-bottom: 0;
-    }
-
-    &-description {
-      color: rgba(255, 255, 255, 0.8);
-      line-height: 1.6;
-    }
-
-    &-heading {
-      font-size: 1.125rem;
-      color: var(--color-bg-primary);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    &-links {
-      list-style: none;
-
-      li {
-        margin-bottom: 0.5rem;
-      }
-
-      a {
-        color: rgba(255, 255, 255, 0.8);
-        transition: color 0.3s ease;
-
-        &:hover {
-          color: var(--color-primary-light);
-        }
-      }
-    }
-
-    &-contact {
-      list-style: none;
-      color: rgba(255, 255, 255, 0.8);
-
-      li {
-        margin-bottom: 0.75rem;
-        line-height: 1.6;
-      }
-
-      strong {
-        display: block;
-        color: var(--color-bg-primary);
-        margin-bottom: 0.25rem;
-      }
-
-      a {
-        color: rgba(255, 255, 255, 0.8);
-        transition: color 0.3s ease;
-
-        &:hover {
-          color: var(--color-primary-light);
-        }
-      }
-    }
-
-    &-bottom {
-      text-align: center;
-      padding-top: var(--spacing-lg);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.6);
-    }
+  .footer__bottom {
+    margin: 0;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-on-dark-line);
+    color: var(--color-on-dark-muted);
+    font-size: 0.875rem;
+    text-align: center;
   }
 </style>

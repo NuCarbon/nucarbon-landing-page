@@ -1,0 +1,105 @@
+---
+import Card from '../ui/Card.astro';
+import FeatureList from '../ui/FeatureList.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import CardGrid from '../solutions/CardGrid.astro';
+---
+
+<section id="creditos-carbono" class="section credits">
+  <div class="container">
+    <SectionHeader
+      title="Créditos de Carbono"
+      subtitle="Entenda como funciona o mercado de créditos de carbono, seus mecanismos e como ele pode contribuir para a redução das emissões de CO₂ e a transição para uma economia mais sustentável."
+    />
+
+    <div class="credits__body">
+      <h3>O que são Créditos de Carbono?</h3>
+      <p>
+        Créditos de carbono são certificados que representam a redução ou remoção de uma tonelada de
+        dióxido de carbono equivalente (tCO₂e) da atmosfera. Eles são gerados por projetos que
+        comprovam, por meio de metodologias técnicas e monitoramento, que reduziram emissões ou
+        removeram gases de efeito estufa.
+      </p>
+      <p>
+        Esses créditos podem ser comercializados, permitindo que empresas e organizações apoiem
+        projetos ambientais enquanto avançam em suas estratégias de descarbonização.
+      </p>
+
+      <h3>Como Funciona o Mercado?</h3>
+      <p>
+        O mercado de créditos de carbono funciona por meio da geração, validação, monitoramento e
+        comercialização dos créditos. Ele é dividido, de forma geral, em dois principais ambientes:
+      </p>
+      <FeatureList
+        marker="dot"
+        items={[
+          {
+            title: 'Mercado Regulado',
+            text: 'Operado por governos ou blocos econômicos, estabelece limites obrigatórios de emissões para determinados setores. Empresas que excedem esses limites precisam adquirir créditos para cumprir suas obrigações legais.',
+          },
+          {
+            title: 'Mercado Voluntário',
+            text: 'Neste mercado, empresas, organizações ou até mesmo pessoas físicas adquirem créditos de forma voluntária, como parte de compromissos ambientais, metas climáticas ou estratégias de sustentabilidade, mesmo sem uma obrigação legal.',
+          },
+        ]}
+      />
+
+      <h3>Tipos de Projetos</h3>
+      <p>
+        Os créditos de carbono podem ser gerados por diferentes tipos de projetos, desde que sigam
+        critérios técnicos e metodologias reconhecidas. Entre os principais estão:
+      </p>
+      <FeatureList
+        marker="dot"
+        items={[
+          'Projetos de reflorestamento e restauração florestal',
+          'Projetos agroflorestais',
+          'Projetos de conservação e manejo florestal',
+          'Projetos de energia renovável',
+          'Projetos de eficiência energética',
+        ]}
+      />
+      <p>
+        Cada tipo de projeto possui características próprias, metodologias específicas e diferentes
+        potenciais de geração de créditos.
+      </p>
+
+      <h3>Benefícios dos Créditos de Carbono</h3>
+      <CardGrid>
+        <Card title="Ambientais" level={4}>
+          <p>
+            Contribuem para a redução das emissões de gases de efeito estufa, a conservação da
+            biodiversidade e a recuperação de ecossistemas.
+          </p>
+        </Card>
+        <Card title="Econômicos" level={4}>
+          <p>
+            Podem gerar receita adicional para produtores e organizações por meio da venda de
+            créditos, além de incentivar investimentos em práticas mais sustentáveis.
+          </p>
+        </Card>
+        <Card title="Sociais" level={4}>
+          <p>
+            Apoiam a geração de empregos, o fortalecimento de comunidades locais e o desenvolvimento
+            de atividades alinhadas à conservação ambiental.
+          </p>
+        </Card>
+      </CardGrid>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  .credits {
+    background-color: var(--color-surface);
+  }
+
+  .credits__body h3 {
+    margin: var(--spacing-lg) 0 var(--spacing-sm);
+    color: var(--color-primary);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+</style>

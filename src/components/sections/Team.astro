@@ -1,0 +1,47 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import TeamMember from '../ui/TeamMember.astro';
+import gabriel from '../../images/gabriel.png';
+import gisele from '../../images/gisele.png';
+import igor from '../../images/igor.png';
+import marcio from '../../images/marcio.png';
+---
+
+<section id="time" class="section team">
+  <div class="container">
+    <SectionHeader title="Conheça o Time" />
+
+    <div class="team__grid">
+      <TeamMember image={marcio} name="Marcio Magrini" role={['Founder', 'CEO']} />
+      <TeamMember
+        image={gisele}
+        name="Gisele Corbanezi"
+        role={['Co-founder', 'Head de Operações']}
+      />
+      <TeamMember image={igor} name="Igor Mandello" role="Head de Tecnologia" />
+      <TeamMember image={gabriel} name="Gabriel Siqueira" role="Head de Descarbonização" />
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .team__grid {
+    display: grid;
+    gap: var(--spacing-lg);
+
+    @include mx.up(xs) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--spacing-md);
+    }
+
+    @include mx.up(lg) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    @include mx.up(xl) {
+      gap: var(--spacing-xl);
+    }
+  }
+</style>

@@ -1,84 +1,84 @@
 ---
-import Image from 'astro/components/Image.astro';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 
 interface Props {
-  image: any;
+  image: ImageMetadata;
   name: string;
+  /** One role per line. */
   role: string | string[];
 }
 
-const { image, name } = Astro.props;
-
-let role = Astro.props.role;
-if (typeof role == 'string') {
-  role = [role];
-}
+const { image, name, role } = Astro.props;
+const roles = Array.isArray(role) ? role : [role];
 ---
 
-<div class="team-member">
-  <Image src={image} alt=`${name}, ${role}` width={400} />
-  <div class="team-member-content">
-    <h4 class="team-member-name">{name}</h4>
-    <div class="team-member-roles">
-      {role.map((value) => (
-        <p class="team-member-role">{value}</p>
+<article class="team-member">
+  <Image
+    src={image}
+    alt={`Foto de ${name}`}
+    width={300}
+    densities={[1, 2]}
+    class="team-member__photo"
+  />
+  <div class="team-member__content">
+    <h3 class="team-member__name">{name}</h3>
+    <ul class="team-member__roles">
+      {roles.map((value) => (
+        <li>{value}</li>
       ))}
-    </div>
+    </ul>
   </div>
-</div>
+</article>
 
 <style lang="scss">
+  @use '../../styles/mixins' as mx;
+
   .team-member {
+    @include mx.surface;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 0;
-    margin: 0 auto;
-    text-align: center;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-lg);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    background-color: var(--color-bg-primary);
+    width: 100%;
     max-width: 300px;
+    margin: 0 auto;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+  }
 
-    & > img {
-      border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-      width: 100%;
-    }
+  .team-member__photo {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
 
-    &-content {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      padding: var(--spacing-sm) var(--spacing-xs);
-    }
+  .team-member__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: var(--spacing-sm);
 
-    &-name {
-      margin-bottom: var(--spacing-xs);
+    @include mx.up(lg) {
+      padding: var(--spacing-md);
     }
+  }
 
-    &-roles {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
+  .team-member__name {
+    margin-bottom: var(--spacing-xs);
+    font-size: 1.25rem;
+  }
 
-    &-role {
-      font-variant: all-small-caps;
-      margin-bottom: 0;
-    }
-
-    @media (min-width: 700px) {
-      &-content {
-        padding: var(--spacing-sm);
-      }
-    }
-
-    @media (min-width: 1000px) {
-      &-content {
-        padding: var(--spacing-md);
-      }
-    }
+  .team-member__roles {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 </style>

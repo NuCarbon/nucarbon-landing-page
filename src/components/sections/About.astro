@@ -1,0 +1,162 @@
+---
+import { Image } from 'astro:assets';
+import forestPortrait from '../../images/forest-portrait-2.jpg';
+import FeatureList from '../ui/FeatureList.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+---
+
+<section id="quem-somos" class="section about">
+  <div class="container">
+    <SectionHeader title="Quem Somos" />
+
+    <div class="about__layout">
+      <div class="about__intro">
+        <p>
+          A Nucarbon atua na geração de créditos de carbono por meio de projetos agroflorestais,
+          conectando produtores rurais, empresas e investidores em iniciativas que conciliam valor
+          econômico, impacto social e benefícios ambientais mensuráveis. Nosso trabalho começa no
+          campo e se estende ao mercado, sempre orientado por metodologias consistentes, critérios
+          técnicos rigorosos e processos claros.
+        </p>
+        <p>
+          Contamos com uma equipe multidisciplinar, com experiência em meio ambiente, agronomia,
+          inteligência artificial e mercado de carbono, o que nos permite acompanhar todo o ciclo
+          dos projetos — da análise de viabilidade à gestão contínua. Adotamos práticas que
+          priorizam rastreabilidade, métricas confiáveis e governança, sustentadas por monitoramento
+          em tempo real, porque acreditamos que credibilidade e qualidade são essenciais para o
+          avanço do setor.
+        </p>
+      </div>
+
+      <Image
+        src={forestPortrait}
+        alt="Agrofloresta em Poços de Caldas, Projeto café gato-mourisco"
+        widths={[600, 900, 1200]}
+        sizes="(min-width: 1200px) 560px, (min-width: 768px) 50vw, 100vw"
+        class="about__image"
+      />
+
+      <div class="about__story">
+        <h3>Nossa História</h3>
+        <p>
+          A <b>Nucarbon</b> nasceu do propósito de contribuir para um mercado de crédito de carbono
+          que opere de forma responsável, com critérios sólidos e resultados climáticos concretos.
+          Desde o início, assumimos o compromisso de fortalecer um ecossistema mais confiável,
+          inclusivo e eficaz.
+        </p>
+        <p>
+          Seguimos empenhados em contribuir para a descarbonização da economia por meio de soluções
+          tecnológicas, transparentes e orientadas a resultados, apoiando a evolução do mercado de
+          carbono e ampliando seu impacto positivo no longo prazo.
+        </p>
+
+        <h3>Nossa Missão</h3>
+        <p>
+          Promover integridade e impacto climático real no mercado de crédito de carbono por meio de
+          tecnologia, transparência e rigor técnico.
+        </p>
+
+        <h3>Nossos Valores</h3>
+        <FeatureList
+          columns={2}
+          items={[
+            'Integridade ambiental',
+            'Transparência e ética',
+            'Rigor técnico e inovação',
+            'Resultados mensuráveis',
+          ]}
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .about {
+    background-color: var(--color-surface);
+  }
+
+  // Mobile: text, photo, story. Tablet: photo beside the intro. Desktop: tall photo beside everything.
+  .about__layout {
+    display: grid;
+    grid-template-areas: 'intro' 'image' 'story';
+    gap: var(--spacing-xl);
+
+    @include mx.up(md) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas: 'intro image' 'story story';
+    }
+
+    @include mx.up(lg) {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      grid-template-areas: 'intro image' 'story image';
+      column-gap: var(--spacing-2xl);
+    }
+  }
+
+  .about__intro {
+    grid-area: intro;
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .about__image {
+    grid-area: image;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    object-fit: cover;
+
+    @include mx.up(md) {
+      aspect-ratio: auto;
+      min-height: 22rem;
+    }
+  }
+
+  // Timeline: a vertical line through a dot before each heading.
+  .about__story {
+    --dot-size: 0.75rem;
+    --indent: calc(var(--dot-size) + var(--spacing-md));
+    grid-area: story;
+    position: relative;
+    max-width: 800px;
+    padding-left: var(--indent);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 1rem;
+      bottom: 0;
+      left: calc(var(--dot-size) / 2 - 0.5px);
+      width: 1px;
+      background-color: var(--color-primary);
+    }
+
+    h3 {
+      position: relative;
+      margin: var(--spacing-lg) 0 var(--spacing-sm);
+      color: var(--color-primary);
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: calc(0.6em - var(--dot-size) / 2);
+        left: calc(-1 * var(--indent));
+        width: var(--dot-size);
+        height: var(--dot-size);
+        border-radius: var(--radius-round);
+        outline: 4px solid var(--color-primary-soft);
+        background-color: var(--color-primary);
+      }
+    }
+  }
+</style>
