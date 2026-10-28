@@ -16,7 +16,12 @@ export default defineConfig({
         variants: [
           {
             src: ['./src/assets/fonts/kollektif/Kollektif.ttf'],
-            weight: 'normal',
+            weight: 400,
+            style: 'normal',
+          },
+          {
+            src: ['./src/assets/fonts/kollektif/Kollektif-Bold.ttf'],
+            weight: 700,
             style: 'normal',
           },
         ],
@@ -29,11 +34,6 @@ export default defineConfig({
         !page.includes('/app') && !page.includes('/entrar') && !page.includes('/checkout'),
     }),
   ],
-  vite: {
-    optimizeDeps: {
-      exclude: ['js-big-decimal'],
-    },
-  },
   devToolbar: {
     enabled: false,
   },

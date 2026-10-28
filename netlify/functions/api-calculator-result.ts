@@ -1,7 +1,11 @@
 import type { Config } from '@netlify/functions';
-import { authenticated, json } from './_api';
-import { db } from './_firebase';
-import { createSaveCalculationHandler, decodeAnswers, type UserCalculation } from './_calculator';
+import { authenticated, json } from '../../src/server/http';
+import { db } from '../../src/server/firebase';
+import {
+  createSaveCalculationHandler,
+  decodeAnswers,
+  type UserCalculation,
+} from '../../src/server/calculator';
 
 const save = createSaveCalculationHandler(async (uid, calculation) => {
   // A single atomic merge preserves unrelated profile data and updates the

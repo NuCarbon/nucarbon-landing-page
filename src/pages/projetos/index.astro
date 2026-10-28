@@ -1,8 +1,8 @@
 ---
 export const prerender = false;
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { readProjects } from '../../../netlify/functions/_repository';
-import { biomeLabels } from '../../scripts/app/format';
+import { readProjects } from '../../server/repository';
+import { biomeLabels } from '../../lib/format';
 
 let projects = [] as Awaited<ReturnType<typeof readProjects>>;
 let unavailable = false;

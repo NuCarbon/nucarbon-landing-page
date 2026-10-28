@@ -1,6 +1,6 @@
 import type { Config } from '@netlify/functions';
-import { authenticated, json } from './_api';
-import { createOrder, getOrder, confirmOrder } from './_checkout';
+import { authenticated, json } from '../../src/server/http';
+import { createOrder, getOrder, confirmOrder } from '../../src/server/checkout';
 
 export default authenticated(async (request, _context, user) => {
   const url = new URL(request.url);

@@ -1,8 +1,8 @@
 import { Timestamp } from 'firebase-admin/firestore';
-import { db } from './_firebase';
-import { readProjectBySlug } from './_repository';
-import { json } from './_api';
-import { calculateAmount } from '../../src/scripts/checkout/amount';
+import { db } from './firebase.ts';
+import { readProjectBySlug } from './repository.ts';
+import { json } from './http.ts';
+import { calculateAmount } from '../lib/checkout/amount.ts';
 
 const uuid = (value: unknown): value is string =>
   typeof value === 'string' &&

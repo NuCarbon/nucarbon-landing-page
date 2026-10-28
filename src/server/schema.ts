@@ -1,6 +1,6 @@
 import { GeoPoint, Timestamp } from 'firebase-admin/firestore';
-import { Biome, ProjectStatus, ReactionType } from '../../src/types/app.ts';
-import type { Author, CommunityPost, Project, UUID } from '../../src/types/app';
+import { Biome, ProjectStatus, ReactionType } from '../types/app.ts';
+import type { Author, CommunityPost, Project, UUID } from '../types/app';
 
 export interface ProjectDocument extends Omit<Project, 'id' | 'location'> {
   location: GeoPoint;

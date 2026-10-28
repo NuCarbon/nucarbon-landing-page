@@ -1,9 +1,9 @@
 import type { Config } from '@netlify/functions';
-import { db } from './_firebase';
-import { authenticated, json } from './_api';
+import { db } from '../../src/server/firebase';
+import { authenticated, json } from '../../src/server/http';
 import { MetricType, type ImpactMetric } from '../../src/types/app';
-import { readProjects } from './_repository';
-import type { UserCalculation } from './_calculator';
+import { readProjects } from '../../src/server/repository';
+import type { UserCalculation } from '../../src/server/calculator';
 
 export default authenticated(async (_request, _context, user) => {
   const database = db();

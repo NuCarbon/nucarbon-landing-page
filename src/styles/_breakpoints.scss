@@ -1,0 +1,40 @@
+// Canonical viewport breakpoints. CSS custom properties cannot be used inside
+// media queries, so components include these mixins instead of raw widths:
+//   @use '../../styles/mixins' as mx;
+//   @include mx.up(md) { ... }
+@use 'sass:map';
+
+$breakpoints: (
+  xs: 480px,
+  sm: 600px,
+  md: 768px,
+  lg: 900px,
+  xl: 1120px,
+);
+
+@function bp($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error "Unknown breakpoint `#{$name}`. Use one of #{map.keys($breakpoints)}.";
+  }
+  @return map.get($breakpoints, $name);
+}
+
+/// Viewports at least as wide as the breakpoint.
+@mixin up($name) {
+  @media (min-width: bp($name)) {
+    @content;
+  }
+}
+
+/// Viewports narrower than the breakpoint (never overlaps with `up`).
+@mixin down($name) {
+  @media (max-width: (bp($name) - 0.02px)) {
+    @content;
+  }
+}
+
+@mixin between($from, $to) {
+  @media (min-width: bp($from)) and (max-width: (bp($to) - 0.02px)) {
+    @content;
+  }
+}

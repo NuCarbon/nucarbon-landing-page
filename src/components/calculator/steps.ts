@@ -4,7 +4,7 @@ import TransportStep from './steps/TransportStep.astro';
 import EnergyStep from './steps/EnergyStep.astro';
 import FoodStep from './steps/FoodStep.astro';
 import WasteStep from './steps/WasteStep.astro';
-import type { StepId } from '../../scripts/calculator/state';
+import type { StepId } from '../../lib/calculator/answers';
 
 // Reorder this list to change navigation, progress, and rendering together.
 export const calculatorSteps = [

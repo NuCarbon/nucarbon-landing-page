@@ -1,5 +1,8 @@
+// Firebase session helpers. Rendering account markup lives in user-display.ts.
 import { onAuthStateChanged, signInWithPopup, signOut, type User } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
 import { auth, googleProvider } from './firebase';
+import { clearCheckoutState } from './checkout/storage';
 
 // Firebase restores the persisted session asynchronously. Never read
 // auth.currentUser before this first state notification has fired.
@@ -14,68 +17,58 @@ export const authReady = new Promise<User | null>((resolve) => {
   unsubscribe = onAuthStateChanged(auth, finish, () => finish(null));
 });
 
-export function showAuthenticatedUser(user: User, root: ParentNode = document): void {
-  const firstName = user.displayName?.trim().split(/\s+/)[0] || 'você';
-  const initial = user.displayName?.trim().charAt(0) || user.email?.trim().charAt(0) || 'V';
-
-  root
-    .querySelectorAll<HTMLElement>('[data-user-name], [data-greeting-name]')
-    .forEach((element) => {
-      element.textContent = firstName;
-    });
-
-  root.querySelectorAll<HTMLImageElement>('[data-user-avatar]').forEach((image) => {
-    if (!user.photoURL) {
-      image.hidden = true;
-      return;
-    }
-
-    image.src = user.photoURL;
-    image.alt = `Foto de ${user.displayName || 'usuário'}`;
-    image.hidden = false;
-  });
-
-  root.querySelectorAll<HTMLElement>('[data-user-initial]').forEach((element) => {
-    element.textContent = initial.toLocaleUpperCase('pt-BR');
-    element.hidden = Boolean(user.photoURL);
-  });
-
-  root.querySelectorAll<HTMLElement>('[data-auth-loading]').forEach((element) => {
-    element.hidden = true;
-  });
-  root.querySelectorAll<HTMLElement>('[data-auth-user]').forEach((element) => {
-    element.hidden = false;
-  });
+/** The current user, including sign-ins that happened after the page loaded. */
+export async function currentUser(): Promise<User | null> {
+  await authReady;
+  return auth.currentUser;
 }
 
-export async function protectPage() {
-  const user = await authReady;
+/** Calls back with the restored session and on every later sign-in or sign-out. */
+export function onUserChange(callback: (user: User | null) => void): () => void {
+  return onAuthStateChanged(auth, callback, () => callback(null));
+}
 
-  if (!user) {
-    window.location.replace('/entrar');
-    return;
+const signInMessages: Record<string, string> = {
+  'auth/popup-closed-by-user': 'O login foi cancelado.',
+  'auth/cancelled-popup-request': 'O login foi cancelado.',
+  'auth/popup-blocked':
+    'O navegador bloqueou a janela de login. Permita pop-ups e tente novamente.',
+  'auth/network-request-failed': 'Sem conexão. Verifique sua internet e tente novamente.',
+};
+
+export async function signInWithGoogle(): Promise<User> {
+  try {
+    const { user } = await signInWithPopup(auth, googleProvider);
+    return user;
+  } catch (cause) {
+    const code = cause instanceof FirebaseError ? cause.code : '';
+    throw new Error(signInMessages[code] ?? 'Não foi possível entrar. Tente novamente.');
   }
-
-  showAuthenticatedUser(user);
 }
 
-export async function signInWithGoogle() {
-  await signInWithPopup(auth, googleProvider);
+/** Signs in when needed, then saves any calculator answers made while signed out. */
+export async function signInAndSyncDraft(): Promise<User> {
+  const user = (await currentUser()) ?? (await signInWithGoogle());
+  // Loaded on demand: the calculator draft module depends on this one.
+  const { savePendingDraft } = await import('./calculator/draft');
+  await savePendingDraft(user);
+  return user;
 }
 
-export async function signOutUser() {
+export async function signOutUser(): Promise<void> {
   const { clearAccountState } = await import('./calculator/draft');
   clearAccountState();
-  sessionStorage.removeItem('nucarbon:checkout-order');
-  sessionStorage.removeItem('nucarbon:checkout-intent');
+  clearCheckoutState();
   await signOut(auth);
   window.location.assign('/');
 }
 
-export async function authorizationHeader() {
+export const loginUrl = (returnTo = `${location.pathname}${location.search}`) =>
+  `/entrar?returnTo=${encodeURIComponent(returnTo)}`;
+
+/** Resolves the signed-in user, or sends a signed-out visitor to /entrar and resolves null. */
+export async function requireSignedIn(): Promise<User | null> {
   const user = await authReady;
-
-  if (!user) throw new Error('Sua sessão expirou. Entre novamente.');
-
-  return `Bearer ${await user.getIdToken(true)}`;
+  if (!user) window.location.replace(loginUrl());
+  return user;
 }

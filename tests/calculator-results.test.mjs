@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { calculateFootprint, coefficients } from '../src/scripts/calculator/calculate.ts';
+import { calculateFootprint, coefficients } from '../src/lib/calculator/calculate.ts';
 import {
   initialAnswers,
   ProfileAnswer,
@@ -9,7 +9,7 @@ import {
   EnergyAnswer,
   FoodAnswer,
   WasteAnswer,
-} from '../src/scripts/calculator/state.ts';
+} from '../src/lib/calculator/answers.ts';
 
 test('every input affects the result', () => {
   const baseline = calculateFootprint(initialAnswers);

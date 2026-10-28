@@ -1,0 +1,201 @@
+---
+// Project summary card. Server-rendered with `project`, or rendered empty inside a
+// <template> and filled in the browser by scripts/projects/project-card.ts.
+import { projectCardView } from '../../lib/projects';
+import type { Project } from '../../types/app';
+
+interface Props {
+  project?: Project;
+  headingLevel?: 2 | 3;
+  class?: string;
+}
+
+const { project, headingLevel = 2, class: className } = Astro.props;
+const view = project && projectCardView(project);
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+---
+
+<article class:list={['project-card', className]}>
+  <div class="project-card__media">
+    <img
+      data-project-image
+      src={view?.image?.url}
+      alt={view?.image?.alt ?? ''}
+      width="640"
+      height="400"
+      loading="lazy"
+      decoding="async"
+      hidden={!view?.image}
+    />
+    <span
+      class="project-card__placeholder"
+      data-project-placeholder
+      hidden={Boolean(view?.image)}
+    ></span>
+  </div>
+
+  <div class="project-card__body">
+    <p class="project-card__meta">
+      <span data-project-biome>{view?.biome}</span>
+      <span aria-hidden="true">·</span>
+      <span data-project-place>{view?.place}</span>
+    </p>
+    <Heading class="project-card__title">
+      <a class="project-card__link" data-project-link href={view?.href}>
+        <span data-project-name>{view?.name}</span>
+      </a>
+    </Heading>
+    <p class="project-card__summary" data-project-summary>
+      {view?.summary}
+    </p>
+
+    <dl class="project-card__facts">
+      <div>
+        <dt>Área</dt>
+        <dd data-project-area>{view?.area}</dd>
+      </div>
+      <div>
+        <dt>Etapa</dt>
+        <dd data-project-status>{view?.status}</dd>
+      </div>
+    </dl>
+
+    <div class="project-card__progress">
+      <span>Progresso da restauração</span>
+      <strong data-project-progress>{view?.progressLabel}</strong>
+      <span class="project-card__bar" aria-hidden="true">
+        <span
+          data-project-progress-bar
+          style={view ? `width: ${view.progressPercent}%` : undefined}
+        ></span>
+      </span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .project-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    transition:
+      box-shadow var(--transition-base),
+      border-color var(--transition-base);
+  }
+
+  .project-card:hover,
+  .project-card:focus-within {
+    border-color: var(--color-primary-tint);
+    box-shadow: var(--shadow-card);
+  }
+
+  .project-card__media {
+    aspect-ratio: 16 / 10;
+    background: var(--color-surface-muted);
+  }
+
+  .project-card__media img,
+  .project-card__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-card__placeholder {
+    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+  }
+
+  .project-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+  }
+
+  .project-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    color: var(--color-primary-dark);
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  .project-card__title {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .project-card__link {
+    color: var(--color-text);
+  }
+
+  /* The whole card is the link's hit area. */
+  .project-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .project-card__link:hover {
+    color: var(--color-primary-dark);
+  }
+
+  .project-card__summary {
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+
+  .project-card__facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-xs);
+    margin-top: auto;
+    padding-top: var(--spacing-xs);
+  }
+
+  .project-card__facts dt {
+    color: var(--color-text-subtle);
+    font-size: 0.75rem;
+  }
+
+  .project-card__facts dd {
+    color: var(--color-text);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .project-card__progress {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.3rem var(--spacing-xs);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+  }
+
+  .project-card__progress strong {
+    color: var(--color-primary-dark);
+  }
+
+  .project-card__bar {
+    grid-column: 1 / -1;
+    height: 6px;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary-soft);
+  }
+
+  .project-card__bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-primary);
+  }
+</style>

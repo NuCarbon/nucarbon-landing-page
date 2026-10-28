@@ -1,20 +1,17 @@
-import { authReady, showAuthenticatedUser, signInWithGoogle } from './auth';
-import { auth } from './firebase';
-import { savePendingDraft } from './calculator/draft';
+import { currentUser, loginUrl, signInAndSyncDraft } from './auth';
 
 let continuation: (() => void | Promise<void>) | undefined;
 let previousFocus: HTMLElement | null = null;
 
 export async function openLoginModal(onSuccess?: () => void | Promise<void>): Promise<void> {
-  const user = await authReady;
-  if (user) {
-    await savePendingDraft(user);
+  if (await currentUser()) {
+    await signInAndSyncDraft();
     await onSuccess?.();
     return;
   }
   const dialog = document.querySelector<HTMLDialogElement>('[data-login-modal]');
   if (!dialog) {
-    location.assign('/entrar');
+    location.assign(loginUrl());
     return;
   }
   continuation = onSuccess;
@@ -43,14 +40,7 @@ export function initializeLoginModal() {
     button.disabled = true;
     error.hidden = true;
     try {
-      if (!auth.currentUser) await signInWithGoogle();
-      const user = auth.currentUser;
-      if (!user) throw new Error('Não foi possível confirmar sua sessão.');
-      await savePendingDraft(user);
-      document.querySelectorAll<HTMLElement>('[data-header-account]').forEach((account) => {
-        account.querySelector<HTMLElement>('[data-auth-guest]')!.hidden = true;
-        showAuthenticatedUser(user, account);
-      });
+      await signInAndSyncDraft();
       const resume = continuation;
       dialog.close();
       await resume?.();

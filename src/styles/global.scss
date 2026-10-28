@@ -1,32 +1,46 @@
+@use 'mixins' as mx;
+
+// Design tokens. Components use these custom properties; no raw colors,
+// radii or shadows outside this file.
 :root {
-  /* Cores principais - tema ambiental/sustentável */
-  --color-primary: #2d8659;
-  --color-primary-dark: #1f5d3f;
-  --color-primary-light: #3da870;
-  --color-secondary: #4a7c59;
-  --color-secondary-dark: #355d42;
-  --color-primary-accent: #e7f9f2;
+  /* Brand */
+  --color-primary: #2e7d32;
+  --color-primary-dark: #1b5e20;
+  --color-primary-soft: #e8f5e9;
+  --color-primary-tint: #c8e6c9;
+  --color-on-primary: #fff;
 
-  /* Cores de texto */
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #4a5568;
-  --color-text-light: #718096;
+  /* Neutrals */
+  --color-bg: #fafaf5;
+  --color-surface: #fff;
+  --color-surface-muted: #f3f3ee;
+  --color-border: #e0e0d9;
+  --color-border-strong: #c9c9c1;
+  --color-text: #1a1a1a;
+  --color-text-muted: #555552;
+  --color-text-subtle: #6b6b67;
+  --color-on-dark: #fff;
+  --color-on-dark-muted: rgba(255, 255, 255, 0.78);
+  --color-on-dark-line: rgba(255, 255, 255, 0.16);
 
-  /* Cores de fundo */
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f9fcfa;
-  --color-bg-accent: #edf2f7;
+  /* Feedback */
+  --color-success: var(--color-primary-dark);
+  --color-success-soft: var(--color-primary-soft);
+  --color-warning: #8a4b00;
+  --color-warning-accent: #e07b00;
+  --color-warning-soft: #fff4d6;
+  --color-danger: #b42318;
+  --color-danger-soft: #fef3f2;
+  --color-overlay: rgba(17, 28, 18, 0.55);
 
-  /* Cores de borda */
-  --color-border: #e2e8f0;
-
-  /* Tipografia */
-  --font-family-primary:
+  /* Typography */
+  --font-sans:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-family-heading:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: var(--font-kollektif), var(--font-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
-  /* Espaçamento */
+  /* Spacing */
+  --spacing-2xs: 0.25rem;
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
   --spacing-md: 1.5rem;
@@ -34,27 +48,67 @@
   --spacing-xl: 3rem;
   --spacing-2xl: 4rem;
 
-  /* Bordas */
-  --border-radius-sm: 0.375rem;
-  --border-radius-md: 0.5rem;
-  --border-radius-lg: 1rem;
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+  --radius-round: 50%;
 
-  /* Sombras */
-  --shadow-sm: 0 0 3px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 0 10px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 0 25px rgba(0, 0, 0, 0.1);
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(27, 66, 33, 0.06);
+  --shadow-card: 0 10px 30px rgba(27, 66, 33, 0.08);
+  --shadow-raised: 0 18px 48px rgba(27, 66, 33, 0.14);
+  --shadow-header: 0 1px 0 var(--color-border), 0 8px 24px rgba(0, 0, 0, 0.04);
 
-  --font-logo: var(--font-kollektif), var(--font-family-primary);
+  /* Layout */
+  --container-max: 1200px;
+  --container-gutter: 1rem;
+  --header-height: 4.5rem;
+  --z-sticky: 10;
+  --z-header: 1000;
+  --z-modal: 1100;
 
-  /* Authenticated experience — derived from the Nucarbon product screens. */
-  --app-background: #fafaf5;
-  --app-green: #2e7d32;
-  --app-green-dark: #1b5e20;
-  --app-green-soft: #e8f5e9;
-  --app-border: #e0e0d9;
-  --app-text-muted: #555552;
+  /* Interaction */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+
+  @include mx.up(md) {
+    --container-gutter: 1.5rem;
+  }
 }
 
+/* DEPRECATED aliases — kept only while components migrate; removed at integration. */
+:root {
+  --color-primary-light: var(--color-primary);
+  --color-primary-accent: var(--color-primary-soft);
+  --color-secondary: var(--color-primary-dark);
+  --color-secondary-dark: var(--color-primary-dark);
+  --color-text-primary: var(--color-text);
+  --color-text-secondary: var(--color-text-muted);
+  --color-text-light: var(--color-text-subtle);
+  --color-bg-primary: var(--color-surface);
+  --color-bg-secondary: var(--color-bg);
+  --color-bg-accent: var(--color-surface-muted);
+  --font-family-primary: var(--font-sans);
+  --font-family-heading: var(--font-display);
+  --font-logo: var(--font-display);
+  --border-radius-sm: var(--radius-sm);
+  --border-radius-md: var(--radius-sm);
+  --border-radius-lg: var(--radius-lg);
+  --shadow-md: var(--shadow-card);
+  --shadow-lg: var(--shadow-header);
+  --app-background: var(--color-bg);
+  --app-green: var(--color-primary);
+  --app-green-dark: var(--color-primary-dark);
+  --app-green-soft: var(--color-primary-soft);
+  --app-border: var(--color-border);
+  --app-text-muted: var(--color-text-muted);
+}
+
+/* Base */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -67,12 +121,16 @@
 
 html {
   scroll-behavior: smooth;
+
+  @include mx.reduced-motion {
+    scroll-behavior: auto;
+  }
 }
 
 body {
-  font-family: var(--font-family-primary);
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-primary);
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background-color: var(--color-bg);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -84,10 +142,10 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-family-heading);
+  font-family: var(--font-display);
   font-weight: 700;
   line-height: 1.2;
-  color: var(--color-text-primary);
+  color: var(--color-text);
   margin-bottom: 1rem;
 }
 
@@ -100,22 +158,22 @@ h2 {
 }
 
 h3 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
 }
 
 h4 {
-  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  font-size: 1.125rem;
 }
 
 p {
   margin-bottom: 1rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
 }
 
 a {
   color: var(--color-primary);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color var(--transition-base);
 
   &:hover {
     color: var(--color-primary-dark);
@@ -128,21 +186,70 @@ img {
   display: block;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+:focus-visible {
+  @include mx.focus-ring;
+}
+
+@include mx.reduced-motion {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Utilities */
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 var(--container-gutter);
+}
+
+/** Top-level content below the fixed header. */
+.page {
+  padding: calc(var(--header-height) + var(--spacing-lg)) 0 var(--spacing-2xl);
 }
 
 .section {
   padding: var(--spacing-xl) 0;
+
+  @include mx.up(md) {
+    padding: var(--spacing-2xl) 0;
+  }
 }
 
+.surface {
+  @include mx.surface;
+}
+
+.eyebrow {
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.visually-hidden {
+  @include mx.visually-hidden;
+}
+
+/* DEPRECATED component styles — replaced by components; removed at integration. */
 .section-title {
   text-align: center;
   margin-bottom: var(--spacing-xl);
-  color: var(--color-text-primary);
+  color: var(--color-text);
 
   &::after {
     content: '';
@@ -151,44 +258,44 @@ img {
     height: 4px;
     background-color: var(--color-primary);
     margin: var(--spacing-sm) auto 0;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-xs);
   }
 }
 
 .section-subtitle {
   text-align: center;
   font-size: 1.125rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   max-width: 700px;
   margin: 0 auto var(--spacing-xl);
 }
 
 .services-page .page-header {
   display: flex;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: var(--color-on-dark);
   padding: var(--spacing-2xl) 0;
   text-align: center;
   min-height: 28rem;
   align-items: center;
 
   h1 {
-    color: white;
+    color: var(--color-on-dark);
     margin-bottom: var(--spacing-md);
   }
 
   .page-subtitle {
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--color-on-dark-muted);
     max-width: 800px;
     margin: 0 auto;
   }
 }
 
 .section-highlight {
-  background-color: var(--color-bg-secondary);
+  background-color: var(--color-surface);
   padding: var(--spacing-xl);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--radius-lg);
   margin: var(--spacing-xl) 0;
 }
 
@@ -199,8 +306,7 @@ ul.feature-list {
   li {
     padding-left: 1.5rem;
     position: relative;
-    color: var(--color-text-secondary);
-
+    color: var(--color-text-muted);
     padding-top: var(--spacing-xs);
     padding-bottom: var(--spacing-xs);
 
@@ -216,7 +322,6 @@ ul.feature-list {
   }
 }
 
-/* Grid utilities */
 .grid {
   display: grid;
   gap: var(--spacing-lg);
@@ -227,16 +332,7 @@ ul.feature-list {
   grid-template-columns: 1fr;
 }
 
-/* Responsive */
-@media (min-width: 768px) {
-  .container {
-    padding: 0 1.5rem;
-  }
-
-  .section {
-    padding: var(--spacing-2xl) 0;
-  }
-
+@include mx.up(md) {
   .grid-2 {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
@@ -247,9 +343,9 @@ ul.feature-list {
 }
 
 .card {
-  background-color: var(--color-bg-primary);
+  background-color: var(--color-surface);
   padding: var(--spacing-lg);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }

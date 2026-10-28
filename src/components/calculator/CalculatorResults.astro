@@ -1,12 +1,8 @@
 ---
 import CalculatorLogo from './CalculatorLogo.astro';
 import CalculatorIcon from './CalculatorIcon.astro';
-import {
-  calculateFootprint,
-  categoryDetails,
-  formatTonnes,
-} from '../../scripts/calculator/calculate';
-import { initialAnswers } from '../../scripts/calculator/state';
+import { calculateFootprint, categoryDetails, formatTonnes } from '../../lib/calculator/calculate';
+import { initialAnswers } from '../../lib/calculator/answers';
 
 const initialResult = calculateFootprint(initialAnswers);
 const { categories } = initialResult;

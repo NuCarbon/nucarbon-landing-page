@@ -1,0 +1,60 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../../images/logo.png';
+import { site } from '../../data/site';
+
+interface Props {
+  href?: string;
+  /** `inverse` for dark backgrounds. Parents can also override `--logo-color`. */
+  tone?: 'brand' | 'inverse';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { href = '/', tone = 'brand', size = 'md', class: className, ...attributes } = Astro.props;
+---
+
+<a href={href} class:list={['logo', `logo--${tone}`, `logo--${size}`, className]} {...attributes}>
+  <Image src={logo} alt="" width={80} height={80} class="logo__mark" />
+  <span class="logo__text">{site.name}</span>
+</a>
+
+<style>
+  .logo {
+    --logo-mark-size: 2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--logo-color, var(--color-primary-dark));
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    transition: color var(--transition-base);
+  }
+
+  .logo:hover {
+    color: var(--logo-color, var(--color-primary-dark));
+  }
+
+  .logo--inverse {
+    --logo-color: var(--color-on-dark);
+  }
+
+  .logo--sm {
+    --logo-mark-size: 1.625rem;
+    font-size: 1.25rem;
+  }
+
+  .logo--lg {
+    --logo-mark-size: 2.5rem;
+    font-size: 1.75rem;
+  }
+
+  .logo__mark {
+    width: var(--logo-mark-size);
+    height: var(--logo-mark-size);
+    object-fit: contain;
+  }
+</style>

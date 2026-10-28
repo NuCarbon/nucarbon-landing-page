@@ -5,8 +5,8 @@ import Gallery from '../../components/projects/Gallery.astro';
 import Metrics from '../../components/projects/Metrics.astro';
 import Sections from '../../components/projects/Sections.astro';
 import ContributionPanel from '../../components/projects/ContributionPanel.astro';
-import { biomeLabels } from '../../scripts/app/format';
-import { readProjectBySlug } from '../../../netlify/functions/_repository';
+import { biomeLabels } from '../../lib/format';
+import { readProjectBySlug } from '../../server/repository';
 
 let project: Awaited<ReturnType<typeof readProjectBySlug>> = null;
 let unavailable = false;

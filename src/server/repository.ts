@@ -1,12 +1,12 @@
-import { db } from './_firebase';
+import { db } from './firebase.ts';
 import {
   postToJSON,
   projectToJSON,
   type AuthorDocument,
   type PostDocument,
   type ProjectDocument,
-} from './_schema';
-import type { UUID } from '../../src/types/app';
+} from './schema.ts';
+import type { UUID } from '../types/app';
 
 export async function readProjects(limit = 50) {
   const snapshot = await db()

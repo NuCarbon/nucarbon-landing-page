@@ -10,7 +10,7 @@ import LoadingState from '../../ui/LoadingState.astro';
 
 <app-dashboard-view class="app-page" aria-live="polite" aria-busy="true">
   <AppPageIntro description="Aqui está o resumo da sua jornada de impacto.">
-    Olá, <span data-greeting-name>...</span>!
+    Olá, <span data-user-name>...</span>!
   </AppPageIntro>
 
   <LoadingState label="Carregando o resumo da sua jornada">
@@ -49,7 +49,7 @@ import LoadingState from '../../ui/LoadingState.astro';
 </app-dashboard-view>
 
 <script>
-  import { formatFootprint, formatUpdatedAt } from '../../../scripts/app/format';
+  import { formatFootprint, formatUpdatedAt } from '../../../lib/format';
   import { AppDataView } from '../../../scripts/app/data-view';
   import type { Dashboard, ImpactMetric, Project } from '../../../types/app';
 

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { GeoPoint, Timestamp } from 'firebase-admin/firestore';
-import { validateDocument, projectToJSON, postToJSON } from '../netlify/functions/_schema.ts';
+import { validateDocument, projectToJSON, postToJSON } from '../src/server/schema.ts';
 import { Biome, MetricType, ProjectStatus, ReactionType } from '../src/types/app.ts';
 import {
   formatMetric,
@@ -9,7 +9,7 @@ import {
   formatReactions,
   formatLocation,
   formatFootprint,
-} from '../src/scripts/app/format.ts';
+} from '../src/lib/format.ts';
 
 const projectId = 'a834e161-c18c-48f6-bc36-091a7c359231';
 const authorId = 'f279c946-504b-49bc-9e20-cf29c1c0c728';

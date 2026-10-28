@@ -1,5 +1,5 @@
 import { Timestamp } from 'firebase-admin/firestore';
-import { calculateFootprint } from '../../src/scripts/calculator/calculate.ts';
+import { calculateFootprint } from '../lib/calculator/calculate.ts';
 import {
   EnergyAnswer,
   FoodAnswer,
@@ -7,9 +7,10 @@ import {
   ProfileAnswer,
   TransportAnswer,
   WasteAnswer,
+  parseAnswers,
   type CalculatorAnswers,
-} from '../../src/scripts/calculator/state.ts';
-import type { AuthenticatedHandler } from './_api';
+} from '../lib/calculator/answers.ts';
+import type { AuthenticatedHandler } from './http.ts';
 
 // Stable numeric storage codes; do not reorder when adding new answers.
 const codes = {
@@ -43,27 +44,6 @@ export function decodeAnswers(stored: Record<string, number>): CalculatorAnswers
   }
   result.distance = stored.weeklyDistanceKm;
   return parseAnswers(result);
-}
-
-export function parseAnswers(value: unknown): CalculatorAnswers {
-  if (!value || typeof value !== 'object' || Array.isArray(value))
-    throw new Error('Invalid answers');
-  const answers = value as Record<string, unknown>;
-  if (Object.keys(answers).length !== 7) throw new Error('Invalid answer fields');
-  for (const [key, options] of Object.entries(codes)) {
-    if (typeof answers[key] !== 'string' || !Object.hasOwn(options, answers[key]))
-      throw new Error(`Invalid ${key}`);
-  }
-  if (
-    typeof answers.distance !== 'number' ||
-    !Number.isFinite(answers.distance) ||
-    answers.distance < 0 ||
-    answers.distance > 500 ||
-    answers.distance % 10 !== 0
-  ) {
-    throw new Error('Invalid weekly distance');
-  }
-  return { ...answers } as unknown as CalculatorAnswers;
 }
 
 export function buildUserCalculation(answers: CalculatorAnswers, updatedAt: Timestamp) {

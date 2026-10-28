@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { calculateAmount } from '../src/scripts/checkout/amount.ts';
+import { calculateAmount } from '../src/lib/checkout/amount.ts';
 
 test('manual quantities and percentage selections use integer cents', () => {
   assert.deepEqual(calculateAmount({ mode: 'manual', quantity: 0.29 }, 7500), {

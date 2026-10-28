@@ -1,10 +1,6 @@
-import {
-  createCalculatorFlow,
-  type CalculatorAnswers,
-  type CalculatorPanel,
-  type StepId,
-} from './state';
-import { calculateFootprint } from './calculate';
+import type { CalculatorAnswers, StepId } from '../../lib/calculator/answers';
+import { createCalculatorFlow, type CalculatorPanel } from '../../lib/calculator/flow';
+import { calculateFootprint } from '../../lib/calculator/calculate';
 import { renderResults } from './results';
 import { initializeResultSaving } from './persistence';
 import { readDraft } from './draft';

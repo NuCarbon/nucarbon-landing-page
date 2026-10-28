@@ -1,5 +1,5 @@
 import type { Context } from '@netlify/functions';
-import { adminAuth } from './_firebase';
+import { adminAuth } from './firebase.ts';
 import type { DecodedIdToken } from 'firebase-admin/auth';
 
 export type Handler = (request: Request, context: Context) => Promise<Response>;

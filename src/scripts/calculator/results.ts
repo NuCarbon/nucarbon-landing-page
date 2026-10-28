@@ -1,4 +1,8 @@
-import { categoryDetails, formatTonnes, type CalculationResult } from './calculate';
+import {
+  categoryDetails,
+  formatTonnes,
+  type CalculationResult,
+} from '../../lib/calculator/calculate';
 
 export function renderResults(root: HTMLElement, result: CalculationResult): void {
   const text = (selector: string, value: string) => {

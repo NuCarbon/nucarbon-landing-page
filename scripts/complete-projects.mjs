@@ -1,6 +1,6 @@
 import { cert, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { validateDocument } from '../netlify/functions/_schema.ts';
+import { validateDocument } from '../src/server/schema.ts';
 
 const apply = process.argv.includes('--apply');
 if (process.argv.some((arg) => arg.startsWith('--') && arg !== '--apply')) {

@@ -1,4 +1,4 @@
-import { fetchAppData } from './api';
+import { getJson } from '../api';
 
 export abstract class AppDataView<T> extends HTMLElement {
   private initialized = false;
@@ -16,7 +16,7 @@ export abstract class AppDataView<T> extends HTMLElement {
 
   private async initialize(): Promise<void> {
     try {
-      const data = await fetchAppData<T>(this.endpoint);
+      const data = await getJson<T>(this.endpoint);
       await this.renderData(data);
       this.finishLoading();
     } catch {

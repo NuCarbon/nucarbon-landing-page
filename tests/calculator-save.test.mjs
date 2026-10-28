@@ -1,13 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { Timestamp } from 'firebase-admin/firestore';
-import {
-  buildUserCalculation,
-  createSaveCalculationHandler,
-  parseAnswers,
-} from '../netlify/functions/_calculator.ts';
-import { initialAnswers, ProfileAnswer } from '../src/scripts/calculator/state.ts';
-import { calculateFootprint } from '../src/scripts/calculator/calculate.ts';
+import { buildUserCalculation, createSaveCalculationHandler } from '../src/server/calculator.ts';
+import { initialAnswers, parseAnswers, ProfileAnswer } from '../src/lib/calculator/answers.ts';
+import { calculateFootprint } from '../src/lib/calculator/calculate.ts';
 
 const request = (body, method = 'POST', contentType = 'application/json') =>
   new Request('https://example.test/api/calculator-result', {

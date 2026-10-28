@@ -1,6 +1,7 @@
 ---
 import '../styles/global.scss';
 import '../styles/app.scss';
+import SiteHead from '../components/layout/SiteHead.astro';
 import AppHeader from '../components/app/AppHeader.astro';
 import AppNavigation from '../components/app/AppNavigation.astro';
 
@@ -15,10 +16,7 @@ const { title, active = 'dashboard' } = Astro.props;
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>{title}</title>
+    <SiteHead title={title} noindex />
   </head>
   <body class="app-body">
     <div class="app-shell">
@@ -30,9 +28,11 @@ const { title, active = 'dashboard' } = Astro.props;
       <AppNavigation active={active} placement="bottom" />
     </div>
     <script>
-      import { protectPage, signOutUser } from '../scripts/auth';
+      import { requireSignedIn, signOutUser } from '../scripts/auth';
+      import { renderUser } from '../scripts/user-display';
 
-      void protectPage();
+      const user = await requireSignedIn();
+      if (user) renderUser(document, user);
       document
         .querySelector('[data-sign-out]')
         ?.addEventListener('click', () => void signOutUser());

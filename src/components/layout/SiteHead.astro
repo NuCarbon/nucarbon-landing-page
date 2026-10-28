@@ -1,0 +1,58 @@
+---
+// Every page's <head> metadata: SEO, social cards, favicon and the brand font.
+import { Font } from 'astro:assets';
+import { site } from '../../data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Defaults to the current path. Omitted for noindex pages. */
+  canonical?: string | URL;
+  /** Absolute or site-relative image for social cards. */
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+}
+
+const {
+  title,
+  description = site.description,
+  canonical,
+  image,
+  imageAlt,
+  noindex = false,
+  type = 'website',
+} = Astro.props;
+
+const origin = Astro.site ?? Astro.url;
+const canonicalUrl = noindex ? null : new URL(canonical ?? Astro.url.pathname, origin);
+const imageUrl = new URL(image ?? site.defaultImage.url, origin);
+const imageDescription = image ? (imageAlt ?? title) : site.defaultImage.alt;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+<link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<meta name="generator" content={Astro.generator} />
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:alt" content={imageDescription} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+
+<Font cssVariable="--font-kollektif" preload={[{ weight: 700 }]} />

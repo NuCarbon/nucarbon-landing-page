@@ -1,151 +1,88 @@
 ---
+// Header account area: a loading placeholder, then "Entrar" or the signed-in user.
+import Button from '../ui/Button.astro';
 import Skeleton from '../ui/Skeleton.astro';
+import UserAvatar from '../ui/UserAvatar.astro';
 ---
 
-<li class="nav-account" data-header-account aria-live="polite">
-  <span class="nav-auth-loading" data-auth-loading role="status" aria-label="Verificando sessão">
-    <Skeleton width="30px" height="30px" variant="circle" />
+<div class="account" data-header-account>
+  <span class="account__loading" data-auth-loading role="status" aria-label="Verificando sessão">
+    <Skeleton width="32px" height="32px" variant="circle" />
     <Skeleton width="4.5rem" height="0.75rem" />
   </span>
 
-  <a href="/entrar" class="nav-cta" data-auth-guest hidden>
+  <Button href="/entrar" size="sm" class="account__login" data-auth-guest hidden>
     Entrar
-  </a>
+  </Button>
 
-  <a href="/app" class="nav-profile" data-auth-user hidden aria-label="Abrir meu painel">
-    <img data-user-avatar alt="" hidden />
-    <span class="nav-profile-fallback" data-user-initial hidden></span>
+  <a href="/app" class="account__profile" data-auth-user hidden>
+    <UserAvatar />
     <span data-user-name>Minha conta</span>
+    <span class="visually-hidden">(abrir meu painel)</span>
   </a>
-</li>
+</div>
 
 <script>
-  import { authReady, showAuthenticatedUser } from '../../scripts/auth';
+  import { onUserChange } from '../../scripts/auth';
+  import { renderGuest, renderUser } from '../../scripts/user-display';
 
-  async function initializeHeaderAccount(account: HTMLElement): Promise<void> {
-    if (account.dataset.authInitialized) return;
-    account.dataset.authInitialized = 'true';
-
-    const user = await authReady;
-
-    if (user) {
-      showAuthenticatedUser(user, account);
-      return;
-    }
-
-    const loading = account.querySelector<HTMLElement>('[data-auth-loading]');
-    const guest = account.querySelector<HTMLElement>('[data-auth-guest]');
-
-    if (loading) loading.hidden = true;
-    if (guest) guest.hidden = false;
-  }
-
-  function initializeAccounts(): void {
-    document
-      .querySelectorAll<HTMLElement>('[data-header-account]')
-      .forEach((account) => void initializeHeaderAccount(account));
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeAccounts, {
-      once: true,
-    });
-  } else {
-    initializeAccounts();
-  }
+  document.querySelectorAll<HTMLElement>('[data-header-account]').forEach((account) => {
+    onUserChange((user) => (user ? renderUser(account, user) : renderGuest(account)));
+  });
 </script>
 
 <style lang="scss">
-  .nav-account,
-  .nav-auth-loading,
-  .nav-profile {
+  @use '../../styles/mixins' as mx;
+
+  .account,
+  .account__loading,
+  .account__profile {
     display: flex;
     align-items: center;
   }
 
-  .nav-account {
+  .account {
     min-height: 2.5rem;
-    min-width: 120px;
+    min-width: 7.5rem;
     justify-content: center;
-  }
 
-  .nav-auth-loading,
-  .nav-profile {
-    gap: 0.5rem;
-  }
-
-  .nav-auth-loading {
-    min-width: 7rem;
-  }
-
-  .nav-cta {
-    padding: 0.5rem 1rem;
-    border-radius: var(--border-radius-md);
-    background-color: var(--color-primary);
-    color: white;
-    font-weight: 500;
-
-    &:hover {
-      background-color: var(--color-primary-dark);
-      color: white;
+    @include mx.up(xl) {
+      justify-content: flex-end;
     }
   }
 
-  .nav-profile {
-    padding: 0.25rem 0.65rem 0.25rem 0.25rem;
-    border-radius: 100px;
-    background: var(--color-primary-accent);
+  .account__loading,
+  .account__profile {
+    gap: var(--spacing-xs);
+  }
+
+  .account__profile {
+    padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary-soft);
     color: var(--color-primary-dark);
     font-weight: 700;
 
     &:hover {
-      background: #d9f1e7;
+      background: var(--color-primary-tint);
       color: var(--color-primary-dark);
-    }
-
-    img,
-    &-fallback {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-    }
-
-    img {
-      object-fit: cover;
-    }
-
-    &-fallback {
-      display: grid;
-      place-items: center;
-      background: var(--color-primary);
-      color: white;
-      font-size: 0.8rem;
-      font-weight: 800;
     }
   }
 
-  @media (min-width: 1120px) {
-    .nav-account {
-      justify-content: flex-end;
+  @include mx.up(xl) {
+    :global(.header.transparent) .account__login {
+      border-color: var(--color-on-dark);
+      background: var(--color-on-dark);
+      color: var(--color-primary-dark);
     }
 
-    :global(.header.transparent) .nav-cta {
-      background-color: white;
-      color: var(--color-primary);
+    :global(.header.transparent) .account__profile {
+      background: var(--color-on-dark-line);
+      color: var(--color-on-dark);
 
       &:hover {
-        background-color: rgba(255, 255, 255, 0.9);
+        background: var(--color-on-dark-muted);
         color: var(--color-primary-dark);
-      }
-    }
-
-    :global(.header.transparent) .nav-profile {
-      background: rgba(255, 255, 255, 0.16);
-      color: white;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.25);
-        color: white;
       }
     }
   }

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { readProjects } from '../../netlify/functions/_repository';
+import { readProjects } from '../server/repository';
 export const prerender = false;
 export const GET: APIRoute = async () => {
   try {

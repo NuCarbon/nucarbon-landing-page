@@ -1,6 +1,6 @@
 import type { Config } from '@netlify/functions';
-import { authenticated, json } from './_api';
-import { readCommunityPosts } from './_repository';
+import { authenticated, json } from '../../src/server/http';
+import { readCommunityPosts } from '../../src/server/repository';
 
 export default authenticated(async () => {
   return json({ posts: await readCommunityPosts() });

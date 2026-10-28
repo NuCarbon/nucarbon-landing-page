@@ -64,7 +64,7 @@ const { project } = Astro.props as { project: Project };
   import { authReady } from '../../scripts/auth';
   import { openLoginModal } from '../../scripts/login-modal';
   import { readDraft, savePendingDraft } from '../../scripts/calculator/draft';
-  import { calculateFootprint } from '../../scripts/calculator/calculate';
+  import { calculateFootprint } from '../../lib/calculator/calculate';
   import { auth } from '../../scripts/firebase';
   const panel = document.querySelector<HTMLElement>('[data-contribution]');
   if (panel) {

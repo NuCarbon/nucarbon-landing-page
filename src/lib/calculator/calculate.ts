@@ -6,7 +6,8 @@ import {
   TransportAnswer,
   WasteAnswer,
   type CalculatorAnswers,
-} from './state.ts';
+} from './answers.ts';
+import { formatTonnes } from '../format.ts';
 
 // Annual factors are tCO₂e/year; transport factors are kgCO₂e/km and tree absorption is tCO₂e/tree/year.
 export const coefficients = {
@@ -83,11 +84,8 @@ export interface CalculationResult {
 }
 
 const round = (value: number) => Math.round(value * 100) / 100;
-export const formatTonnes = (value: number) =>
-  value.toLocaleString('pt-BR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+/** @deprecated Import formatTonnes from lib/format. */
+export { formatTonnes };
 
 function reductionTips(answers: CalculatorAnswers): Record<CategoryId, ReductionTip> {
   const personalVehicle = [

@@ -20,7 +20,7 @@ const { posts = [] } = Astro.props;
 </app-community-feed>
 
 <script>
-  import { formatDate, formatReactions, formatComments } from '../../../scripts/app/format';
+  import { formatDate, formatReactions, formatComments } from '../../../lib/format';
   import type { CommunityPost } from '../../../types/app';
 
   function setText(root: ParentNode, selector: string, value: string): void {

@@ -1,5 +1,5 @@
-import { calculateFootprint } from './calculate';
-import type { CalculatorAnswers } from './state';
+import { calculateFootprint } from '../../lib/calculator/calculate';
+import type { CalculatorAnswers } from '../../lib/calculator/answers';
 
 const DRAFT_KEY = 'nucarbon:calculator';
 const SAVED_KEY = 'nucarbon:calculator:saved';

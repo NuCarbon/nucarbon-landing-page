@@ -1,4 +1,4 @@
-import type { CalculatorAnswers } from './state';
+import type { CalculatorAnswers } from '../../lib/calculator/answers';
 import { savePendingDraft, writeDraft } from './draft';
 
 export function initializeResultSaving(calculator: HTMLElement) {

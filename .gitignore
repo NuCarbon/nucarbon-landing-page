@@ -23,3 +23,6 @@ pnpm-debug.log*
 .netlify/
 netlify/functions/*.zip
 netlify/functions/manifest.json
+
+# unused Netlify CLI edge bootstrap lockfile
+deno.lock

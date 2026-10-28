@@ -27,7 +27,7 @@ const { projects = [] } = Astro.props;
     formatProgress,
     formatLocation,
     projectImageClass,
-  } from '../../../scripts/app/format';
+  } from '../../../lib/format';
   import type { Project } from '../../../types/app';
 
   function setText(root: ParentNode, selector: string, value: string): void {

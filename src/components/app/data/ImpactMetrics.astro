@@ -20,7 +20,7 @@ const { metrics = [] } = Astro.props;
 </app-impact-metrics>
 
 <script>
-  import { formatMetric } from '../../../scripts/app/format';
+  import { formatMetric } from '../../../lib/format';
   import type { ImpactMetric } from '../../../types/app';
 
   class ImpactMetrics extends HTMLElement {
@@ -31,9 +31,10 @@ const { metrics = [] } = Astro.props;
 
       this.querySelectorAll(':scope > .metric-card').forEach((card) => card.remove());
 
-      const cards = metrics.map((metric) => {
-        const fragment = template.content.cloneNode(true) as DocumentFragment;
+      const cards = metrics.flatMap((metric) => {
         const display = formatMetric(metric);
+        if (!display) return [];
+        const fragment = template.content.cloneNode(true) as DocumentFragment;
         const icon = fragment.querySelector<HTMLElement>('[data-metric-icon]');
         const label = fragment.querySelector<HTMLElement>('[data-metric-label]');
         const value = fragment.querySelector<HTMLElement>('[data-metric-value]');
