@@ -1,52 +1,77 @@
 ---
 import CalculatorLayout from '../layouts/CalculatorLayout.astro';
-import CalculatorLogo from '../components/calculator/CalculatorLogo.astro';
-import CalculatorResults from '../components/calculator/CalculatorResults.astro';
+import Button from '../components/ui/Button.astro';
+import Logo from '../components/ui/Logo.astro';
+import ChoiceStep from '../components/calculator/ChoiceStep.astro';
+import DistanceRange from '../components/calculator/DistanceRange.astro';
+import CalculatorResults from '../components/calculator/results/CalculatorResults.astro';
 import { calculatorSteps } from '../components/calculator/steps';
-import { initialAnswers } from '../lib/calculator/answers';
+import { DISTANCE_KM, initialAnswers } from '../lib/calculator/answers';
+
+const [firstStep] = calculatorSteps;
+const stepCount = calculatorSteps.length;
 ---
 
-<CalculatorLayout title="Calculadora de carbono | NuCarbon">
-  <main class="calculator" data-calculator>
-    <section class="calculator__flow" data-calculator-flow>
-      <header class="calculator__header">
-        <CalculatorLogo />
-        <p class="calculator__step-label">
-          Etapa <span data-current-step>1</span> de {calculatorSteps.length}{' '}
-          <strong data-step-name>[{calculatorSteps[0].label}]</strong>
-        </p>
+<CalculatorLayout title="Calculadora de carbono | Nucarbon">
+  <div class="calculator" data-calculator>
+    <div class="calculator__flow" data-calculator-flow>
+      <header class="calculator__header container">
+        <div class="calculator__bar">
+          <Logo />
+          <p class="calculator__step-label">
+            Etapa <span data-current-step>1</span> de {stepCount}
+            <strong data-step-name>{firstStep.label}</strong>
+          </p>
+        </div>
+        <div
+          class="calculator__progress"
+          role="progressbar"
+          aria-label="Progresso do cálculo"
+          aria-valuemin="1"
+          aria-valuemax={stepCount}
+          aria-valuenow="1"
+          aria-valuetext={`Etapa 1: ${firstStep.label}`}
+          style={`--progress: ${100 / stepCount}%`}
+          data-progress
+        >
+          <span class="calculator__progress-value"></span>
+        </div>
+        <div class="calculator__dots" aria-hidden="true">
+          {calculatorSteps.map(({ id }, index) => (
+            <span
+              class:list={['calculator__dot', { 'calculator__dot--active': index === 0 }]}
+              data-dot={id}
+            ></span>
+          ))}
+        </div>
       </header>
 
-      <div class="calculator__progress" aria-label="Progresso do cálculo">
-        <span class="calculator__progress-value" data-progress></span>
-      </div>
-      <div class="calculator__dots" aria-hidden="true">
-        {calculatorSteps.map(({ id }, index) => (
-          <span
-            class:list={['calculator__dot', { 'calculator__dot--active': index === 0 }]}
-            data-dot={id}
-          ></span>
-        ))}
-      </div>
-
-      <form class="calculator__form" data-calculator-form>
-        {calculatorSteps.map(({ component: Component, label }, index) => (
-          <Component answers={initialAnswers} active={index === 0} label={label} />
-        ))}
-      </form>
+      <main class="calculator__main container">
+        <form class="calculator__form" autocomplete="off" data-calculator-form>
+          {calculatorSteps.map((step, index) => (
+            <ChoiceStep step={step} value={initialAnswers[step.id]} active={index === 0}>
+              {step.id === 'transport' && (
+                <DistanceRange value={initialAnswers.distance} {...DISTANCE_KM} />
+              )}
+            </ChoiceStep>
+          ))}
+        </form>
+      </main>
 
       <nav class="calculator__actions" aria-label="Navegação da calculadora">
-        <button class="calculator__back" type="button" data-back>
-          Voltar
-        </button>
-        <button class="calculator__continue" type="button" data-continue>
-          Continuar
-        </button>
+        <div class="calculator__actions-inner container">
+          <Button variant="ghost" size="lg" data-back>
+            Voltar
+          </Button>
+          <Button size="lg" class="calculator__continue" data-continue>
+            Continuar
+          </Button>
+        </div>
       </nav>
-    </section>
+    </div>
 
     <CalculatorResults />
-  </main>
+  </div>
 </CalculatorLayout>
 
 <script>
@@ -56,178 +81,133 @@ import { initialAnswers } from '../lib/calculator/answers';
 </script>
 
 <style lang="scss">
-  .calculator {
+  @use '../styles/mixins' as mx;
+
+  .calculator__flow {
+    display: flex;
+    flex-direction: column;
     min-height: 100svh;
+  }
 
-    &__flow {
-      display: flex;
-      flex-direction: column;
-      min-height: 100svh;
-      background: var(--calculator-bg);
-    }
+  .calculator__header {
+    padding-top: var(--spacing-xl);
 
-    &__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: min(100% - 3rem, 1424px);
-      margin: 0 auto;
-      padding: 2.7rem 0 1.65rem;
-    }
-
-    &__step-label {
-      margin: 0;
-      color: var(--calculator-muted);
-      font-weight: 700;
-
-      strong {
-        margin-left: 0.45rem;
-        color: var(--calculator-green);
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      }
-    }
-
-    &__progress {
-      width: min(100% - 3rem, 1424px);
-      height: 6px;
-      margin: 0 auto;
-      overflow: hidden;
-      border-radius: 10px;
-      background: #dfdfda;
-    }
-
-    &__progress-value {
-      display: block;
-      width: 16.666%;
-      height: 100%;
-      border-radius: inherit;
-      background: var(--calculator-green);
-      transition: width 0.3s ease;
-    }
-
-    &__dots {
-      display: flex;
-      justify-content: center;
-      gap: 7px;
-      min-height: 18px;
-      padding-top: 10px;
-      margin-top: 12px;
-    }
-
-    &__dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #ddddda;
-
-      &--complete {
-        background: var(--calculator-green);
-      }
-      &--active {
-        width: 11px;
-        height: 11px;
-        margin-top: -2px;
-        background: var(--calculator-green);
-      }
-    }
-
-    &__form {
-      flex: 1;
-      width: 100%;
-      padding: 3.5rem 1.5rem 5rem;
-    }
-
-    &__actions {
-      position: sticky;
-      z-index: 5;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 108px;
-      padding: 1.5rem max(1.5rem, calc((100vw - 1424px) / 2));
-      border-top: 1px solid #eee;
-      background: #fff;
-    }
-
-    &__back,
-    &__continue {
-      border: 0;
-      font: inherit;
-      font-size: 1.05rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    &__back {
-      padding: 0.75rem 0;
-      background: transparent;
-      color: var(--calculator-muted);
-    }
-
-    &__continue {
-      min-width: 165px;
-      padding: 0.9rem 1.8rem;
-      border-radius: 999px;
-      background: var(--calculator-green);
-      color: #fff;
-
-      &:hover {
-        background: var(--calculator-green-dark);
-      }
+    @include mx.down(lg) {
+      padding-top: var(--spacing-md);
     }
   }
 
-  @media (max-width: 900px) {
-    .calculator {
-      &__header {
-        width: calc(100% - 2rem);
-        padding: 1.6rem 0 1.2rem;
-      }
-      &__progress {
-        width: calc(100% - 2rem);
-      }
-      &__step-label strong {
-        display: none;
-      }
-      &__form {
-        padding: 2.2rem 1.25rem 4rem;
-      }
-      &__actions {
-        min-height: 96px;
-        padding: 1.25rem;
-      }
+  .calculator__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .calculator__step-label {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-weight: 700;
+  }
+
+  .calculator__step-label strong {
+    margin-left: var(--spacing-xs);
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+
+    &::before {
+      content: '[';
+    }
+
+    &::after {
+      content: ']';
+    }
+
+    @include mx.down(lg) {
+      display: none;
     }
   }
 
-  @media (max-width: 600px) {
-    .calculator {
-      &__header {
-        padding-top: 1.5rem;
-      }
-      &__step-label {
-        font-size: 1rem;
-      }
-      &__progress {
-        height: 6px;
-      }
-      &__dots {
-        padding-top: 13px;
-      }
-      &__form {
-        padding-top: 1.9rem;
-      }
-      &__actions {
-        min-height: 96px;
-      }
-      &__back,
-      &__continue {
-        font-size: 1rem;
-      }
-      &__continue {
-        min-width: 136px;
-        padding: 0.85rem 1.4rem;
-      }
+  .calculator__progress {
+    height: 0.375rem;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--color-border);
+  }
+
+  .calculator__progress-value {
+    display: block;
+    width: var(--progress);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-primary);
+    transition: width var(--transition-base);
+  }
+
+  .calculator__dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4375rem;
+    height: 0.6875rem;
+    margin-top: var(--spacing-md);
+  }
+
+  .calculator__dot {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    border-radius: var(--radius-round);
+    background: var(--color-border);
+    transition:
+      width var(--transition-fast),
+      height var(--transition-fast);
+
+    &--complete,
+    &--active {
+      background: var(--color-primary);
     }
+
+    &--active {
+      width: 0.6875rem;
+      height: 0.6875rem;
+    }
+  }
+
+  .calculator__main {
+    flex: 1;
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-2xl);
+
+    @include mx.down(lg) {
+      padding-top: var(--spacing-lg);
+      padding-bottom: var(--spacing-xl);
+    }
+  }
+
+  .calculator__actions {
+    position: sticky;
+    z-index: var(--z-sticky);
+    bottom: 0;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .calculator__actions-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+
+    @include mx.down(sm) {
+      padding-top: var(--spacing-sm);
+      padding-bottom: var(--spacing-sm);
+    }
+  }
+
+  .calculator__continue {
+    min-width: 10rem;
   }
 </style>

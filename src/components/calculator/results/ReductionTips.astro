@@ -1,0 +1,100 @@
+---
+// Every category has a tip slot; the controller shows the current top tips in order.
+import IconTile from '../../ui/IconTile.astro';
+import type { IconName } from '../CalculatorIcon.astro';
+import { CATEGORY_IDS, type CategoryId } from '../../../lib/calculator/categories';
+import type { ReductionTip } from '../../../lib/calculator/calculate';
+
+interface Props {
+  tips: ReductionTip[];
+}
+
+const { tips } = Astro.props;
+
+const categoryIcons: Record<CategoryId, IconName> = {
+  transport: 'bus',
+  home: 'home',
+  energy: 'energy',
+  food: 'bowl',
+  waste: 'trash',
+};
+---
+
+<section
+  class="reduction-tips"
+  data-tips-section
+  hidden={tips.length === 0}
+  aria-labelledby="reduction-tips-title"
+>
+  <h2 class="reduction-tips__title" id="reduction-tips-title">
+    Como reduzir sua pegada
+  </h2>
+  <ul class="reduction-tips__list" data-tips-list>
+    {CATEGORY_IDS.map((id) => {
+      const tip = tips.find((item) => item.id === id);
+      return (
+        <li class="reduction-tip" data-tip={id} hidden={!tip}>
+          <IconTile name={categoryIcons[id]} size="sm" tone="primary" />
+          <div>
+            <h3 class="reduction-tip__title" data-tip-title>
+              {tip?.title}
+            </h3>
+            <p class="reduction-tip__description" data-tip-description>
+              {tip?.description}
+            </p>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+</section>
+
+<style lang="scss">
+  @use '../../../styles/mixins' as mx;
+
+  .reduction-tips {
+    @include mx.surface(var(--radius-xl));
+    padding: var(--spacing-lg);
+
+    @include mx.down(sm) {
+      padding: var(--spacing-md);
+      border-radius: var(--radius-lg);
+    }
+  }
+
+  .reduction-tips__title {
+    margin-bottom: var(--spacing-md);
+    font-size: 1.375rem;
+
+    @include mx.down(sm) {
+      font-size: 1.125rem;
+    }
+  }
+
+  .reduction-tips__list {
+    display: grid;
+    gap: var(--spacing-md);
+    list-style: none;
+  }
+
+  .reduction-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .reduction-tip__title {
+    margin-bottom: var(--spacing-2xs);
+    font-size: 1rem;
+  }
+
+  .reduction-tip__description {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+
+    @include mx.down(sm) {
+      font-size: 0.875rem;
+    }
+  }
+</style>

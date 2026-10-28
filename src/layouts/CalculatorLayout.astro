@@ -1,7 +1,8 @@
 ---
+// Full-screen layout of the calculator: the step flow brings its own header,
+// and the results screen renders the site header and footer.
 import SiteHead from '../components/layout/SiteHead.astro';
 import '../styles/global.scss';
-import '../styles/calculator.scss';
 import LoginModal from '../components/auth/LoginModal.astro';
 
 interface Props {
@@ -20,7 +21,7 @@ const {
   <head>
     <SiteHead title={title} description={description} />
   </head>
-  <body class="calculator-page">
+  <body>
     <slot />
     <LoginModal />
   </body>

@@ -24,7 +24,7 @@ test('navigation follows configured order and keeps choices when going back or r
   assert.equal(flow.snapshot().answers.distance, 60);
 });
 
-test('state passed to a panel cannot mutate the flow or another calculator', () => {
+test('snapshots cannot mutate the flow or another calculator', () => {
   const flow = createCalculatorFlow(['energy']);
   flow.setAnswer('energy', EnergyAnswer.High);
   const snapshot = flow.snapshot();

@@ -1,0 +1,32 @@
+// Inner markup of the 24×24 stroke icons rendered by CalculatorIcon.astro.
+// Static strings, never user input.
+export const icons = {
+  apartment:
+    '<rect x="5" y="3" width="14" height="18" rx="1" /><path d="M9 7h1m4 0h1M9 11h1m4 0h1M9 15h1m4 0h1" />',
+  bag: '<rect x="5" y="7" width="14" height="14" rx="2" /><path d="M9 9V6a3 3 0 0 1 6 0v3" />',
+  bike: '<circle cx="5.5" cy="17.5" r="3.5" /><circle cx="18.5" cy="17.5" r="3.5" /><path d="m5.5 17.5 4-8h4l5 8m-9-8 5 8h-9m5-11h3" />',
+  bowl: '<path d="M3 12h18a9 9 0 0 1-18 0Z" /><path d="M7 12c0-3 2-5 5-5m0 5c0-4 3-7 7-7M8 20h8" />',
+  building:
+    '<rect x="5" y="3" width="14" height="18" rx="1" /><path d="M9 7h2m2 0h2M9 11h2m2 0h2M9 15h2m2 0h2m-5 6v-3h4v3" />',
+  bus: '<rect x="4" y="3" width="16" height="16" rx="2" /><path d="M4 12h16M7 7h10M7 19v2m10-2v2M8 15h.01M16 15h.01" />',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" />',
+  car: '<path d="m5 17-1-1v-5l2-1 2-4h8l2 4 2 1v5l-1 1" /><path d="M6 17v2m12-2v2M4 12h16M8 15h.01M16 15h.01" />',
+  egg: '<path d="M12 3c-4 0-7 8-7 12a7 7 0 0 0 14 0c0-4-3-12-7-12Z" />',
+  energy: '<path d="m13 2-8 12h7l-1 8 8-12h-7Z" />',
+  home: '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z" />',
+  house: '<path d="m3 11 9-7 9 7v10H3Z" />',
+  info: '<circle cx="12" cy="12" r="9" /><path d="M12 11v5m0-8h.01" />',
+  leaf: '<path d="M20 4C10 4 5 8 5 14c0 3 2 5 5 5 6 0 10-7 10-15Z" /><path d="M4 21c3-6 7-9 12-12" />',
+  meat: '<path d="M17 4c4 3 4 8 1 12-3 4-9 6-13 4-3-2-2-6 1-7 4-2 4-7 7-9 1-1 3-1 4 0Z" /><circle cx="14" cy="9" r="2" />',
+  motorcycle:
+    '<circle cx="6" cy="17" r="3" /><circle cx="18" cy="17" r="3" /><path d="m9 17 3-6h3l3 6m-9 0h6l-4-5-2-3H7m8-2h3" />',
+  person:
+    '<circle cx="12" cy="7" r="3.5" /><path d="M5 21v-2.5A5.5 5.5 0 0 1 10.5 13h3A5.5 5.5 0 0 1 19 18.5V21" />',
+  plug: '<path d="m8 12 8-8m-5 3 3 3m-8 2 6 6m-8 2 16-16M5 15l4 4-2 2-4-4Z" />',
+  trash: '<path d="M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6" />',
+  tree: '<path d="m12 3-5 6h3l-5 6h4l-5 6h16l-5-6h4l-5-6h3Z" />',
+  vegan:
+    '<path d="M12 21C5 17 5 9 6 4c7 1 12 5 12 11 0 3-2 6-6 6Z" /><path d="M9 7c2 4 3 8 3 14m0-8c2-3 4-5 7-6" />',
+} satisfies Record<string, string>;
+
+export type IconName = keyof typeof icons;

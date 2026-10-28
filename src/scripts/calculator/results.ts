@@ -1,47 +1,36 @@
-import {
-  categoryDetails,
-  formatTonnes,
-  type CalculationResult,
-} from '../../lib/calculator/calculate';
+// Fills the server-rendered results markup (components/calculator/results) with a new result.
+import type { CalculationResult } from '../../lib/calculator/calculate';
+import { formatCo2e, formatInteger, formatTonnes } from '../../lib/format';
 
 export function renderResults(root: HTMLElement, result: CalculationResult): void {
-  const text = (selector: string, value: string) => {
-    root.querySelector<HTMLElement>(selector)!.textContent = value;
-  };
+  const find = (selector: string, scope: ParentNode = root) =>
+    scope.querySelector<HTMLElement>(selector)!;
 
-  text('[data-total]', formatTonnes(result.total));
-  text('[data-trees]', result.trees.toLocaleString('pt-BR'));
-  text('[data-attention-title]', result.attention.title);
-  text('[data-attention-description]', result.attention.description);
-  const largest = [...result.categories].sort((a, b) => b.tonnes - a.tonnes)[0];
-  for (const category of result.categories) {
-    const row = root.querySelector<HTMLElement>(`[data-category="${category.id}"]`)!;
-    row.querySelector('[data-category-value]')!.textContent =
-      `${formatTonnes(category.tonnes)} tCO₂e`;
-    const bar = row.querySelector<HTMLElement>('[data-category-bar]')!;
-    bar.style.setProperty('--bar-width', `${category.percentage}%`);
-    bar.classList.toggle(
-      'result-breakdown__bar--danger',
-      result.total > 0 && category.id === largest.id,
-    );
-    row.setAttribute(
-      'aria-label',
-      `${categoryDetails[category.id].label}: ${formatTonnes(category.tonnes)} tCO₂e, ${Math.round(category.percentage)}%`,
-    );
+  find('[data-total]').textContent = formatTonnes(result.total);
+  find('[data-trees]').textContent = formatInteger(result.trees);
+  find('[data-attention-title]').textContent = result.attention.title;
+  find('[data-attention-description]').textContent = result.attention.description;
+
+  for (const { id, tonnes, percentage } of result.categories) {
+    const row = find(`[data-category="${id}"]`);
+    find('[data-category-value]', row).textContent = formatCo2e(tonnes);
+    find('[data-category-share]', row).textContent = `, ${Math.round(percentage)}%`;
+    const bar = find('[data-category-bar]', row);
+    bar.style.setProperty('--bar-width', `${percentage}%`);
+    bar.classList.toggle('category-breakdown__bar--largest', id === result.largestCategory);
   }
 
-  root.querySelectorAll<HTMLElement>('[data-tip]').forEach((tip) => {
-    tip.hidden = true;
+  // Show the current tips, in order, and hide the rest.
+  const list = find('[data-tips-list]');
+  list.querySelectorAll<HTMLElement>('[data-tip]').forEach((item) => {
+    item.hidden = true;
   });
-
-  const list = root.querySelector<HTMLElement>('[data-tips-list]')!;
   for (const tip of result.tips) {
-    const element = root.querySelector<HTMLElement>(`[data-tip="${tip.id}"]`)!;
-    element.querySelector('[data-tip-title]')!.textContent = tip.title;
-    element.querySelector('[data-tip-description]')!.textContent = tip.description;
-    element.hidden = false;
-    list.append(element);
+    const item = find(`[data-tip="${tip.id}"]`, list);
+    find('[data-tip-title]', item).textContent = tip.title;
+    find('[data-tip-description]', item).textContent = tip.description;
+    item.hidden = false;
+    list.append(item);
   }
-
-  root.querySelector<HTMLElement>('[data-tips-section]')!.hidden = result.tips.length === 0;
+  find('[data-tips-section]').hidden = result.tips.length === 0;
 }

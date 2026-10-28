@@ -1,61 +1,49 @@
 ---
-import CalculatorIcon from './CalculatorIcon.astro';
-import type { CalculatorAnswers, StepId } from '../../lib/calculator/answers';
+// One radio choice of a calculator step, styled as a selectable card.
+import Badge from '../ui/Badge.astro';
+import IconTile from '../ui/IconTile.astro';
+import type { IconName } from './CalculatorIcon.astro';
+import type { OptionDensity } from './steps';
 
 interface Props {
-  group: StepId;
-  value: CalculatorAnswers[StepId];
+  name: string;
+  value: string;
   label: string;
   description?: string;
-  icon: string;
+  icon: IconName;
   badge?: string;
-  badgeTone?: 'green' | 'neutral' | 'warning' | 'danger';
-  selected?: boolean;
-  compact?: boolean;
+  checked?: boolean;
   disabled?: boolean;
+  density?: OptionDensity;
 }
 
 const {
-  group,
+  name,
   value,
   label,
   description,
   icon,
   badge,
-  badgeTone = 'green',
-  selected = false,
-  compact = false,
+  checked = false,
   disabled = false,
+  density = 'default',
 } = Astro.props;
 ---
 
-<label
-  class:list={[
-    'option-card',
-    {
-      'option-card--selected': selected,
-      'option-card--compact': compact,
-      'option-card--disabled': disabled,
-    },
-  ]}
->
+<label class:list={['option-card', `option-card--${density}`]}>
   <input
     class="option-card__input"
     type="radio"
-    name={group}
+    name={name}
     value={value}
-    checked={selected}
+    checked={checked}
     disabled={disabled}
   />
-  <span class="option-card__icon">
-    <CalculatorIcon name={icon} />
-  </span>
+  <IconTile name={icon} size={density === 'compact' ? 'sm' : 'md'} />
   <span class="option-card__content">
     <span class="option-card__heading">
       <span class="option-card__label">{label}</span>
-      {badge && (
-        <span class:list={['option-card__badge', `option-card__badge--${badgeTone}`]}>{badge}</span>
-      )}
+      {badge && <Badge>{badge}</Badge>}
     </span>
     {description && <span class="option-card__description">{description}</span>}
   </span>
@@ -63,228 +51,171 @@ const {
 </label>
 
 <style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  // Desktop: icon and radio on top, text below. Mobile: one row.
   .option-card {
     position: relative;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-areas:
-      'icon . radio'
-      'content content content';
+    align-content: start;
     align-items: center;
-    gap: 1.05rem;
-    min-height: 178px;
-    padding: 1.7rem;
-    border: 2px solid transparent;
-    border-radius: 20px;
-    background: #fff;
+    column-gap: var(--spacing-sm);
+    row-gap: var(--spacing-sm);
+    min-height: 11rem;
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-surface);
     cursor: pointer;
     transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
 
-    &:not(.option-card--disabled):hover {
-      box-shadow: 0 8px 24px rgba(29, 62, 34, 0.07);
+    &:hover:not(:has(:disabled)) {
+      border-color: var(--color-border-strong);
+      box-shadow: var(--shadow-card);
     }
 
-    &--disabled {
+    &:has(:focus-visible) {
+      @include mx.focus-ring;
+    }
+
+    // A second, inner ring thickens the border without shifting the layout.
+    &:has(:checked) {
+      --icon-tile-bg: var(--color-primary-soft);
+      --icon-tile-color: var(--color-primary);
+      border-color: var(--color-primary);
+      outline: 1px solid var(--color-primary);
+      outline-offset: -2px;
+    }
+
+    &:has(:checked:focus-visible) {
+      @include mx.focus-ring;
+    }
+
+    &:has(:disabled) {
+      background: var(--color-surface-muted);
       cursor: not-allowed;
-      background: #f3f3ee;
     }
+  }
 
-    &--disabled &__label {
-      color: var(--calculator-muted);
-    }
+  .option-card__input {
+    @include mx.visually-hidden;
+  }
 
-    &--selected {
-      border-color: var(--calculator-green);
-    }
+  .option-card__content {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
 
-    &__input {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      opacity: 0;
-      pointer-events: none;
-    }
+  .option-card__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
 
-    &__icon {
-      grid-area: icon;
-      display: grid;
-      place-items: center;
-      width: 54px;
-      height: 54px;
-      border-radius: 14px;
-      background: #f3f3ee;
-      color: #5c5d59;
-    }
+  .option-card__label {
+    color: var(--color-text);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.25;
 
-    &--selected &__icon {
-      background: var(--calculator-green-soft);
-      color: var(--calculator-green);
+    .option-card:has(:disabled) & {
+      color: var(--color-text-muted);
     }
+  }
 
-    &__content {
-      grid-area: content;
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-    &__heading {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-    }
-    &__label {
-      color: var(--calculator-ink);
-      font-size: 1.15rem;
-      font-weight: 700;
-      line-height: 1.2;
-    }
+  .option-card__description {
+    display: block;
+    margin-top: var(--spacing-xs);
+    color: var(--color-text-muted);
+    line-height: 1.45;
+  }
 
-    &__description {
-      display: block;
-      margin-top: 0.55rem;
-      color: var(--calculator-muted);
-      font-family: var(--font-family-primary);
-      font-size: 1rem;
-      line-height: 1.45;
-    }
+  .option-card__radio {
+    position: relative;
+    grid-row: 1;
+    grid-column: 3;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 2px solid var(--color-border-strong);
+    border-radius: var(--radius-round);
 
-    &__badge {
-      padding: 0.18rem 0.55rem;
-      border-radius: 5px;
-      background: #e8f4e8;
-      color: #31843b;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.75rem;
-      font-weight: 700;
+    .option-card:has(:checked) & {
+      border-color: var(--color-primary);
 
-      &--neutral {
-        background: #f2f1ea;
-        color: #62625e;
-      }
-      &--danger {
-        background: #fff0e9;
-        color: #d52c22;
-      }
-      &--warning {
-        background: #fff3cd;
-        color: #856404;
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0.1875rem;
+        border-radius: inherit;
+        background: var(--color-primary);
       }
     }
+  }
 
-    &__radio {
-      grid-area: radio;
-      justify-self: end;
-      width: 13px;
-      height: 13px;
-      border: 2px solid #dddcd6;
-      border-radius: 50%;
-    }
+  // Short labels without descriptions, e.g. transport modes.
+  .option-card--compact {
+    min-height: 0;
+    padding: var(--spacing-md);
 
-    &--selected &__radio {
-      border-color: var(--calculator-green);
-      background: var(--calculator-green);
-    }
-
-    &--compact {
-      align-items: center;
-      min-height: 89px;
-      padding: 1.25rem 1.4rem;
-      border-radius: 17px;
-    }
-
-    &--compact &__icon {
-      width: 45px;
-      height: 45px;
-      border-radius: 11px;
-    }
-    &--compact &__label {
+    .option-card__label {
       font-size: 1rem;
     }
   }
-  :global(.calculator-step--food) .option-card {
-    min-height: 98px;
-    padding: 1.25rem 1.35rem;
-  }
-  :global(.calculator-step--food) .option-card__description {
-    margin-top: 0.3rem;
+
+  // Many options with descriptions, e.g. diets.
+  .option-card--dense {
+    min-height: 0;
+    padding: var(--spacing-md);
+
+    .option-card__description {
+      margin-top: var(--spacing-2xs);
+    }
   }
 
-  @media (max-width: 600px) {
+  @include mx.down(sm) {
     .option-card {
-      grid-template-areas: 'icon content radio';
-      align-items: center;
-      min-height: 90px;
-      padding: 1rem;
-      border: 1.5px solid var(--calculator-line);
-      border-radius: 13px;
+      align-content: center;
+      min-height: 0;
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-lg);
+    }
 
-      &__icon {
-        width: 43px;
-        height: 43px;
-        border-radius: 10px;
-      }
-      &__icon :global(.calculator-icon) {
-        width: 24px;
-        height: 24px;
-      }
-      &__label {
-        font-size: 1.02rem;
-      }
-      &__description {
-        margin-top: 0.25rem;
-        font-size: 0.86rem;
-        line-height: 1.35;
-      }
-      &__radio {
-        width: 18px;
-        height: 18px;
-        background: transparent;
-      }
-      &--selected &__radio {
-        border: 3px solid #fff;
-        background: var(--calculator-green);
-        box-shadow: 0 0 0 1px var(--calculator-green);
-      }
+    .option-card__content {
+      grid-row: 1;
+      grid-column: 2;
+    }
 
-      &--compact {
-        gap: 0.4rem;
-        min-height: 98px;
-        padding: 0.85rem 0.75rem;
+    .option-card__label {
+      font-size: 1rem;
+    }
+
+    .option-card__description {
+      margin-top: var(--spacing-2xs);
+      font-size: 0.875rem;
+      line-height: 1.35;
+    }
+
+    .option-card--compact {
+      column-gap: var(--spacing-xs);
+      padding: var(--spacing-sm) var(--spacing-xs) var(--spacing-sm) var(--spacing-sm);
+
+      .option-card__label {
+        font-size: 0.9375rem;
       }
-      &--compact &__icon {
-        width: 24px;
-        height: 24px;
-        background: transparent;
+    }
+
+    .option-card--dense {
+      padding: 0.75rem;
+
+      .option-card__description {
+        font-size: 0.8125rem;
       }
-      &--compact &__label {
-        font-size: 0.95rem;
-      }
-      &--compact &__radio {
-        width: 14px;
-        height: 14px;
-      }
-    }
-    :global(.calculator-step--food) .option-card {
-      min-height: 77px;
-      padding: 0.8rem;
-    }
-    :global(.calculator-step--food) .option-card__icon {
-      width: 39px;
-      height: 39px;
-    }
-    :global(.calculator-step--food) .option-card__heading {
-      gap: 0.35rem;
-    }
-    :global(.calculator-step--food) .option-card__badge {
-      font-size: 0.66rem;
-    }
-    :global(.calculator-step--food) .option-card__description {
-      font-size: 0.8rem;
-    }
-    :global(.calculator-step--food) .option-card:last-child {
-      display: none;
     }
   }
 </style>

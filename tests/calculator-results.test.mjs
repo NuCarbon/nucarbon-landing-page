@@ -58,6 +58,21 @@ test('attention and tips follow the largest categories and refresh for new answe
   assert.deepEqual(calculateFootprint({ ...initialAnswers, distance: 500 }), driving);
 });
 
+test('the largest category is reported once and drives the attention message', () => {
+  const driving = calculateFootprint({ ...initialAnswers, distance: 500 });
+  const ranked = [...driving.categories].sort((a, b) => b.tonnes - a.tonnes);
+  assert.equal(driving.largestCategory, ranked[0].id);
+  assert.equal(driving.largestCategory, 'transport');
+  const meat = calculateFootprint({
+    ...initialAnswers,
+    transport: TransportAnswer.Bike,
+    food: FoodAnswer.High,
+  });
+  assert.equal(meat.largestCategory, 'food');
+  assert.match(meat.attention.title, /Alimentação e consumo/);
+  assert.match(meat.attention.description, /^Alimentação e consumo representa \d+%/);
+});
+
 test('food advice respects an already plant-based diet', () => {
   const result = calculateFootprint({
     ...initialAnswers,
@@ -93,6 +108,8 @@ test('zero emissions and invalid distances produce finite nonnegative results', 
   });
   assert.equal(zero.total, 0);
   assert.equal(zero.trees, 0);
+  assert.equal(zero.largestCategory, null);
+  assert.equal(zero.attention.title, 'Nenhuma emissão estimada');
   assert.deepEqual(zero.tips, []);
   assert.ok(zero.categories.every((item) => item.percentage === 0));
 });

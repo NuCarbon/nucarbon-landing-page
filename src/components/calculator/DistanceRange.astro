@@ -1,0 +1,146 @@
+---
+// The weekly distance answer. Its own script keeps the readout and the filled
+// track in sync, including when the controller sets a value and dispatches `input`.
+interface Props {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+}
+
+const { value, min, max, step } = Astro.props;
+const id = 'weekly-distance';
+const ticks = [min, (min + max) / 2, max];
+const progress = ((value - min) / (max - min)) * 100;
+---
+
+<div class="distance-range" data-distance-range style={`--range-progress: ${progress}%`}>
+  <div class="distance-range__header">
+    <label class="distance-range__label" for={id}>
+      Quantos km você percorre por semana?
+    </label>
+    <output class="distance-range__output" for={id}>
+      <span data-distance-value>{value}</span> km
+    </output>
+  </div>
+  <input
+    class="distance-range__input"
+    id={id}
+    name="distance"
+    type="range"
+    min={min}
+    max={max}
+    step={step}
+    value={value}
+    aria-valuetext={`${value} km`}
+  />
+  <div class="distance-range__ticks" aria-hidden="true">
+    {ticks.map((tick) => (
+      <span>{tick} km</span>
+    ))}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-distance-range]').forEach((root) => {
+    const input = root.querySelector<HTMLInputElement>('input[type="range"]')!;
+    const readout = root.querySelector<HTMLElement>('[data-distance-value]')!;
+    input.addEventListener('input', () => {
+      const min = Number(input.min);
+      const progress = ((Number(input.value) - min) / (Number(input.max) - min)) * 100;
+      readout.textContent = input.value;
+      input.setAttribute('aria-valuetext', `${input.value} km`);
+      root.style.setProperty('--range-progress', `${progress}%`);
+    });
+  });
+</script>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .distance-range {
+    @include mx.surface(var(--radius-xl));
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+
+    @include mx.down(sm) {
+      margin-top: var(--spacing-md);
+      padding: var(--spacing-md) var(--spacing-sm);
+      border-radius: var(--radius-lg);
+    }
+  }
+
+  .distance-range__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+  }
+
+  .distance-range__label {
+    color: var(--color-text);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.3;
+
+    @include mx.down(sm) {
+      font-size: 1rem;
+    }
+  }
+
+  .distance-range__output {
+    flex-shrink: 0;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+    font-family: var(--font-mono);
+    font-size: 1.125rem;
+    font-weight: 700;
+
+    @include mx.down(sm) {
+      font-size: 1rem;
+    }
+  }
+
+  .distance-range__input {
+    width: 100%;
+    height: 0.625rem;
+    margin: var(--spacing-md) 0 var(--spacing-xs);
+    border-radius: var(--radius-pill);
+    appearance: none;
+    background: linear-gradient(
+      90deg,
+      var(--color-primary) 0 var(--range-progress),
+      var(--color-border) var(--range-progress) 100%
+    );
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      width: 1.75rem;
+      height: 1.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-round);
+      appearance: none;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-card);
+    }
+
+    &::-moz-range-thumb {
+      width: 1.75rem;
+      height: 1.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-round);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-card);
+    }
+  }
+
+  .distance-range__ticks {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-text-subtle);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+</style>
