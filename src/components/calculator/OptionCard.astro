@@ -1,0 +1,221 @@
+---
+// One radio choice of a calculator step, styled as a selectable card.
+import Badge from '../ui/Badge.astro';
+import IconTile from '../ui/IconTile.astro';
+import type { IconName } from './CalculatorIcon.astro';
+import type { OptionDensity } from './steps';
+
+interface Props {
+  name: string;
+  value: string;
+  label: string;
+  description?: string;
+  icon: IconName;
+  badge?: string;
+  checked?: boolean;
+  disabled?: boolean;
+  density?: OptionDensity;
+}
+
+const {
+  name,
+  value,
+  label,
+  description,
+  icon,
+  badge,
+  checked = false,
+  disabled = false,
+  density = 'default',
+} = Astro.props;
+---
+
+<label class:list={['option-card', `option-card--${density}`]}>
+  <input
+    class="option-card__input"
+    type="radio"
+    name={name}
+    value={value}
+    checked={checked}
+    disabled={disabled}
+  />
+  <IconTile name={icon} size={density === 'compact' ? 'sm' : 'md'} />
+  <span class="option-card__content">
+    <span class="option-card__heading">
+      <span class="option-card__label">{label}</span>
+      {badge && <Badge>{badge}</Badge>}
+    </span>
+    {description && <span class="option-card__description">{description}</span>}
+  </span>
+  <span class="option-card__radio" aria-hidden="true"></span>
+</label>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  // Desktop: icon and radio on top, text below. Mobile: one row.
+  .option-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-content: start;
+    align-items: center;
+    column-gap: var(--spacing-sm);
+    row-gap: var(--spacing-sm);
+    min-height: 11rem;
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-surface);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+
+    &:hover:not(:has(:disabled)) {
+      border-color: var(--color-border-strong);
+      box-shadow: var(--shadow-card);
+    }
+
+    &:has(:focus-visible) {
+      @include mx.focus-ring;
+    }
+
+    // A second, inner ring thickens the border without shifting the layout.
+    &:has(:checked) {
+      --icon-tile-bg: var(--color-primary-soft);
+      --icon-tile-color: var(--color-primary);
+      border-color: var(--color-primary);
+      outline: 1px solid var(--color-primary);
+      outline-offset: -2px;
+    }
+
+    &:has(:checked:focus-visible) {
+      @include mx.focus-ring;
+    }
+
+    &:has(:disabled) {
+      background: var(--color-surface-muted);
+      cursor: not-allowed;
+    }
+  }
+
+  .option-card__input {
+    @include mx.visually-hidden;
+  }
+
+  .option-card__content {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  .option-card__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  .option-card__label {
+    color: var(--color-text);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.25;
+
+    .option-card:has(:disabled) & {
+      color: var(--color-text-muted);
+    }
+  }
+
+  .option-card__description {
+    display: block;
+    margin-top: var(--spacing-xs);
+    color: var(--color-text-muted);
+    line-height: 1.45;
+  }
+
+  .option-card__radio {
+    position: relative;
+    grid-row: 1;
+    grid-column: 3;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 2px solid var(--color-border-strong);
+    border-radius: var(--radius-round);
+
+    .option-card:has(:checked) & {
+      border-color: var(--color-primary);
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0.1875rem;
+        border-radius: inherit;
+        background: var(--color-primary);
+      }
+    }
+  }
+
+  // Short labels without descriptions, e.g. transport modes.
+  .option-card--compact {
+    min-height: 0;
+    padding: var(--spacing-md);
+
+    .option-card__label {
+      font-size: 1rem;
+    }
+  }
+
+  // Many options with descriptions, e.g. diets.
+  .option-card--dense {
+    min-height: 0;
+    padding: var(--spacing-md);
+
+    .option-card__description {
+      margin-top: var(--spacing-2xs);
+    }
+  }
+
+  @include mx.down(sm) {
+    .option-card {
+      align-content: center;
+      min-height: 0;
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-lg);
+    }
+
+    .option-card__content {
+      grid-row: 1;
+      grid-column: 2;
+    }
+
+    .option-card__label {
+      font-size: 1rem;
+    }
+
+    .option-card__description {
+      margin-top: var(--spacing-2xs);
+      font-size: 0.875rem;
+      line-height: 1.35;
+    }
+
+    .option-card--compact {
+      column-gap: var(--spacing-xs);
+      padding: var(--spacing-sm) var(--spacing-xs) var(--spacing-sm) var(--spacing-sm);
+
+      .option-card__label {
+        font-size: 0.9375rem;
+      }
+    }
+
+    .option-card--dense {
+      padding: 0.75rem;
+
+      .option-card__description {
+        font-size: 0.8125rem;
+      }
+    }
+  }
+</style>

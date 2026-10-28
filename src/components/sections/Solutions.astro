@@ -1,0 +1,66 @@
+---
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import CardGrid from '../solutions/CardGrid.astro';
+import AnalyticsIcon from '../icons/Analytics.astro';
+import ForestIcon from '../icons/Forest.astro';
+import SchoolIcon from '../icons/School.astro';
+---
+
+<section id="solucoes" class="section solutions">
+  <div class="container">
+    <SectionHeader
+      title="Nossas Soluções"
+      subtitle="Soluções estruturadas em crédito de carbono e agroflorestas, com foco em integridade, qualidade técnica e impacto socioambiental."
+    />
+
+    <CardGrid>
+      <Card title="Projetos de Carbono" icon={AnalyticsIcon} href="/solucoes/projetos-carbono">
+        <p>
+          Atuamos no desenvolvimento completo de projetos de crédito de carbono, desde a análise de
+          viabilidade até a geração e o monitoramento contínuo dos créditos. Nosso trabalho inclui
+          inventários de emissões e remoções, elaboração de documentos técnicos como PDD e MRV, além
+          do acompanhamento e apoio à gestão de riscos, sempre guiados por critérios de
+          rastreabilidade, integridade e gestão contínua dos projetos.
+        </p>
+      </Card>
+
+      <Card
+        title="Projetos Agroflorestais"
+        icon={ForestIcon}
+        href="/solucoes/projetos-agroflorestais"
+      >
+        <p>
+          Desenvolvemos projetos agroflorestais que integram produção, restauração ambiental e
+          manejo sustentável do solo, gerando benefícios econômicos, ambientais e sociais. Atuamos
+          desde a análise de viabilidade e planejamento técnico até a implementação e o
+          acompanhamento contínuo, incluindo estimativas de renda associadas aos produtos e serviços
+          gerados pelos sistemas agroflorestais.
+        </p>
+      </Card>
+
+      <Card title="Treinamentos" icon={SchoolIcon} href="/solucoes/treinamentos">
+        <p>
+          Oferecemos treinamentos e ações de capacitação em temas ambientais, agroflorestais e de
+          sustentabilidade, adaptados a diferentes públicos, como empresas, escolas, comunidades e
+          profissionais técnicos. Os conteúdos são desenvolvidos por uma equipe multidisciplinar e
+          ajustados às necessidades de cada contexto, promovendo conscientização, boas práticas e
+          decisões responsáveis, sempre fundamentados na ciência e no respeito às legislações
+          nacional e internacional.
+        </p>
+      </Card>
+    </CardGrid>
+
+    <div class="solutions__cta">
+      <Button href="/#contato">Entre em contato</Button>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  .solutions__cta {
+    margin-top: var(--spacing-xl);
+    text-align: center;
+  }
+</style>

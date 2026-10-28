@@ -1,0 +1,284 @@
+---
+// Contribution form. Prices are previews: the checkout API recomputes the amount.
+// scripts/projects/contribution-panel.ts adds the footprint presets and enables the button.
+import Button from '../ui/Button.astro';
+import { CONTRIBUTION_PERCENTAGES, QUANTITY_TONNES } from '../../lib/checkout/amount';
+import { formatCo2e, formatMoney, formatTonnes } from '../../lib/format';
+import { projectPath } from '../../lib/projects';
+import type { Project } from '../../types/app';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const price = project.pricePerTonneCents;
+const calculatorHref = `/calculadora?returnTo=${encodeURIComponent(projectPath(project.slug))}`;
+// Shown until the script knows the visitor's footprint.
+const initialQuantity = 1;
+---
+
+<aside
+  class="panel"
+  aria-labelledby="contribution-title"
+  data-contribution
+  data-slug={project.slug}
+  data-price={price}
+>
+  <h2 id="contribution-title" class="panel__title">
+    Apoie este projeto
+  </h2>
+  <p class="panel__intro">{project.summary}</p>
+
+  <p class="panel__footprint" data-footprint-note hidden></p>
+
+  <fieldset class="presets" data-presets hidden>
+    <legend>Selecione a quantidade</legend>
+    <div class="presets__options">
+      {CONTRIBUTION_PERCENTAGES.map((percentage) => (
+        <label class="preset">
+          <input class="visually-hidden" type="radio" name="contribution" value={percentage} />
+          <span data-preset-label={percentage}>{percentage}%</span>
+        </label>
+      ))}
+      <label class="preset">
+        <input class="visually-hidden" type="radio" name="contribution" value="custom" />
+        <span>Personalizar</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <label class="panel__label" for="contribution-quantity">
+    Quantidade em toneladas de CO₂e
+  </label>
+  <input
+    id="contribution-quantity"
+    class="panel__input"
+    data-quantity
+    type="number"
+    inputmode="decimal"
+    min={QUANTITY_TONNES.min}
+    max={QUANTITY_TONNES.max}
+    step={QUANTITY_TONNES.step}
+    value={initialQuantity}
+    aria-describedby="contribution-quantity-hint"
+  />
+  <p id="contribution-quantity-hint" class="panel__hint">
+    De {formatTonnes(QUANTITY_TONNES.min)} a {formatTonnes(QUANTITY_TONNES.max)} t.
+    <a href={calculatorHref}>Calcular minha pegada</a> (opcional)
+  </p>
+
+  <dl class="panel__summary">
+    <div>
+      <dt>Valor por tCO₂e</dt>
+      <dd>{formatMoney(price)}</dd>
+    </div>
+    <div>
+      <dt>Quantidade selecionada</dt>
+      <dd data-selected-quantity>{formatCo2e(initialQuantity)}</dd>
+    </div>
+    <div class="panel__total">
+      <dt>Total estimado</dt>
+      <dd data-total>{formatMoney(initialQuantity * price)}</dd>
+    </div>
+  </dl>
+
+  <Button block size="lg" data-participate disabled>
+    Participar deste projeto
+  </Button>
+  <p class="panel__error" data-contribution-error role="alert" hidden></p>
+  <p class="panel__disclaimer">
+    O pagamento ainda não está disponível. Você pode registrar seu interesse; nenhum valor será
+    cobrado.
+  </p>
+</aside>
+
+<script>
+  import { initializeContributionPanel } from '../../scripts/projects/contribution-panel';
+
+  document.querySelectorAll<HTMLElement>('[data-contribution]').forEach((panel) => {
+    void initializeContributionPanel(panel);
+  });
+</script>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .panel {
+    @include mx.surface;
+
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-card);
+
+    @include mx.up(lg) {
+      position: sticky;
+      top: calc(var(--header-height) + var(--spacing-md));
+    }
+  }
+
+  .panel__title {
+    margin-bottom: var(--spacing-2xs);
+    font-size: 1.375rem;
+  }
+
+  .panel__intro {
+    margin-bottom: var(--spacing-sm);
+    font-size: 0.9375rem;
+  }
+
+  .panel__footprint {
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .presets {
+    margin-bottom: var(--spacing-sm);
+    border: 0;
+
+    legend {
+      margin-bottom: var(--spacing-xs);
+      color: var(--color-text);
+      font-weight: 700;
+    }
+  }
+
+  .presets__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .preset {
+    flex: 1 1 auto;
+
+    span {
+      display: block;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-pill);
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+      transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
+    }
+
+    &:hover span {
+      border-color: var(--color-primary);
+    }
+
+    input:checked + span {
+      border-color: var(--color-primary);
+      background: var(--color-primary-soft);
+      color: var(--color-primary-dark);
+    }
+
+    input:focus-visible + span {
+      @include mx.focus-ring;
+    }
+
+    input:disabled + span {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+  }
+
+  .panel__label {
+    display: block;
+    margin-bottom: var(--spacing-2xs);
+    color: var(--color-text);
+    font-weight: 700;
+  }
+
+  .panel__input {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text);
+
+    &:focus-visible {
+      border-color: var(--color-primary);
+    }
+
+    &[aria-invalid='true'] {
+      border-color: var(--color-danger);
+    }
+  }
+
+  .panel__hint {
+    margin: var(--spacing-2xs) 0 0;
+    color: var(--color-text-subtle);
+    font-size: 0.8125rem;
+
+    a {
+      font-weight: 600;
+    }
+  }
+
+  .panel__summary {
+    display: grid;
+    gap: var(--spacing-xs);
+    margin: var(--spacing-md) 0;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+
+    div {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+    }
+
+    dt {
+      color: var(--color-text-muted);
+      font-size: 0.9375rem;
+    }
+
+    dd {
+      color: var(--color-text);
+      font-weight: 700;
+      text-align: right;
+    }
+  }
+
+  .panel__total {
+    dt,
+    dd {
+      color: var(--color-text);
+      font-size: 1.0625rem;
+      font-weight: 700;
+    }
+
+    dd {
+      color: var(--color-primary-dark);
+    }
+  }
+
+  .panel__error {
+    margin: var(--spacing-sm) 0 0;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+    font-size: 0.875rem;
+  }
+
+  .panel__disclaimer {
+    margin: var(--spacing-sm) 0 0;
+    color: var(--color-text-subtle);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+</style>

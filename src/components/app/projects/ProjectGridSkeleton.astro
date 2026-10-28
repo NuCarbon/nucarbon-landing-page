@@ -1,0 +1,45 @@
+---
+// Mirrors ProjectGrid's cards (components/projects/ProjectCard.astro) while they load.
+import Skeleton from '../../ui/Skeleton.astro';
+
+interface Props {
+  count?: number;
+}
+
+const { count = 2 } = Astro.props;
+---
+
+<div class="project-grid" aria-hidden="true">
+  {Array.from({ length: count }, () => (
+    <div class="project-card-skeleton">
+      <div class="project-card-skeleton__media">
+        <Skeleton height="100%" radius="0" variant="block" />
+      </div>
+      <div class="project-card-skeleton__body">
+        <Skeleton width="9rem" height="0.8rem" />
+        <Skeleton width="75%" height="1.35rem" />
+        <div class="skeleton-stack skeleton-stack--tight">
+          <Skeleton height="0.85rem" />
+          <Skeleton width="80%" height="0.85rem" />
+        </div>
+        <div class="project-card-skeleton__facts">
+          <div class="skeleton-stack skeleton-stack--tight">
+            <Skeleton width="2.5rem" height="0.7rem" />
+            <Skeleton width="6rem" height="0.85rem" />
+          </div>
+          <div class="skeleton-stack skeleton-stack--tight">
+            <Skeleton width="2.5rem" height="0.7rem" />
+            <Skeleton width="6rem" height="0.85rem" />
+          </div>
+        </div>
+        <div class="skeleton-stack skeleton-stack--tight">
+          <div class="skeleton-row">
+            <Skeleton width="9rem" height="0.7rem" />
+            <Skeleton width="2rem" height="0.7rem" />
+          </div>
+          <Skeleton height="6px" radius="var(--radius-pill)" />
+        </div>
+      </div>
+    </div>
+  ))}
+</div>

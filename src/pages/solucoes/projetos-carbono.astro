@@ -1,224 +1,170 @@
 ---
-import Button from '../../components/ui/Button.astro';
 import CTA from '../../components/ui/CTA.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import FeatureList from '../../components/ui/FeatureList.astro';
+import ContentSection from '../../components/solutions/ContentSection.astro';
+import SolutionPageLayout from '../../layouts/SolutionPageLayout.astro';
 ---
 
-<BaseLayout 
+<SolutionPageLayout
   title="Projetos de Carbono - Nucarbon"
   description="Serviços completos para desenvolvimento de projetos de créditos de carbono, desde a análise inicial até o monitoramento contínuo. Incluímos análise de viabilidade, inventários, elaboração de PDDs e MRV."
-  className="services-page"
+  heading="Projetos de Carbono"
+  subtitle="Soluções completas para desenvolvimento de projetos de créditos de carbono"
 >
-  <section class="page-header">
-    <div class="container">
-      <h1>Projetos de Carbono</h1>
-      <p class="page-subtitle">
-        Soluções completas para desenvolvimento de projetos de créditos de carbono
-      </p>
-    </div>
-  </section>
+  <ContentSection title="Nossas Soluções em Projetos de Carbono">
+    <p>
+      Oferecemos um conjunto completo de serviços para desenvolvimento de projetos de créditos de
+      carbono, desde a análise inicial de viabilidade até o monitoramento contínuo e gestão de
+      riscos. Nossa equipe multidisciplinar garante que cada etapa do processo seja executada com
+      excelência técnica e seguindo as melhores práticas do mercado.
+    </p>
+  </ContentSection>
 
-  <section class="section projetos-carbono">
-    <div class="container">
-      <div class="content-section">
-        <h2>Nossas Soluções em Projetos de Carbono</h2>
-        <p>
-          Oferecemos um conjunto completo de serviços para desenvolvimento de 
-          projetos de créditos de carbono, desde a análise inicial de viabilidade até o 
-          monitoramento contínuo e gestão de riscos. Nossa equipe multidisciplinar garante que 
-          cada etapa do processo seja executada com excelência técnica e seguindo as melhores 
-          práticas do mercado.
-        </p>
-      </div>
+  <ContentSection id="analise-viabilidade" title="Análise de Viabilidade" highlight>
+    <p>
+      A primeira etapa no desenvolvimento de um projeto de créditos de carbono é a análise de
+      viabilidade, que avalia o potencial técnico, econômico e regulatório do projeto.
+    </p>
+    <h3>O que incluímos:</h3>
+    <FeatureList
+      items={[
+        'Avaliação da elegibilidade da área para projetos de carbono',
+        'Análise de conformidade com padrões e metodologias reconhecidas',
+        'Estimativa preliminar de potencial de geração de créditos',
+        'Avaliação de custos e receitas esperadas',
+        'Análise de riscos e oportunidades',
+        'Recomendações sobre a melhor estratégia de projeto',
+      ]}
+    />
+  </ContentSection>
 
-      <div id="analise-viabilidade" class="content-section section-highlight">
-        <h2>Análise de Viabilidade</h2>
-        <p>
-          A primeira etapa no desenvolvimento de um projeto de créditos de 
-          carbono é a análise de viabilidade, que avalia o potencial técnico, econômico e 
-          regulatório do projeto.
-        </p>
-        <div class="service-content">
-          <h3>O que incluímos:</h3>
-          <ul class="serivce-list feature-list">
-            <li>Avaliação da elegibilidade da área para projetos de carbono</li>
-            <li>Análise de conformidade com padrões e metodologias reconhecidas</li>
-            <li>Estimativa preliminar de potencial de geração de créditos</li>
-            <li>Avaliação de custos e receitas esperadas</li>
-            <li>Análise de riscos e oportunidades</li>
-            <li>Recomendações sobre a melhor estratégia de projeto</li>
-          </ul>
-        </div>
-      </div>
+  <ContentSection id="inventario-gee" title="Inventário de GEE (Gases de Efeito Estufa)" highlight>
+    <p>
+      O inventário de GEE é fundamental para quantificar as emissões de gases de efeito estufa
+      associadas ao projeto e estabelecer a linha de base para cálculo dos créditos de carbono.
+    </p>
+    <h3>Nossos serviços incluem:</h3>
+    <FeatureList
+      items={[
+        'Identificação e quantificação de fontes de emissão',
+        'Coleta e análise de dados de campo',
+        'Aplicação de fatores de emissão apropriados',
+        'Cálculo de emissões por fonte e sumidouro',
+        'Elaboração de relatório técnico completo',
+        'Atualização periódica do inventário',
+      ]}
+    />
+  </ContentSection>
 
-      <div id="inventario-gee" class="content-section section-highlight">
-        <h2>Inventário de GEE (Gases de Efeito Estufa)</h2>
-        <p>
-          O inventário de GEE é fundamental para quantificar as emissões 
-          de gases de efeito estufa associadas ao projeto e estabelecer a linha de base para 
-          cálculo dos créditos de carbono.
-        </p>
-        <div class="service-content">
-          <h3>Nossos serviços incluem:</h3>
-          <ul class="serivce-list feature-list">
-            <li>Identificação e quantificação de fontes de emissão</li>
-            <li>Coleta e análise de dados de campo</li>
-            <li>Aplicação de fatores de emissão apropriados</li>
-            <li>Cálculo de emissões por fonte e sumidouro</li>
-            <li>Elaboração de relatório técnico completo</li>
-            <li>Atualização periódica do inventário</li>
-          </ul>
-        </div>
-      </div>
+  <ContentSection id="inventario-carbono" title="Inventário de Carbono" highlight>
+    <p>
+      O inventário de carbono quantifica o estoque de carbono presente na biomassa florestal e no
+      solo, essencial para projetos de reflorestamento, restauração e manejo florestal.
+    </p>
+    <h3>Metodologias utilizadas:</h3>
+    <FeatureList
+      items={[
+        'Medição de biomassa acima do solo',
+        'Medição de biomassa abaixo do solo',
+        'Análise de carbono no solo em diferentes profundidades',
+        'Uso de equações alométricas e modelos de crescimento',
+        'Amostragem estatística representativa',
+        'Cálculo de incerteza e intervalos de confiança',
+      ]}
+    />
+    <p>
+      Realizamos inventários iniciais (linha de base) e periódicos para monitorar as mudanças no
+      estoque de carbono ao longo do tempo.
+    </p>
+  </ContentSection>
 
-      <div id="inventario-carbono" class="content-section section-highlight">
-        <h2>Inventário de Carbono</h2>
-        <p>
-          O inventário de carbono quantifica o estoque de carbono presente 
-          na biomassa florestal e no solo, essencial para projetos de reflorestamento, 
-          restauração e manejo florestal.
-        </p>
-        <div class="service-content">
-          <h3>Metodologias utilizadas:</h3>
-          <ul class="serivce-list feature-list">
-            <li>Medição de biomassa acima do solo</li>
-            <li>Medição de biomassa abaixo do solo</li>
-            <li>Análise de carbono no solo em diferentes profundidades</li>
-            <li>Uso de equações alométricas e modelos de crescimento</li>
-            <li>Amostragem estatística representativa</li>
-            <li>Cálculo de incerteza e intervalos de confiança</li>
-          </ul>
-          <p>
-            Realizamos inventários iniciais (linha de base) e periódicos 
-            para monitorar as mudanças no estoque de carbono ao longo do tempo.
-          </p>
-        </div>
-      </div>
+  <ContentSection id="pdd-mrv" title="Elaboração de PDDs e MRV" highlight>
+    <p>
+      O Documento de Concepção de Projeto (PDD) é o documento técnico que descreve o projeto em
+      detalhes, enquanto o sistema MRV (Monitoramento, Relatório e Verificação) garante a qualidade
+      e transparência dos dados.
+    </p>
+    <h3>Elaboração de PDD:</h3>
+    <FeatureList
+      items={[
+        'Descrição detalhada do projeto e localização',
+        'Justificativa da elegibilidade e adicionalidade',
+        'Seleção e aplicação de metodologia apropriada',
+        'Definição da linha de base e cenário de referência',
+        'Plano de monitoramento e MRV',
+        'Análise de riscos e estratégias de mitigação',
+        'Documentação de benefícios sociais e ambientais',
+      ]}
+    />
+    <h3>Sistema MRV:</h3>
+    <FeatureList
+      items={[
+        'Desenvolvimento de protocolos de monitoramento',
+        'Coleta sistemática de dados de campo',
+        'Processamento e análise de dados',
+        'Elaboração de relatórios periódicos',
+        'Preparação para processos de verificação',
+        'Gestão de dados e documentação',
+      ]}
+    />
+  </ContentSection>
 
-      <div id="pdd-mrv" class="content-section section-highlight">
-        <h2>Elaboração de PDDs e MRV</h2>
-        <p>
-          O Documento de Concepção de Projeto (PDD) é o documento técnico 
-          que descreve o projeto em detalhes, enquanto o sistema MRV (Monitoramento, Relatório 
-          e Verificação) garante a qualidade e transparência dos dados.
-        </p>
-        <div class="service-content">
-          <h3>Elaboração de PDD:</h3>
-          <ul class="serivce-list feature-list">
-            <li>Descrição detalhada do projeto e localização</li>
-            <li>Justificativa da elegibilidade e adicionalidade</li>
-            <li>Seleção e aplicação de metodologia apropriada</li>
-            <li>Definição da linha de base e cenário de referência</li>
-            <li>Plano de monitoramento e MRV</li>
-            <li>Análise de riscos e estratégias de mitigação</li>
-            <li>Documentação de benefícios sociais e ambientais</li>
-          </ul>
-          
-          <h3>Sistema MRV:</h3>
-          <ul class="serivce-list feature-list">
-            <li>Desenvolvimento de protocolos de monitoramento</li>
-            <li>Coleta sistemática de dados de campo</li>
-            <li>Processamento e análise de dados</li>
-            <li>Elaboração de relatórios periódicos</li>
-            <li>Preparação para processos de verificação</li>
-            <li>Gestão de dados e documentação</li>
-          </ul>
-        </div>
-      </div>
+  <ContentSection
+    id="monitoramento-emissoes"
+    title="Monitoramento de Emissões e Gerenciamento de Riscos de Vazamentos (Leakage)"
+    highlight
+  >
+    <p>
+      O monitoramento contínuo de emissões e a gestão de riscos de vazamento são essenciais para
+      garantir a integridade ambiental dos projetos e a qualidade dos créditos gerados.
+    </p>
+    <h3>Monitoramento de Emissões:</h3>
+    <FeatureList
+      items={[
+        'Monitoramento contínuo de fontes de emissão do projeto',
+        'Acompanhamento de mudanças no uso do solo',
+        'Medição de emissões de atividades relacionadas',
+        'Registro e documentação sistemática',
+        'Alertas e ações corretivas quando necessário',
+      ]}
+    />
+    <h3>Gerenciamento de Riscos de Vazamento:</h3>
+    <FeatureList
+      items={[
+        'Identificação de potenciais fontes de vazamento',
+        'Avaliação de riscos de deslocamento de atividades',
+        'Desenvolvimento de estratégias de mitigação',
+        'Monitoramento de áreas adjacentes ao projeto',
+        'Implementação de medidas preventivas',
+        'Documentação e relatório de gestão de vazamento',
+      ]}
+    />
+    <p>
+      O vazamento (leakage) ocorre quando as atividades que geram emissões são deslocadas para fora
+      da área do projeto. Nossa equipe desenvolve estratégias específicas para identificar, prevenir
+      e mitigar esses riscos.
+    </p>
+  </ContentSection>
 
-      <div id="monitoramento-emissoes" class="content-section section-highlight">
-        <h2>Monitoramento de Emissões e Gerenciamento de Riscos de Vazamentos (Leakage)</h2>
-        <p>
-          O monitoramento contínuo de emissões e a gestão de riscos de 
-          vazamento são essenciais para garantir a integridade ambiental dos projetos e a 
-          qualidade dos créditos gerados.
-        </p>
-        <div class="service-content">
-          <h3>Monitoramento de Emissões:</h3>
-          <ul class="service-list feature-list">
-            <li>Monitoramento contínuo de fontes de emissão do projeto</li>
-            <li>Acompanhamento de mudanças no uso do solo</li>
-            <li>Medição de emissões de atividades relacionadas</li>
-            <li>Registro e documentação sistemática</li>
-            <li>Alertas e ações corretivas quando necessário</li>
-          </ul>
-          
-          <h3>Gerenciamento de Riscos de Vazamento:</h3>
-          <ul class="service-list feature-list">
-            <li>Identificação de potenciais fontes de vazamento</li>
-            <li>Avaliação de riscos de deslocamento de atividades</li>
-            <li>Desenvolvimento de estratégias de mitigação</li>
-            <li>Monitoramento de áreas adjacentes ao projeto</li>
-            <li>Implementação de medidas preventivas</li>
-            <li>Documentação e relatório de gestão de vazamento</li>
-          </ul>
-          <p>
-            O vazamento (leakage) ocorre quando as atividades que geram 
-            emissões são deslocadas para fora da área do projeto. Nossa equipe desenvolve 
-            estratégias específicas para identificar, prevenir e mitigar esses riscos.
-          </p>
-        </div>
-      </div>
+  <ContentSection title="Nossa Abordagem">
+    <p>
+      Trabalhamos com metodologias reconhecidas internacionalmente e seguimos os mais altos padrões
+      de qualidade. Nossos projetos são desenvolvidos para atender aos requisitos de:
+    </p>
+    <FeatureList
+      marker="dot"
+      items={[
+        'Padrões voluntários de carbono (VCS, Gold Standard, etc.)',
+        'Regulamentações nacionais e internacionais',
+        'Metodologias específicas de cada tipo de projeto',
+        'Requisitos de verificação e certificação',
+      ]}
+    />
+  </ContentSection>
 
-      <div class="content-section">
-        <h2>Nossa Abordagem</h2>
-        <p>
-          Trabalhamos com metodologias reconhecidas internacionalmente e 
-          seguimos os mais altos padrões de qualidade. Nossos projetos são desenvolvidos 
-          para atender aos requisitos de:
-        </p>
-        <ul class="standards-list">
-          <li>Padrões voluntários de carbono (VCS, Gold Standard, etc.)</li>
-          <li>Regulamentações nacionais e internacionais</li>
-          <li>Metodologias específicas de cada tipo de projeto</li>
-          <li>Requisitos de verificação e certificação</li>
-        </ul>
-      </div>
-
-      <CTA
-        title="Pronto para Desenvolver seu Projeto de Carbono?"
-        subtitle="Entre em contato conosco para uma consulta inicial e análise de viabilidade."
-        cta="Solicitar Consulta"
-      />
-    </div>
-  </section>
-</BaseLayout>
-
-<style lang="scss">
-.projetos-carbono {
-  .content-section {
-    margin-bottom: var(--spacing-xl);
-
-    h2 {
-      color: var(--color-primary);
-    }
-  }
-
-  .service-content {
-    margin-top: var(--spacing-md);
-
-    h3 {
-      color: var(--color-primary);
-      margin-top: var(--spacing-md);
-      margin-bottom: var(--spacing-sm);
-      font-size: 1.125rem;
-    }
-
-    .service-list > li::before {
-      content: '✓';
-    }
-
-    & > p {
-      margin-top: var(--spacing-sm);
-      margin-bottom: 0;
-    }
-  }
-
-  .standards-list > li::before {
-    content: '•';
-    font-size: 1.5rem;
-    margin-bottom: 4px;
-  }
-}
-</style>
-
+  <CTA
+    title="Pronto para Desenvolver seu Projeto de Carbono?"
+    subtitle="Entre em contato conosco para uma consulta inicial e análise de viabilidade."
+    label="Solicitar Consulta"
+  />
+</SolutionPageLayout>

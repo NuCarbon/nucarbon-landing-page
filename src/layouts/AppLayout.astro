@@ -1,0 +1,40 @@
+---
+import '../styles/global.scss';
+import '../styles/app.scss';
+import SiteHead from '../components/layout/SiteHead.astro';
+import AppHeader from '../components/app/AppHeader.astro';
+import AppNavigation from '../components/app/AppNavigation.astro';
+
+interface Props {
+  title: string;
+  active?: 'dashboard' | 'community';
+}
+
+const { title, active = 'dashboard' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <SiteHead title={title} noindex />
+  </head>
+  <body>
+    <div class="app-shell">
+      <AppHeader />
+      <AppNavigation active={active} />
+      <main class="app-main">
+        <slot />
+      </main>
+    </div>
+    <script>
+      import { requireSignedIn, signOutUser } from '../scripts/auth';
+      import { renderUser } from '../scripts/user-display';
+
+      const user = await requireSignedIn();
+      if (user) renderUser(document, user);
+      document
+        .querySelector('[data-sign-out]')
+        ?.addEventListener('click', () => void signOutUser());
+    </script>
+  </body>
+</html>

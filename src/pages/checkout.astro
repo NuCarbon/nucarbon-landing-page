@@ -1,0 +1,172 @@
+---
+// Reviews a contribution chosen on a project page. Payment is not implemented yet:
+// confirming registers interest only. Logic: scripts/checkout/checkout-page.ts.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+---
+
+<BaseLayout title="Revisar contribuição | Nucarbon" noindex className="page">
+  <div class="container">
+    <section class="checkout" data-checkout aria-labelledby="checkout-title">
+      <p class="eyebrow">Contribuição</p>
+      <h1 id="checkout-title" class="checkout__title">
+        Revisar contribuição
+      </h1>
+      <p class="checkout__notice">
+        O pagamento ainda não está disponível. Nenhum valor será cobrado.
+      </p>
+
+      <p class="checkout__status" data-checkout-status role="status">
+        Carregando sua seleção…
+      </p>
+      <p class="checkout__error" data-checkout-error role="alert" hidden></p>
+
+      <div class="checkout__order" data-checkout-order hidden>
+        <h2 class="checkout__project" data-order-project></h2>
+        <dl class="checkout__summary">
+          <div>
+            <dt>Quantidade</dt>
+            <dd data-order-quantity></dd>
+          </div>
+          <div>
+            <dt>Preço por tonelada</dt>
+            <dd data-order-price></dd>
+          </div>
+          <div class="checkout__total">
+            <dt>Total estimado</dt>
+            <dd data-order-total></dd>
+          </div>
+        </dl>
+        <Button block size="lg" data-checkout-confirm hidden>
+          Registrar interesse
+        </Button>
+      </div>
+
+      <div class="checkout__receipt" data-checkout-receipt hidden>
+        <h2>Interesse registrado</h2>
+        <p>
+          Seu interesse foi registrado. Ainda não houve cobrança, compensação ou emissão de
+          certificado.
+        </p>
+        <p>
+          Número: <strong class="checkout__order-id" data-order-id></strong>
+        </p>
+        <Button href="/projetos" variant="outline" block>
+          Explorar projetos
+        </Button>
+      </div>
+
+      <a class="checkout__back" href="/projetos" data-checkout-back>
+        Voltar aos projetos
+      </a>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { initializeCheckoutPage } from '../scripts/checkout/checkout-page';
+
+  const root = document.querySelector<HTMLElement>('[data-checkout]');
+  if (root) void initializeCheckoutPage(root);
+</script>
+
+<style>
+  .checkout {
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .checkout__title {
+    margin-bottom: var(--spacing-xs);
+    font-size: clamp(1.625rem, 4vw, 2rem);
+  }
+
+  .checkout__notice {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-warning-soft);
+    color: var(--color-warning);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .checkout__status {
+    color: var(--color-text-muted);
+  }
+
+  .checkout__error {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+  }
+
+  .checkout__project {
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.375rem;
+  }
+
+  .checkout__summary {
+    display: grid;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+    border-block: 1px solid var(--color-border);
+  }
+
+  .checkout__summary div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+  }
+
+  .checkout__summary dt {
+    color: var(--color-text-muted);
+  }
+
+  .checkout__summary dd {
+    color: var(--color-text);
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .checkout__total dt,
+  .checkout__total dd {
+    color: var(--color-text);
+    font-size: 1.0625rem;
+    font-weight: 700;
+  }
+
+  .checkout__total dd {
+    color: var(--color-primary-dark);
+  }
+
+  .checkout__receipt {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .checkout__receipt h2 {
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-primary-dark);
+    font-size: 1.375rem;
+  }
+
+  .checkout__order-id {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    word-break: break-all;
+  }
+
+  .checkout__back {
+    display: inline-block;
+    margin-top: var(--spacing-md);
+    font-weight: 600;
+  }
+</style>

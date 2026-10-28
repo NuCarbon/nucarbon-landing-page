@@ -1,0 +1,82 @@
+---
+// An icon on a rounded square. Parents can recolor it through
+// --icon-tile-bg and --icon-tile-color, e.g. for a selected state.
+import CalculatorIcon, { type IconName } from '../calculator/CalculatorIcon.astro';
+
+interface Props {
+  name: IconName;
+  size?: 'sm' | 'md' | 'lg';
+  tone?: 'neutral' | 'primary' | 'surface';
+  class?: string;
+}
+
+const { name, size = 'md', tone = 'neutral', class: className, ...attributes } = Astro.props;
+---
+
+<span
+  class:list={['icon-tile', `icon-tile--${size}`, `icon-tile--${tone}`, className]}
+  aria-hidden="true"
+  {...attributes}
+>
+  <CalculatorIcon name={name} />
+</span>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .icon-tile {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: var(--tile-size);
+    height: var(--tile-size);
+    border-radius: var(--radius-md);
+    background: var(--icon-tile-bg, var(--tile-bg));
+    color: var(--icon-tile-color, var(--tile-color));
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .icon-tile--sm {
+    --tile-size: 2.5rem;
+    --icon-size: 1.25rem;
+  }
+
+  .icon-tile--md {
+    --tile-size: 3.25rem;
+    --icon-size: 1.75rem;
+
+    @include mx.down(sm) {
+      --tile-size: 2.75rem;
+      --icon-size: 1.5rem;
+    }
+  }
+
+  .icon-tile--lg {
+    --tile-size: 5.5rem;
+    --icon-size: 2.75rem;
+    border-radius: var(--radius-xl);
+
+    @include mx.down(sm) {
+      --tile-size: 3.5rem;
+      --icon-size: 1.875rem;
+      border-radius: var(--radius-lg);
+    }
+  }
+
+  .icon-tile--neutral {
+    --tile-bg: var(--color-surface-muted);
+    --tile-color: var(--color-text-muted);
+  }
+
+  .icon-tile--primary {
+    --tile-bg: var(--color-primary-soft);
+    --tile-color: var(--color-primary);
+  }
+
+  .icon-tile--surface {
+    --tile-bg: var(--color-surface);
+    --tile-color: var(--color-primary-dark);
+  }
+</style>

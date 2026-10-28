@@ -1,23 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import QuemSomos from '../components/sections/QuemSomos.astro';
-import NossasSolucoes from '../components/sections/NossasSolucoes.astro';
-import CreditosCarbono from '../components/sections/CreditosCarbono.astro';
-import FAQ from '../components/sections/FAQ.astro';
-import Contato from '../components/sections/Contato.astro';
 import Hero from '../components/sections/Hero.astro';
-import Time from '../components/sections/Time.astro';
+import About from '../components/sections/About.astro';
+import Solutions from '../components/sections/Solutions.astro';
+import CarbonCredits from '../components/sections/CarbonCredits.astro';
+import Team from '../components/sections/Team.astro';
+import FAQ from '../components/sections/FAQ.astro';
+import Contact from '../components/sections/Contact.astro';
 ---
 
-<BaseLayout 
+<BaseLayout
   title="Nucarbon - Soluções Sustentáveis em Créditos de Carbono"
   description="Nucarbon oferece soluções completas em créditos de carbono, projetos agroflorestais e treinamentos especializados. Conectamos produtores rurais, empresas e investidores em soluções sustentáveis."
+  transparentHeader
 >
   <Hero />
-  <QuemSomos />
-  <NossasSolucoes />
-  <CreditosCarbono />
-  <Time />
+  <About />
+  <Solutions />
+  <CarbonCredits />
+  <Team />
   <FAQ />
-  <Contato />
+  <Contact />
 </BaseLayout>

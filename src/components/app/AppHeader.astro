@@ -1,0 +1,23 @@
+---
+import Button from '../ui/Button.astro';
+import Logo from '../ui/Logo.astro';
+import Skeleton from '../ui/Skeleton.astro';
+import UserAvatar from '../ui/UserAvatar.astro';
+---
+
+<header class="app-header">
+  <Logo size="sm" href="/app" aria-label="Nucarbon, painel" />
+
+  <div class="app-account" data-auth-loading aria-hidden="true">
+    <Skeleton width="32px" height="32px" variant="circle" />
+    <Skeleton width="5rem" height="0.75rem" />
+  </div>
+
+  <div class="app-account" data-auth-user hidden>
+    <UserAvatar />
+    <span class="app-account__name" data-user-name></span>
+    <Button variant="ghost" size="sm" data-sign-out>
+      Sair
+    </Button>
+  </div>
+</header>

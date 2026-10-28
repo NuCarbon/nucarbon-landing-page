@@ -1,0 +1,99 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/projects/ProjectCard.astro';
+import ProjectNotice from '../../components/projects/ProjectNotice.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import { setProjectsCacheHeaders } from '../../lib/projects';
+import { readProjects } from '../../server/repository';
+import type { Project } from '../../types/app';
+
+let projects: Project[] = [];
+let unavailable = false;
+try {
+  projects = await readProjects();
+} catch {
+  unavailable = true;
+  Astro.response.status = 503;
+}
+setProjectsCacheHeaders(Astro.response.headers, !unavailable);
+---
+
+<BaseLayout
+  title="Projetos de restauração | Nucarbon"
+  description="Conheça projetos de restauração ecológica e escolha como contribuir."
+  canonical="/projetos"
+  className="page"
+>
+  <div class="container">
+    <Breadcrumbs
+      items={[
+        { label: 'Início', href: '/' },
+        { label: 'Projetos', href: '/projetos' },
+      ]}
+    />
+
+    <header class="intro">
+      <h1>Projetos de restauração</h1>
+      <p>Explore projetos publicados e escolha uma forma de contribuir.</p>
+    </header>
+
+    {unavailable ? (
+      <ProjectNotice
+        title="Projetos temporariamente indisponíveis"
+        message="Não foi possível carregar os projetos agora. Tente novamente em alguns minutos."
+      />
+    ) : projects.length ? (
+      <ul class="project-list" role="list">
+        {projects.map((project) => (
+          <li>
+            <ProjectCard project={project} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <ProjectNotice
+        title="Nenhum projeto publicado no momento"
+        message="Novos projetos de restauração serão publicados aqui em breve."
+      />
+    )}
+  </div>
+</BaseLayout>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .intro {
+    max-width: 44rem;
+    margin-bottom: var(--spacing-lg);
+
+    h1 {
+      margin-bottom: var(--spacing-xs);
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.0625rem;
+    }
+  }
+
+  .project-list {
+    display: grid;
+    gap: var(--spacing-md);
+    list-style: none;
+
+    @include mx.up(sm) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include mx.up(lg) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    // Cards in a row share the tallest card's height.
+    li {
+      display: grid;
+    }
+  }
+</style>

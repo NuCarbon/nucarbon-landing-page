@@ -1,0 +1,64 @@
+---
+interface Props {
+  height?: string;
+  /** Any CSS length; prefer radius tokens such as `var(--radius-sm)`. */
+  radius?: string;
+  variant?: 'block' | 'circle' | 'line';
+  width?: string;
+}
+
+const { height = '1rem', radius, variant = 'line', width = '100%' } = Astro.props;
+const style = [
+  `--skeleton-width: ${width}`,
+  `--skeleton-height: ${height}`,
+  radius && `--skeleton-radius: ${radius}`,
+]
+  .filter(Boolean)
+  .join('; ');
+---
+
+<span class:list={['skeleton', `skeleton--${variant}`]} style={style} aria-hidden="true"></span>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .skeleton {
+    position: relative;
+    display: block;
+    flex: none;
+    width: var(--skeleton-width);
+    max-width: 100%;
+    height: var(--skeleton-height);
+    overflow: hidden;
+    border-radius: var(--skeleton-radius, var(--radius-xs));
+    background: var(--color-border);
+
+    &::after {
+      position: absolute;
+      inset: 0;
+      content: '';
+      background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in srgb, var(--color-surface) 65%, transparent),
+        transparent
+      );
+      transform: translateX(-100%);
+      animation: shimmer 1.4s ease-in-out infinite;
+
+      @include mx.reduced-motion {
+        animation: none;
+      }
+    }
+
+    &--circle {
+      border-radius: var(--radius-round);
+    }
+  }
+
+  @keyframes shimmer {
+    to {
+      transform: translateX(100%);
+    }
+  }
+</style>

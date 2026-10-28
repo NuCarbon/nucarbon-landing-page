@@ -1,0 +1,36 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  heading: string;
+  subtitle: string;
+}
+
+const { title, description, heading, subtitle } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} transparentHeader>
+  <PageHeader heading={heading} subtitle={subtitle} />
+  <div class="section">
+    <div class="container solution-page">
+      <slot />
+    </div>
+  </div>
+</BaseLayout>
+
+<style lang="scss">
+  @use '../styles/mixins' as mx;
+
+  .solution-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+
+    @include mx.up(md) {
+      gap: var(--spacing-2xl);
+    }
+  }
+</style>

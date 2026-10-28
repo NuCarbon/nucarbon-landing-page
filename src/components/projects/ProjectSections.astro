@@ -1,0 +1,281 @@
+---
+import { formatPlace } from '../../lib/format';
+import type { Project } from '../../types/app';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+
+// The ids are linked from outside the page; keep them stable.
+const sections = [
+  { id: 'sobre', label: 'Sobre' },
+  { id: 'especies', label: 'Espécies' },
+  { id: 'localizacao', label: 'Localização' },
+  { id: 'impactos', label: 'Impactos' },
+  { id: 'linha-do-tempo', label: 'Linha do tempo' },
+  { id: 'metodologia', label: 'Metodologia' },
+  { id: 'documentos', label: 'Documentos' },
+];
+
+const { latitude, longitude } = project.location;
+const MAP_SPAN_DEGREES = 0.03;
+const bbox = [
+  longitude - MAP_SPAN_DEGREES,
+  latitude - MAP_SPAN_DEGREES,
+  longitude + MAP_SPAN_DEGREES,
+  latitude + MAP_SPAN_DEGREES,
+]
+  .map((value) => value.toFixed(5))
+  .join(',');
+const mapEmbedUrl = `https://www.openstreetmap.org/export/embed.html?${new URLSearchParams({
+  bbox,
+  layer: 'mapnik',
+  marker: `${latitude},${longitude}`,
+})}`;
+const mapUrl = `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=14/${latitude}/${longitude}`;
+---
+
+<nav class="sections-nav" aria-label="Seções do projeto" data-section-nav>
+  {sections.map(({ id, label }, index) => (
+    <a href={`#${id}`} aria-current={index === 0 ? 'location' : undefined}>
+      {label}
+    </a>
+  ))}
+</nav>
+
+<div class="sections">
+  <section id="sobre">
+    <h2>Sobre o projeto</h2>
+    <p>{project.description}</p>
+  </section>
+
+  <section id="especies">
+    <h2>Espécies nativas</h2>
+    {project.species.length ? (
+      <ul class="items" role="list">
+        {project.species.map((species) => (
+          <li class="item">
+            <strong>{species.name}</strong>
+            <em>{species.scientificName}</em>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Espécies ainda não informadas.</p>
+    )}
+  </section>
+
+  <section id="localizacao">
+    <h2>Localização</h2>
+    <p>{formatPlace(project)}. O marcador indica a coordenada cadastrada do projeto.</p>
+    <iframe
+      class="map"
+      title={`Mapa de ${project.name}`}
+      src={mapEmbedUrl}
+      loading="lazy"
+      referrerpolicy="no-referrer"
+    ></iframe>
+    <a class="map-link" href={mapUrl} target="_blank" rel="noopener noreferrer">
+      Abrir no OpenStreetMap
+    </a>
+  </section>
+
+  <section id="impactos">
+    <h2>Impactos adicionais</h2>
+    {project.impacts.length ? (
+      <ul class="items" role="list">
+        {project.impacts.map((impact) => (
+          <li class="item">
+            <strong>{impact.title}</strong>
+            <p>{impact.description}</p>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Impactos adicionais ainda não informados.</p>
+    )}
+  </section>
+
+  <section id="linha-do-tempo">
+    <h2>Linha do tempo</h2>
+    {project.timeline.length ? (
+      <ol class="timeline">
+        {project.timeline.map((event) => (
+          <li>
+            <strong>{event.label}</strong>
+            <span>{event.description}</span>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p class="empty">Marcos do projeto ainda não informados.</p>
+    )}
+  </section>
+
+  <section id="metodologia">
+    <h2>Metodologia</h2>
+    <p>{project.methodology}</p>
+  </section>
+
+  <section id="documentos">
+    <h2>Documentos</h2>
+    {project.documents.length ? (
+      <ul class="documents" role="list">
+        {project.documents.map((document) => (
+          <li>
+            <a class="item" href={document.url} target="_blank" rel="noopener noreferrer">
+              {document.title}
+              <span class="visually-hidden"> (abre em nova aba)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Documentos ainda não disponíveis.</p>
+    )}
+  </section>
+</div>
+
+<script>
+  import { initializeSectionNav } from '../../scripts/projects/section-nav';
+
+  document.querySelectorAll<HTMLElement>('[data-section-nav]').forEach(initializeSectionNav);
+</script>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .sections-nav {
+    display: flex;
+    gap: var(--spacing-md);
+    overflow-x: auto;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+
+    a {
+      padding: var(--spacing-sm) 0 var(--spacing-xs);
+      border-bottom: 2px solid transparent;
+      color: var(--color-text-muted);
+      font-weight: 600;
+
+      &:hover {
+        color: var(--color-primary-dark);
+      }
+
+      &[aria-current] {
+        border-bottom-color: var(--color-primary);
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  .sections section {
+    padding-top: var(--spacing-lg);
+    scroll-margin-top: calc(var(--header-height) + var(--spacing-sm));
+  }
+
+  h2 {
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.375rem;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .empty {
+    color: var(--color-text-subtle);
+  }
+
+  .items,
+  .documents {
+    display: grid;
+    gap: var(--spacing-xs);
+    list-style: none;
+  }
+
+  .items {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+  }
+
+  .item {
+    @include mx.surface(var(--radius-md));
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xs);
+    padding: var(--spacing-sm);
+    color: var(--color-text);
+
+    em {
+      color: var(--color-text-subtle);
+      font-size: 0.875rem;
+    }
+
+    p {
+      font-size: 0.9375rem;
+    }
+  }
+
+  .map {
+    @include mx.surface(var(--radius-md));
+
+    display: block;
+    width: 100%;
+    height: 16rem;
+    margin-top: var(--spacing-sm);
+    background: var(--color-surface-muted);
+  }
+
+  .map-link {
+    display: inline-block;
+    margin-top: var(--spacing-xs);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .timeline {
+    display: grid;
+    gap: var(--spacing-sm);
+    list-style: none;
+
+    li {
+      position: relative;
+      display: grid;
+      gap: var(--spacing-2xs);
+      padding-left: var(--spacing-md);
+
+      @include mx.up(sm) {
+        grid-template-columns: 9rem minmax(0, 1fr);
+        gap: var(--spacing-sm);
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0.5em;
+        left: 0;
+        width: 0.625rem;
+        height: 0.625rem;
+        border-radius: var(--radius-round);
+        background: var(--color-primary);
+      }
+    }
+
+    span {
+      color: var(--color-text-muted);
+    }
+  }
+
+  .documents a {
+    flex-direction: row;
+    font-weight: 600;
+
+    &:hover {
+      border-color: var(--color-primary-tint);
+      color: var(--color-primary-dark);
+    }
+  }
+</style>

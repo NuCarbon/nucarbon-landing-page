@@ -1,0 +1,99 @@
+---
+import LoadingState from '../../ui/LoadingState.astro';
+import AppError from '../AppError.astro';
+import AppPageIntro from '../AppPageIntro.astro';
+import ProjectGrid from '../projects/ProjectGrid.astro';
+import DashboardSkeleton from './DashboardSkeleton.astro';
+import FootprintCard from './FootprintCard.astro';
+import ImpactMetrics from './ImpactMetrics.astro';
+---
+
+<app-dashboard-view class="app-page">
+  <AppPageIntro description="Aqui está o resumo da sua jornada de impacto.">
+    <span data-auth-loading>Olá!</span>
+    <span data-auth-user hidden>
+      Olá, <span data-user-name></span>!
+    </span>
+  </AppPageIntro>
+
+  <LoadingState label="Carregando o resumo da sua jornada">
+    <DashboardSkeleton />
+  </LoadingState>
+
+  <div data-app-status hidden></div>
+
+  <div class="app-page__content" data-app-content hidden>
+    <FootprintCard />
+
+    <section class="app-section">
+      <h2 class="app-section__title">Impacto verificado</h2>
+      <ImpactMetrics />
+      <p class="app-empty" data-metrics-empty hidden>
+        Ainda não há impacto verificado na sua conta.
+      </p>
+    </section>
+
+    <section class="app-section" data-supported-projects hidden>
+      <h2 class="app-section__title">Projetos apoiados</h2>
+      <ProjectGrid />
+    </section>
+
+    <section class="app-section" data-suggested-projects>
+      <div class="app-section__heading">
+        <h2 class="app-section__title">Projetos para conhecer</h2>
+        <a class="app-section__link" href="/projetos">
+          Ver todos
+        </a>
+      </div>
+      <ProjectGrid />
+      <p class="app-empty" data-suggested-empty hidden>
+        Você já apoia todos os projetos disponíveis no momento.
+      </p>
+    </section>
+  </div>
+
+  <template data-app-error>
+    <AppError />
+  </template>
+</app-dashboard-view>
+
+<script>
+  import { formatMetric } from '../../../lib/format';
+  import { fillFootprintCard } from '../../../scripts/app/footprint-card';
+  import { fillImpactMetric } from '../../../scripts/app/impact-metrics';
+  import { loadView } from '../../../scripts/app/load-view';
+  import { renderList } from '../../../scripts/app/render-list';
+  import { requireElement } from '../../../scripts/dom';
+  import { fillProjectCard } from '../../../scripts/projects/project-card';
+  import type { Dashboard, Project } from '../../../types/app';
+
+  class DashboardView extends HTMLElement {
+    connectedCallback(): void {
+      void loadView<Dashboard>(this, '/api/dashboard', (dashboard) => this.render(dashboard));
+    }
+
+    private render({ footprint, metrics, projects, supportedProjects }: Dashboard): void {
+      fillFootprintCard(requireElement(this, '[data-footprint-card]'), footprint);
+
+      const knownMetrics = metrics.flatMap((metric) => formatMetric(metric) ?? []);
+      renderList(requireElement(this, '[data-impact-metrics]'), knownMetrics, fillImpactMetric);
+      requireElement(this, '[data-metrics-empty]').hidden = knownMetrics.length > 0;
+
+      const supported = requireElement(this, '[data-supported-projects]');
+      supported.hidden = supportedProjects.length === 0;
+      this.renderProjects(supported, supportedProjects);
+
+      const suggested = requireElement(this, '[data-suggested-projects]');
+      this.renderProjects(suggested, projects);
+      requireElement(suggested, '[data-suggested-empty]').hidden = projects.length > 0;
+    }
+
+    private renderProjects(section: HTMLElement, projects: Project[]): void {
+      renderList(requireElement(section, '[data-project-grid]'), projects, fillProjectCard);
+    }
+  }
+
+  if (!customElements.get('app-dashboard-view')) {
+    customElements.define('app-dashboard-view', DashboardView);
+  }
+</script>

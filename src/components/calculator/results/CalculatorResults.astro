@@ -1,0 +1,78 @@
+---
+// The results screen. Rendered with the initial answers and hidden; the
+// controller fills in the visitor's result before showing it.
+import Header from '../../layout/Header.astro';
+import Footer from '../../layout/Footer.astro';
+import SaveStatus from './SaveStatus.astro';
+import ResultTotal from './ResultTotal.astro';
+import CategoryBreakdown from './CategoryBreakdown.astro';
+import AttentionCallout from './AttentionCallout.astro';
+import ReductionTips from './ReductionTips.astro';
+import ResultActions from './ResultActions.astro';
+import MethodologyNote from './MethodologyNote.astro';
+import { calculateFootprint } from '../../../lib/calculator/calculate';
+import { initialAnswers } from '../../../lib/calculator/answers';
+
+const result = calculateFootprint(initialAnswers);
+---
+
+<div class="results" data-result hidden>
+  <Header />
+  <main class="page">
+    <div class="container results__layout">
+      <div class="results__column">
+        <header>
+          <p class="eyebrow">Cálculo concluído</p>
+          <h1 class="results__title" tabindex="-1">
+            Sua pegada de carbono estimada
+          </h1>
+        </header>
+        <SaveStatus />
+        <ResultTotal total={result.total} trees={result.trees} />
+        <CategoryBreakdown categories={result.categories} largest={result.largestCategory} />
+      </div>
+      <div class="results__column">
+        <AttentionCallout attention={result.attention} />
+        <ReductionTips tips={result.tips} />
+        <ResultActions />
+        <MethodologyNote />
+      </div>
+    </div>
+  </main>
+  <Footer />
+</div>
+
+<style lang="scss">
+  @use '../../../styles/mixins' as mx;
+
+  .results__layout {
+    display: grid;
+    gap: var(--spacing-lg);
+
+    @include mx.up(lg) {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      align-items: start;
+      gap: var(--spacing-xl);
+    }
+  }
+
+  .results__column {
+    display: grid;
+    gap: var(--spacing-lg);
+
+    @include mx.down(sm) {
+      gap: var(--spacing-md);
+    }
+  }
+
+  .results__title {
+    margin: 0;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    letter-spacing: -0.03em;
+
+    // Focused by the controller when the result appears.
+    &:focus {
+      outline: none;
+    }
+  }
+</style>

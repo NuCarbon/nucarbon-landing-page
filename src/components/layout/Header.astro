@@ -1,297 +1,220 @@
 ---
-import Image from "astro/components/Image.astro";
-import logo from "../../images/logo.png"
+import HeaderAccount from './HeaderAccount.astro';
+import Logo from '../ui/Logo.astro';
+import { mainNav, type NavLink } from '../../data/site';
+
+interface Props {
+  /** Starts transparent over a dark hero and turns solid once the page scrolls. */
+  transparent?: boolean;
+}
+
+const { transparent = false } = Astro.props;
+
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+
+/** Section links (`/#...`) are never current; `/projetos/x` marks "Projetos" as its ancestor. */
+function ariaCurrent({ href }: NavLink): 'page' | 'true' | undefined {
+  if (href.includes('#')) return undefined;
+  if (currentPath === href) return 'page';
+  return currentPath.startsWith(`${href}/`) ? 'true' : undefined;
+}
 ---
 
-<header class="header transparent">
-  <div class="container">
-    <nav class="nav" role="navigation" aria-label="Navegação principal">
-      <a href="/" class="logo">
-        <Image src={logo} alt="Logo Nucarbon" width={56} height={56}/>
-        <span class="logo-text">Nucarbon</span>
-      </a>
-      
-      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false">
-        <span class="hamburger"></span>
-        <span class="hamburger"></span>
-        <span class="hamburger"></span>
+<header
+  class:list={['header', { 'header--transparent': transparent }]}
+  data-header
+  data-transparent={transparent ? '' : undefined}
+>
+  <div class="container header__inner">
+    <Logo />
+
+    <nav class="header__nav" aria-label="Navegação principal">
+      <button
+        type="button"
+        class="header__toggle"
+        aria-controls="site-menu"
+        aria-expanded="false"
+        aria-label="Abrir menu"
+        data-menu-toggle
+      >
+        <span class="header__toggle-bar"></span>
+        <span class="header__toggle-bar"></span>
+        <span class="header__toggle-bar"></span>
       </button>
-      
-      <ul class="nav-menu">
-        <li><a href="/#quem-somos">Quem Somos</a></li>
-        <li><a href="/#solucoes">Nossas Soluções</a></li>
-        <li><a href="/#creditos-carbono">Créditos de Carbono</a></li>
-        <li><a href="/#faq">Perguntas Frequentes</a></li>
-        <li><a href="/#contato">Contato</a></li>
-      </ul>
+
+      <div id="site-menu" class="header__menu" data-menu>
+        <ul class="header__links">
+          {mainNav.map((link) => (
+            <li>
+              <a href={link.href} class="header__link" aria-current={ariaCurrent(link)}>
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <HeaderAccount />
+      </div>
     </nav>
   </div>
 </header>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const header = document.querySelector('.header')!;
-    const toggle = document.querySelector('.mobile-menu-toggle');
-    const menu = document.querySelector('.nav-menu');
-    let lastScrollY = window.scrollY + 1;
-    let ticking = false;
-    
-    // Mobile menu toggle
-    if (toggle && menu) {
-      toggle.addEventListener('click', () => {
-        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-        toggle.setAttribute('aria-expanded', String(!isExpanded));
-        menu.classList.toggle('active');
-        toggle.classList.toggle('active');
-      });
-      
-      // Close menu when clicking on a link
-      const links = menu.querySelectorAll('a');
-      links.forEach(link => {
-        link.addEventListener('click', () => {
-          menu.classList.remove('active');
-          toggle.classList.remove('active');
-          toggle.setAttribute('aria-expanded', 'false');
-
-          header.classList.add('scrolling');
-          window.addEventListener('scrollend', () => {
-            lastScrollY = window.scrollY - 1;
-            updateHeader();
-            header.classList.remove('scrolling');
-          }, { once: true });
-        });
-      });
-    }
-    
-    // Scroll behavior for header
-    function updateHeader() {
-      const scrollY = window.scrollY;
-      const scrollingDown = scrollY > lastScrollY;
-      const scrollingUp = scrollY < lastScrollY;
-      
-      if (scrollY === 0) {
-        header.classList.remove('scrolled', 'hidden');
-        header.classList.add('transparent');
-      } else if (scrollingDown) {
-        header.classList.remove('transparent');
-        header.classList.add('scrolled', 'hidden');
-      } else if (scrollingUp) {
-        header.classList.remove('transparent', 'hidden');
-        header.classList.add('scrolled');
-      }
-      
-      lastScrollY = scrollY;
-      ticking = false;
-    }
-    
-    function onScroll() {
-      if (!ticking) {
-        window.requestAnimationFrame(updateHeader);
-        ticking = true;
-      }
-    }
-    
-    // Initial state
-    updateHeader();
-    
-    // Listen to scroll events
-    window.addEventListener('scroll', onScroll, { passive: true });
-  });
+  import '../../scripts/site/header';
 </script>
 
 <style lang="scss">
-.header {
-  background-color: var(--color-bg-primary);
-  box-shadow: var(--shadow-lg);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-  transform: translateY(0);
+  @use '../../styles/mixins' as mx;
 
-  &.scrolled {
-    background-color: var(--color-bg-primary);
-
-    .nav-cta {
-      color: white;
-    }
+  .header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: var(--z-header);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-header);
+    transition:
+      background-color var(--transition-base),
+      box-shadow var(--transition-base),
+      transform var(--transition-base);
   }
 
-  &.hidden, &.scrolling {
+  .header--hidden {
+    box-shadow: none;
     transform: translateY(-100%);
   }
 
-  .nav {
+  .header--transparent {
+    --logo-color: var(--color-on-dark);
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .header__inner {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
+    gap: var(--spacing-md);
+    min-height: var(--header-height);
   }
 
-  .logo {
+  .header__links {
     display: flex;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    text-decoration: none;
-    transition: color 0.3s ease;
-    align-items: center;
-
-    img {
-      width: 28px;
-      height: 28px;
-      margin-right: var(--spacing-xs);
-      filter:
-        drop-shadow( 0.5px  0px 0px var(--color-bg-primary)) 
-        drop-shadow(-0.5px  0px 0px var(--color-bg-primary))
-        drop-shadow( 0px  0.5px 0px var(--color-bg-primary)) 
-        drop-shadow( 0px -0.5px 0px var(--color-bg-primary));
-    }
-
-    span {
-      font-family: var(--font-logo);
-    }
-  }
-
-  .logo-text {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    transition: background 0.3s ease;
-  }
-
-  .nav-menu {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-    align-items: center;
     margin: 0;
     padding: 0;
+    list-style: none;
+  }
 
-    a {
-      color: var(--color-text-primary);
-      font-weight: 500;
-      transition: color 0.3s ease;
-      text-decoration: none;
+  .header__link {
+    color: var(--color-text);
+    font-weight: 600;
 
-      &:hover {
-        color: var(--color-primary);
-      }
+    &:hover,
+    &[aria-current] {
+      color: var(--color-primary);
     }
   }
 
-  .nav-cta {
-    background-color: var(--color-primary);
-    padding: 0.5rem 1rem;
-    border-radius: var(--border-radius-md);
-
-    &:hover {
-      background-color: var(--color-primary-dark);
-      color: white !important;
-    }
-  }
-
-  .mobile-menu-toggle {
+  .header__toggle {
     display: none;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 4px;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: calc(-1 * var(--spacing-xs));
+    border: 0;
+    border-radius: var(--radius-sm);
     background: none;
-    border: none;
+    color: var(--color-text);
     cursor: pointer;
-    padding: 0.5rem;
 
-    &.active {
-      .hamburger {
-        &:nth-child(1) {
-          transform: translateX(8px) rotate(45deg) translate(0, 10px);
-        }
-
-        &:nth-child(2) {
-          opacity: 0;
-        }
-
-        &:nth-child(3) {
-          transform: translateX(8px) rotate(-45deg) translate(0, -10px);
-        }
-      }
+    .header--transparent & {
+      color: var(--color-on-dark);
     }
   }
 
-  .hamburger {
-    width: 25px;
-    height: 3px;
-    background-color: var(--color-text-primary);
-    transition: all 0.3s ease;
-    border-radius: 2px;
+  .header__toggle-bar {
+    width: 1.5rem;
+    height: 2px;
+    border-radius: var(--radius-pill);
+    background-color: currentColor;
+    transition:
+      transform var(--transition-base),
+      opacity var(--transition-base);
+
+    [aria-expanded='true'] > &:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    [aria-expanded='true'] > &:nth-child(2) {
+      opacity: 0;
+    }
+
+    [aria-expanded='true'] > &:nth-child(3) {
+      transform: translateY(-6px) rotate(-45deg);
+    }
   }
 
-  @media (max-width: 992px) {
-    .mobile-menu-toggle {
+  @include mx.down(xl) {
+    .header__toggle {
       display: flex;
     }
 
-    .nav-menu {
+    .header__menu {
       position: absolute;
       top: 100%;
       left: 0;
       right: 0;
-      background-color: var(--color-bg-primary);
-      flex-direction: column;
-      padding: 1.5rem;
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-100%);
+      max-height: calc(100vh - var(--header-height));
+      overflow-y: auto;
+      padding: var(--spacing-xs) var(--container-gutter) var(--spacing-md);
+      background-color: var(--color-surface);
+      box-shadow: var(--shadow-header);
       opacity: 0;
       visibility: hidden;
-      transition: all 0.3s ease;
-      gap: 1rem;
+      transform: translateY(-0.5rem);
+      transition:
+        opacity var(--transition-base),
+        transform var(--transition-base),
+        visibility var(--transition-base);
 
-      &.active {
-        transform: translateY(0);
+      .header--menu-open & {
         opacity: 1;
         visibility: visible;
+        transform: none;
       }
+    }
+
+    .header__links {
+      flex-direction: column;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .header__link {
+      display: block;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--color-border);
     }
   }
 
-  @media (min-width: 992px) {
-    &.transparent {
-      background-color: transparent;
-      box-shadow: none;
+  @include mx.up(xl) {
+    .header__menu {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+    }
 
-      .logo {
-        color: white;
-      }
+    .header__links {
+      gap: var(--spacing-lg);
+    }
 
-      .logo-text {
-        background: linear-gradient(135deg, white, rgba(255, 255, 255, 0.9));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
+    .header--transparent .header__link {
+      color: var(--color-on-dark);
 
-      .nav-menu {
-        a {
-          color: white;
-
-          &:hover {
-            color: rgba(255, 255, 255, 0.8);
-          }
-        }
-
-        .nav-cta {
-          background-color: white;
-          color: var(--color-primary);
-        }
-      }
-
-      .hamburger {
-        background-color: white;
+      &:hover,
+      &[aria-current] {
+        color: var(--color-on-dark-muted);
       }
     }
   }
-}
 </style>
-

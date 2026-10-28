@@ -1,23 +1,44 @@
 ---
-import Button from "./Button.astro";
+import Button from './Button.astro';
 
 interface Props {
   title: string;
   subtitle: string;
-  cta: string;
+  label: string;
+  href?: string;
 }
 
-const { title, subtitle, cta } = Astro.props
+const { title, subtitle, label, href = '/#contato' } = Astro.props;
 ---
 
-<div class="cta-section section-highlight">
-  <h2>{title}</h2>
-  <p>{subtitle}</p>
-  <Button href="/#contato">{cta}</Button>
-</div>
+<section class="cta">
+  <h2 class="cta__title">{title}</h2>
+  <p class="cta__subtitle">{subtitle}</p>
+  <Button href={href}>{label}</Button>
+</section>
 
 <style lang="scss">
-.cta-section {
-  text-align: center;
-}
+  @use '../../styles/mixins' as mx;
+
+  .cta {
+    padding: var(--spacing-xl) var(--spacing-md);
+    border: 1px solid var(--color-primary-tint);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-primary-soft);
+    text-align: center;
+
+    @include mx.up(md) {
+      padding: var(--spacing-xl);
+    }
+  }
+
+  .cta__title {
+    margin-bottom: var(--spacing-sm);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .cta__subtitle {
+    max-width: 700px;
+    margin: 0 auto var(--spacing-md);
+  }
 </style>

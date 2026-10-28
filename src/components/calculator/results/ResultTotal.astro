@@ -1,0 +1,91 @@
+---
+import IconTile from '../../ui/IconTile.astro';
+import { formatInteger, formatTonnes } from '../../../lib/format';
+
+interface Props {
+  /** tCO₂e per year. */
+  total: number;
+  trees: number;
+}
+
+const { total, trees } = Astro.props;
+---
+
+<section class="result-total" aria-label="Pegada total estimada">
+  <IconTile class="result-total__icon" name="tree" size="lg" tone="surface" />
+  <p class="result-total__value">
+    <strong data-total>{formatTonnes(total)}</strong> tCO₂e / ano
+  </p>
+  <p class="result-total__trees">
+    ≈ <span data-trees>{formatInteger(trees)}</span> árvores em equivalência ilustrativa à sua
+    pegada anual
+  </p>
+</section>
+
+<style lang="scss">
+  @use '../../../styles/mixins' as mx;
+
+  .result-total {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--spacing-lg);
+    row-gap: var(--spacing-2xs);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-xl);
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+
+    @include mx.down(sm) {
+      column-gap: var(--spacing-sm);
+      row-gap: var(--spacing-sm);
+      padding: var(--spacing-md) var(--spacing-md);
+    }
+  }
+
+  .result-total__icon {
+    grid-row: 1 / span 2;
+
+    @include mx.down(sm) {
+      grid-row: 1;
+    }
+  }
+
+  .result-total__value {
+    align-self: end;
+    margin: 0;
+    color: inherit;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+
+    strong {
+      font-size: 3.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    @include mx.down(sm) {
+      align-self: center;
+      font-size: 1.25rem;
+
+      strong {
+        font-size: 2.5rem;
+      }
+    }
+  }
+
+  .result-total__trees {
+    align-self: start;
+    margin: 0;
+    color: var(--color-primary);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.4;
+
+    @include mx.down(sm) {
+      grid-column: 1 / -1;
+      font-size: 0.9375rem;
+    }
+  }
+</style>

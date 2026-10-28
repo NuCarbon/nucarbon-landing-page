@@ -1,0 +1,252 @@
+---
+import Button from '../ui/Button.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import EmailIcon from '../icons/Email.astro';
+import PhoneIcon from '../icons/Phone.astro';
+import { contact } from '../../data/site';
+
+// Google Apps Script web app that records the message; empty when not configured.
+const endpoint = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL ?? '';
+---
+
+<section id="contato" class="section contact">
+  <div class="container">
+    <div class="contact__card">
+      <div class="contact__info">
+        <SectionHeader
+          title="Fale Conosco"
+          subtitle="Entre em contato conosco para saber mais sobre nossas soluções ou tirar suas dúvidas."
+          align="start"
+        />
+
+        <ul class="contact__channels">
+          <li class="contact__channel">
+            <EmailIcon class="contact__icon" />
+            <a href={`mailto:${contact.email}`}>{contact.email}</a>
+          </li>
+          <li class="contact__channel">
+            <PhoneIcon class="contact__icon" />
+            <span class="contact__phones">
+              {contact.phones.map((phone) => (
+                <a href={phone.href}>{phone.label}</a>
+              ))}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <div
+        class="contact__form"
+        data-contact-form
+        data-endpoint={endpoint}
+        data-email={contact.email}
+      >
+        <form class="form" method="post">
+          <div class="form__row">
+            <div class="form__group">
+              <label for="nome">
+                Nome Completo <span aria-hidden="true">*</span>
+              </label>
+              <input
+                type="text"
+                id="nome"
+                name="nome"
+                autocomplete="name"
+                maxlength="120"
+                required
+              />
+            </div>
+
+            <div class="form__group">
+              <label for="email">
+                Email <span aria-hidden="true">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                autocomplete="email"
+                maxlength="254"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form__group">
+            <label for="assunto">
+              Assunto <span aria-hidden="true">*</span>
+            </label>
+            <select id="assunto" name="assunto" required>
+              <option value="">Selecione um assunto</option>
+              <option value="projetos-agroflorestais">Projetos Agroflorestais</option>
+              <option value="projetos-carbono">Projetos de Carbono</option>
+              <option value="treinamentos">Treinamentos</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+
+          <div class="form__group">
+            <label for="mensagem">
+              Mensagem <span aria-hidden="true">*</span>
+            </label>
+            <textarea id="mensagem" name="mensagem" rows="5" maxlength="5000" required></textarea>
+          </div>
+
+          <Button type="submit">Enviar Mensagem</Button>
+        </form>
+
+        <p class="form-status" role="status" aria-live="polite" data-form-status></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../../scripts/site/contact-form';
+</script>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .contact__card {
+    @include mx.surface;
+    display: grid;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+
+    @include mx.up(md) {
+      padding: var(--spacing-xl);
+    }
+
+    @include mx.up(lg) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      gap: var(--spacing-xl);
+    }
+  }
+
+  .contact__channels {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: 0;
+    list-style: none;
+
+    @include mx.between(md, lg) {
+      flex-direction: row;
+      justify-content: space-evenly;
+    }
+  }
+
+  .contact__channel {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    min-width: 0;
+
+    a {
+      overflow-wrap: anywhere;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .contact__icon {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-round);
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  .contact__phones {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    transition: opacity var(--transition-base);
+
+    &[aria-busy='true'] {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  }
+
+  .form__row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+
+    @include mx.up(md) {
+      flex-direction: row;
+    }
+  }
+
+  .form__group {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+
+    label {
+      margin-bottom: var(--spacing-xs);
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-sm);
+      background-color: var(--color-surface);
+      color: var(--color-text);
+      transition: border-color var(--transition-base);
+
+      &:focus {
+        border-color: var(--color-primary);
+      }
+
+      &:focus-visible {
+        @include mx.focus-ring;
+      }
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+  }
+
+  .form-status {
+    margin: 0;
+    font-weight: 600;
+
+    &:not(:empty) {
+      margin-top: var(--spacing-md);
+      padding: 0.75rem var(--spacing-sm);
+      border: 1px solid currentColor;
+      border-radius: var(--radius-sm);
+    }
+
+    &[data-state='success'] {
+      background-color: var(--color-success-soft);
+      color: var(--color-success);
+    }
+
+    &[data-state='error'] {
+      background-color: var(--color-danger-soft);
+      color: var(--color-danger);
+    }
+  }
+</style>

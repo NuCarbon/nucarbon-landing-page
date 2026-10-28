@@ -1,0 +1,89 @@
+---
+// Header account area: a loading placeholder, then "Entrar" or the signed-in user.
+import Button from '../ui/Button.astro';
+import Skeleton from '../ui/Skeleton.astro';
+import UserAvatar from '../ui/UserAvatar.astro';
+---
+
+<div class="account" data-header-account>
+  <span class="account__loading" data-auth-loading role="status" aria-label="Verificando sessão">
+    <Skeleton width="32px" height="32px" variant="circle" />
+    <Skeleton width="4.5rem" height="0.75rem" />
+  </span>
+
+  <Button href="/entrar" size="sm" class="account__login" data-auth-guest hidden>
+    Entrar
+  </Button>
+
+  <a href="/app" class="account__profile" data-auth-user hidden>
+    <UserAvatar />
+    <span data-user-name>Minha conta</span>
+    <span class="visually-hidden">(abrir meu painel)</span>
+  </a>
+</div>
+
+<script>
+  import { onUserChange } from '../../scripts/auth';
+  import { renderGuest, renderUser } from '../../scripts/user-display';
+
+  document.querySelectorAll<HTMLElement>('[data-header-account]').forEach((account) => {
+    onUserChange((user) => (user ? renderUser(account, user) : renderGuest(account)));
+  });
+</script>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .account,
+  .account__loading,
+  .account__profile {
+    display: flex;
+    align-items: center;
+  }
+
+  .account {
+    min-height: 2.5rem;
+    min-width: 7.5rem;
+    justify-content: center;
+
+    @include mx.up(xl) {
+      justify-content: flex-end;
+    }
+  }
+
+  .account__loading,
+  .account__profile {
+    gap: var(--spacing-xs);
+  }
+
+  .account__profile {
+    padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+    font-weight: 700;
+
+    &:hover {
+      background: var(--color-primary-tint);
+      color: var(--color-primary-dark);
+    }
+  }
+
+  @include mx.up(xl) {
+    :global(.header--transparent) .account__login {
+      border-color: var(--color-on-dark);
+      background: var(--color-on-dark);
+      color: var(--color-primary-dark);
+    }
+
+    :global(.header--transparent) .account__profile {
+      background: var(--color-on-dark-line);
+      color: var(--color-on-dark);
+
+      &:hover {
+        background: var(--color-on-dark-muted);
+        color: var(--color-primary-dark);
+      }
+    }
+  }
+</style>

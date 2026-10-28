@@ -1,82 +1,82 @@
 ---
-import Accordion from "../ui/Accordion.astro";
-import Button from "../ui/Button.astro";
+import Accordion from '../ui/Accordion.astro';
+import Button from '../ui/Button.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
 
 const faqItems = [
   {
-    question: "O que são créditos de carbono?",
+    question: 'O que são créditos de carbono?',
     answer:
-      "Créditos de carbono representam a redução ou remoção de uma tonelada de CO₂ equivalente da atmosfera, gerada por projetos que seguem critérios técnicos, metodologias reconhecidas e processos de monitoramento e verificação.",
+      'Créditos de carbono representam a redução ou remoção de uma tonelada de CO₂ equivalente da atmosfera, gerada por projetos que seguem critérios técnicos, metodologias reconhecidas e processos de monitoramento e verificação.',
   },
   {
-    question: "Como posso participar de um projeto de créditos de carbono?",
+    question: 'Como posso participar de um projeto de créditos de carbono?',
     answer:
-      "Produtores rurais, empresas e organizações podem participar por meio do desenvolvimento ou apoio a projetos de crédito de carbono. A Nucarbon avalia a viabilidade técnica, ambiental e econômica de cada iniciativa.",
+      'Produtores rurais, empresas e organizações podem participar por meio do desenvolvimento ou apoio a projetos de crédito de carbono. A Nucarbon avalia a viabilidade técnica, ambiental e econômica de cada iniciativa.',
   },
   {
-    question: "Quanto tempo leva para um projeto gerar créditos de carbono?",
+    question: 'Quanto tempo leva para um projeto gerar créditos de carbono?',
     answer:
-      "O prazo varia conforme o tipo de projeto, a metodologia adotada e as etapas de estruturação, validação e monitoramento. Em projetos agroflorestais, há um período inicial antes da primeira emissão de créditos.",
+      'O prazo varia conforme o tipo de projeto, a metodologia adotada e as etapas de estruturação, validação e monitoramento. Em projetos agroflorestais, há um período inicial antes da primeira emissão de créditos.',
   },
   {
-    question: "Quais são os custos envolvidos em um projeto de carbono?",
+    question: 'Quais são os custos envolvidos em um projeto de carbono?',
     answer:
-      "Os custos dependem de fatores como área do projeto, metodologia aplicada, monitoramento, certificação e gestão. Cada iniciativa é analisada individualmente para garantir consistência técnica e viabilidade.",
+      'Os custos dependem de fatores como área do projeto, metodologia aplicada, monitoramento, certificação e gestão. Cada iniciativa é analisada individualmente para garantir consistência técnica e viabilidade.',
   },
   {
-    question: "Como funciona a previsão de retorno em projetos agroflorestais?",
+    question: 'Como funciona a previsão de retorno em projetos agroflorestais?',
     answer:
-      "A previsão considera o potencial de sequestro de carbono, os custos envolvidos, as condições de mercado e os prazos de emissão. As estimativas são baseadas em premissas técnicas e cenários realistas, ajustados a cada projeto.",
+      'A previsão considera o potencial de sequestro de carbono, os custos envolvidos, as condições de mercado e os prazos de emissão. As estimativas são baseadas em premissas técnicas e cenários realistas, ajustados a cada projeto.',
   },
   {
-    question: "Vocês oferecem treinamentos?",
+    question: 'Vocês oferecem treinamentos?',
     answer:
-      "Sim. A Nucarbon oferece treinamentos e ações de conscientização para empresas, escolas e comunidades, abordando temas ambientais, boas práticas e sustentabilidade de forma responsável.",
+      'Sim. A Nucarbon oferece treinamentos e ações de conscientização para empresas, escolas e comunidades, abordando temas ambientais, boas práticas e sustentabilidade de forma responsável.',
   },
   {
-    question: "Como é feito o monitoramento de um projeto?",
+    question: 'Como é feito o monitoramento de um projeto?',
     answer:
-      "O monitoramento é realizado por meio de indicadores técnicos, métricas ambientais e ferramentas tecnológicas que permitem acompanhar a evolução do projeto em tempo real, garantindo rastreabilidade e confiabilidade das informações.",
+      'O monitoramento é realizado por meio de indicadores técnicos, métricas ambientais e ferramentas tecnológicas que permitem acompanhar a evolução do projeto em tempo real, garantindo rastreabilidade e confiabilidade das informações.',
   },
 ];
 ---
 
 <section id="faq" class="section faq">
   <div class="container">
-    <h2 class="section-title">Tire suas Dúvidas</h2>
-    <p class="section-subtitle">
-      Encontre respostas para as principais dúvidas sobre créditos de carbono,
-      projetos agroflorestais e a atuação da Nucarbon.
-    </p>
+    <SectionHeader
+      title="Tire suas Dúvidas"
+      subtitle="Encontre respostas para as principais dúvidas sobre créditos de carbono, projetos agroflorestais e a atuação da Nucarbon."
+    />
 
-    <div class="faq-content">
-      <Accordion items={faqItems} />
+    <div class="faq__list">
+      <Accordion items={faqItems} name="faq" />
     </div>
 
-    <div class="faq-cta">
+    <div class="faq__cta">
       <p>Não encontrou sua dúvida?</p>
-      <Button href="#contato" variant="outline">Entre em Contato</a>
+      <Button href="#contato" variant="outline">
+        Entre em Contato
+      </Button>
     </div>
   </div>
 </section>
 
 <style lang="scss">
-.faq {
-  background-color: var(--color-bg-primary);
+  .faq {
+    background-color: var(--color-surface);
+  }
 
-  &-content {
+  .faq__list {
     max-width: 800px;
     margin: 0 auto var(--spacing-xl);
   }
 
-  &-cta {
+  .faq__cta {
     text-align: center;
-    padding-top: var(--spacing-lg);
 
     p {
       margin-bottom: var(--spacing-md);
-      color: var(--color-text-secondary);
     }
   }
-}
 </style>

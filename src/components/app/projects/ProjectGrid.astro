@@ -1,0 +1,10 @@
+---
+// Empty grid filled by scripts/app/render-list.ts with scripts/projects/project-card.ts.
+import ProjectCard from '../../projects/ProjectCard.astro';
+---
+
+<div class="project-grid" data-project-grid>
+  <template data-item-template>
+    <ProjectCard headingLevel={3} />
+  </template>
+</div>

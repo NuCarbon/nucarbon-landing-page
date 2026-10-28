@@ -1,0 +1,11 @@
+---
+// Filled in the browser by scripts/app/footprint-card.ts.
+import Button from '../../ui/Button.astro';
+---
+
+<div class="footprint-card" data-footprint-card>
+  <p class="footprint-card__label">Sua pegada anual</p>
+  <strong class="footprint-card__value" data-footprint-value></strong>
+  <span class="footprint-card__date" data-footprint-date></span>
+  <Button href="/calculadora" variant="outline" size="sm" data-footprint-link />
+</div>

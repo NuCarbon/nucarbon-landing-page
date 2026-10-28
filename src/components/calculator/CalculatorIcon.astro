@@ -1,0 +1,30 @@
+---
+import { icons, type IconName } from './icons';
+
+export type { IconName };
+
+interface Props {
+  name: IconName;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+---
+
+<svg
+  class:list={['calculator-icon', className]}
+  viewBox="0 -960 960 960"
+  fill="currentColor"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={icons[name].path} />
+</svg>
+
+<style>
+  .calculator-icon {
+    flex-shrink: 0;
+    width: var(--icon-size, 1.75rem);
+    height: var(--icon-size, 1.75rem);
+  }
+</style>

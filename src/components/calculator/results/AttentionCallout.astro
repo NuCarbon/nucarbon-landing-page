@@ -1,0 +1,74 @@
+---
+import type { Attention } from '../../../lib/calculator/calculate';
+
+interface Props {
+  attention: Attention;
+}
+
+const { attention } = Astro.props;
+---
+
+<section class="attention-callout" aria-labelledby="attention-title">
+  <span class="attention-callout__icon" aria-hidden="true">
+    !
+  </span>
+  <div>
+    <h2 class="attention-callout__title" id="attention-title" data-attention-title>
+      {attention.title}
+    </h2>
+    <p class="attention-callout__description" data-attention-description>
+      {attention.description}
+    </p>
+  </div>
+</section>
+
+<style lang="scss">
+  @use '../../../styles/mixins' as mx;
+
+  .attention-callout {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-xl);
+    background: var(--color-warning-soft);
+    color: var(--color-warning);
+
+    @include mx.down(sm) {
+      padding: var(--spacing-md);
+      border-radius: var(--radius-lg);
+    }
+  }
+
+  .attention-callout__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 1.625rem;
+    height: 1.625rem;
+    border: 2px solid var(--color-warning-accent);
+    border-radius: var(--radius-round);
+    color: var(--color-warning-accent);
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .attention-callout__title {
+    margin-bottom: var(--spacing-2xs);
+    color: inherit;
+    font-size: 1.125rem;
+
+    @include mx.down(sm) {
+      font-size: 1rem;
+    }
+  }
+
+  .attention-callout__description {
+    margin: 0;
+    color: inherit;
+    line-height: 1.5;
+
+    @include mx.down(sm) {
+      font-size: 0.875rem;
+    }
+  }
+</style>

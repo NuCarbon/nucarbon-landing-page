@@ -1,0 +1,119 @@
+---
+import {
+  categoryDetails,
+  type CategoryId,
+  type CategoryResult,
+} from '../../../lib/calculator/calculate';
+import { formatCo2e } from '../../../lib/format';
+
+interface Props {
+  categories: CategoryResult[];
+  /** Highlighted as the main source of emissions. */
+  largest: CategoryId | null;
+}
+
+const { categories, largest } = Astro.props;
+---
+
+<section class="category-breakdown" aria-labelledby="category-breakdown-title">
+  <h2 class="category-breakdown__title" id="category-breakdown-title">
+    Distribuição por categoria
+  </h2>
+  <ul class="category-breakdown__list">
+    {categories.map(({ id, tonnes, percentage }) => (
+      <li class="category-breakdown__row" data-category={id}>
+        <div class="category-breakdown__label">
+          <strong>{categoryDetails[id].label}</strong>
+          <span class="category-breakdown__value" data-category-value>
+            {formatCo2e(tonnes)}
+          </span>
+          <span class="visually-hidden" data-category-share>
+            , {Math.round(percentage)}%
+          </span>
+        </div>
+        <span class="category-breakdown__track" aria-hidden="true">
+          <span
+            class:list={[
+              'category-breakdown__bar',
+              { 'category-breakdown__bar--largest': id === largest },
+            ]}
+            data-category-bar
+            style={`--bar-width: ${percentage}%`}
+          ></span>
+        </span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style lang="scss">
+  @use '../../../styles/mixins' as mx;
+
+  .category-breakdown {
+    @include mx.surface(var(--radius-xl));
+    padding: var(--spacing-lg);
+
+    @include mx.down(sm) {
+      padding: var(--spacing-md);
+      border-radius: var(--radius-lg);
+    }
+  }
+
+  .category-breakdown__title {
+    margin-bottom: var(--spacing-md);
+    font-size: 1.375rem;
+
+    @include mx.down(sm) {
+      font-size: 1.125rem;
+    }
+  }
+
+  .category-breakdown__list {
+    display: grid;
+    gap: var(--spacing-md);
+    list-style: none;
+  }
+
+  .category-breakdown__label {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text);
+
+    @include mx.down(sm) {
+      font-size: 0.9375rem;
+    }
+  }
+
+  .category-breakdown__value {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .category-breakdown__track {
+    display: block;
+    height: 0.625rem;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-muted);
+
+    @include mx.down(sm) {
+      height: 0.5rem;
+    }
+  }
+
+  .category-breakdown__bar {
+    display: block;
+    width: var(--bar-width);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-primary);
+    transition: width var(--transition-base);
+  }
+
+  .category-breakdown__bar--largest {
+    background: var(--color-warning-accent);
+  }
+</style>

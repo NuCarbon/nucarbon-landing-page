@@ -1,56 +1,74 @@
 ---
-import Header from '../components/layout/Header.astro';
-import Footer from '../components/layout/Footer.astro';
 import '../styles/global.scss';
-import { Font } from 'astro:assets';
-import { SEO } from "astro-seo";
+import LoginModal from '../components/auth/LoginModal.astro';
+import Footer from '../components/layout/Footer.astro';
+import Header from '../components/layout/Header.astro';
+import SiteHead from '../components/layout/SiteHead.astro';
 
 interface Props {
   title: string;
   description?: string;
+  /** Class for <main>. */
   className?: string;
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
+  /** For pages that open with a dark hero under the header. */
+  transparentHeader?: boolean;
 }
 
-const { title, className, description = 'Nucarbon - Soluções sustentáveis em créditos de carbono e projetos agroflorestais' } = Astro.props;
+const {
+  title,
+  description,
+  className,
+  canonical,
+  image,
+  noindex = false,
+  transparentHeader = false,
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <SEO
+    <SiteHead
       title={title}
       description={description}
-      charset="UTF-8"
-      extend={{
-        link: [
-          { rel: "sitemap", href: "/sitemap-index.xml" },
-          { rel: "icon", type: "image/png", href: "/favicon.png" }
-        ],
-      }}
+      canonical={canonical}
+      image={image}
+      noindex={noindex}
     />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="generator" content={Astro.generator} />
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:locale" content="pt_BR" />
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-
-    <Font cssVariable="--font-kollektif" preload />
   </head>
   <body>
-    <Header />
-    <main class={className}>
+    <a class="skip-link" href="#conteudo">
+      Pular para o conteúdo
+    </a>
+    <Header transparent={transparentHeader} />
+    <main id="conteudo" class={className}>
       <slot />
     </main>
     <Footer />
+    <LoginModal />
   </body>
 </html>
 
+<style lang="scss">
+  @use '../styles/mixins' as mx;
+
+  .skip-link {
+    position: fixed;
+    top: var(--spacing-xs);
+    left: var(--spacing-xs);
+    z-index: calc(var(--z-header) + 1);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-raised);
+    color: var(--color-primary-dark);
+    font-weight: 600;
+
+    &:not(:focus) {
+      @include mx.visually-hidden;
+    }
+  }
+</style>

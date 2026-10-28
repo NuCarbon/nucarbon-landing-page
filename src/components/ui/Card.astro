@@ -1,100 +1,128 @@
 ---
+import type { HTMLAttributes } from 'astro/types';
+
+/** Any of the components in components/icons. */
+type IconComponent = (props: HTMLAttributes<'svg'>) => unknown;
+
 interface Props {
   title?: string;
-  smallTitle?: boolean;
-  centerText?: boolean;
+  /** Heading level of the title; pick the one that follows the surrounding heading. */
+  level?: 2 | 3 | 4;
+  icon?: IconComponent;
+  /** Turns the whole card into a link with a "Saiba mais" call to action. */
   href?: string;
+  align?: 'start' | 'center';
   class?: string;
-  icon?: any;
 }
 
-const { title, href, class: className = '', smallTitle, centerText, icon: Icon } = Astro.props;
+const { title, level = 3, icon: Icon, href, align = 'start', class: className } = Astro.props;
+const Heading = `h${level}` as const;
 ---
 
-<div class={`card ${className}`}>
-  {title && (
-    <h4 class={`card-title ${smallTitle ? "card-title-small" : ""}`}>
-      {Icon && <Icon class="card-icon" />}
-      {title}
-    </h4>
-  )}
-  <div class={`card-content ${centerText ? "card-content-centered" : ""}`}>
+<div
+  class:list={['feature-card', `feature-card--${align}`, { 'feature-card--link': href }, className]}
+>
+  {Icon && <Icon class="feature-card__icon" />}
+  {title && <Heading class="feature-card__title">{title}</Heading>}
+  <div class="feature-card__body">
     <slot />
   </div>
   {href && (
-    <div class="card-footer">
-      <a href={href} class="card-link">Saiba mais →</a>
-    </div>
+    <a href={href} class="feature-card__link">
+      Saiba mais
+      {title && <span class="visually-hidden">sobre {title}</span>}
+      <span aria-hidden="true">→</span>
+    </a>
   )}
 </div>
 
 <style lang="scss">
-.card {
-  background: white;
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
+  @use '../../styles/mixins' as mx;
 
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  &-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+  .feature-card {
+    @include mx.surface;
+    position: relative;
     display: flex;
     flex-direction: column;
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+
+    @include mx.up(md) {
+      padding: var(--spacing-lg);
+    }
+  }
+
+  .feature-card--center {
     align-items: center;
     text-align: center;
-
-    &-small {
-      font-size: 1.2rem;
-      text-align: left;
-      align-items: flex-start;
-    }
-
-    :global(svg) {
-      width: 4rem;
-      height: 4rem;
-      margin-bottom: var(--spacing-sm);
-      border-radius: var(--border-radius-lg);
-      background-color: var(--color-primary-accent);
-      padding: var(--spacing-sm);
-      fill: var(--color-primary-light);
-    }
   }
 
-  &-content {
-    flex: 1;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
+  .feature-card--link {
+    transition:
+      transform var(--transition-base),
+      box-shadow var(--transition-base),
+      border-color var(--transition-base);
 
-    &-centered {
-      text-align: center;
+    &:hover,
+    &:focus-within {
+      border-color: var(--color-primary-tint);
+      box-shadow: var(--shadow-card);
+      transform: translateY(-4px);
+    }
+
+    @include mx.reduced-motion {
+      &:hover,
+      &:focus-within {
+        transform: none;
+      }
     }
   }
 
-  &-footer {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  &-link {
+  .feature-card__icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary-soft);
     color: var(--color-primary);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
+  }
 
-    &:hover {
-      color: var(--color-primary-dark);
+  .feature-card__title {
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.25rem;
+  }
+
+  .feature-card__body {
+    flex: 1;
+    color: var(--color-text-muted);
+
+    > :global(:last-child) {
+      margin-bottom: 0;
     }
   }
-}
-</style>
 
+  .feature-card__link {
+    align-self: stretch;
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+    font-weight: 600;
+
+    // Stretches the click target over the whole card.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-lg);
+    }
+
+    &:focus-visible {
+      outline: none;
+
+      &::after {
+        @include mx.focus-ring;
+      }
+    }
+  }
+</style>

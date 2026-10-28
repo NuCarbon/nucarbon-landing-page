@@ -1,0 +1,78 @@
+---
+import { formatCo2e, formatHectares, formatInteger } from '../../lib/format';
+import type { Project } from '../../types/app';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+
+/** Zero means the value has not been reported yet. */
+const reported = (value: number, format: (value: number) => string) =>
+  value > 0 ? format(value) : null;
+
+const metrics = [
+  { label: 'Área do projeto', value: formatHectares(project.areaHectares) },
+  { label: 'Árvores plantadas', value: reported(project.treesPlanted, formatInteger) },
+  { label: 'Carbono estimado', value: reported(project.carbonTonnes, formatCo2e) },
+  { label: 'Participantes', value: reported(project.participants, formatInteger) },
+];
+---
+
+<dl class="metrics">
+  {metrics.map(({ label, value }) => (
+    <div class="metric">
+      <dt>{label}</dt>
+      <dd class:list={['metric__value', { 'metric__value--missing': !value }]}>
+        {value ?? 'Ainda não informado'}
+      </dd>
+    </div>
+  ))}
+</dl>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-xs);
+
+    // Four across when the main column is wide: tablets (single column) and wide desktops.
+    @include mx.between(md, lg) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    @include mx.up(xl) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .metric {
+    @include mx.surface(var(--radius-md));
+
+    padding: var(--spacing-sm);
+  }
+
+  dt {
+    color: var(--color-text-subtle);
+    font-size: 0.8125rem;
+  }
+
+  .metric__value {
+    margin-top: var(--spacing-2xs);
+    color: var(--color-primary-dark);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .metric__value--missing {
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+</style>

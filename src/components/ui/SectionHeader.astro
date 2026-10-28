@@ -1,0 +1,57 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  align?: 'center' | 'start';
+  level?: 2 | 3;
+  id?: string;
+}
+
+const { title, subtitle, align = 'center', level = 2, id } = Astro.props;
+const Heading = level === 3 ? 'h3' : 'h2';
+---
+
+<div class:list={['section-header', `section-header--${align}`]}>
+  <Heading id={id} class="section-header__title">
+    {title}
+  </Heading>
+  {subtitle && <p class="section-header__subtitle">{subtitle}</p>}
+</div>
+
+<style lang="scss">
+  .section-header {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .section-header--center {
+    text-align: center;
+  }
+
+  .section-header__title {
+    margin-bottom: 0;
+
+    &::after {
+      content: '';
+      display: block;
+      width: 120px;
+      height: 4px;
+      margin-top: var(--spacing-sm);
+      border-radius: var(--radius-xs);
+      background-color: var(--color-primary);
+    }
+
+    .section-header--center &::after {
+      margin-inline: auto;
+    }
+  }
+
+  .section-header__subtitle {
+    max-width: 700px;
+    margin: var(--spacing-md) 0 0;
+    font-size: 1.125rem;
+
+    .section-header--center & {
+      margin-inline: auto;
+    }
+  }
+</style>

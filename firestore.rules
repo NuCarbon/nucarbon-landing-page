@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Browser access is mediated by authenticated Netlify Functions.
+    // Firebase Admin SDK access uses server credentials and bypasses these rules.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

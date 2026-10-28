@@ -1,0 +1,112 @@
+---
+// A calculator step: the question and its options as a radio group.
+// Extra fields of a step (the transport distance) go in the default slot.
+import OptionCard from './OptionCard.astro';
+import type { CalculatorStep } from './steps';
+
+interface Props {
+  step: CalculatorStep;
+  /** The answer currently selected. */
+  value: string;
+  active?: boolean;
+}
+
+const { step, value, active = false } = Astro.props;
+const titleId = `${step.id}-title`;
+---
+
+<section
+  class="choice-step"
+  data-step={step.id}
+  data-step-label={step.label}
+  hidden={!active}
+  aria-labelledby={titleId}
+>
+  <h1 class="choice-step__title" id={titleId} tabindex="-1">
+    {step.title}
+  </h1>
+  <div
+    class:list={[
+      'choice-step__options',
+      `choice-step__options--${step.columns}`,
+      `choice-step__options--${step.density}`,
+    ]}
+    role="radiogroup"
+    aria-labelledby={titleId}
+  >
+    {step.options.map((option) => (
+      <OptionCard
+        name={step.id}
+        value={option.value}
+        label={option.label}
+        description={option.description}
+        icon={option.icon}
+        badge={option.badge}
+        disabled={option.disabled}
+        checked={option.value === value}
+        density={step.density}
+      />
+    ))}
+  </div>
+  <slot />
+</section>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .choice-step {
+    width: min(100%, 67rem);
+    margin: 0 auto;
+  }
+
+  .choice-step__title {
+    margin: 0 auto var(--spacing-xl);
+    font-size: clamp(1.75rem, 3vw, 2.4rem);
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-wrap: balance;
+
+    // Focused by the controller on step change so screen readers announce it.
+    &:focus {
+      outline: none;
+    }
+
+    @include mx.down(lg) {
+      margin-bottom: var(--spacing-lg);
+    }
+  }
+
+  // Wide screens use the step's columns. Below that, compact and dense cards
+  // go two per row and the others stack; on phones only compact cards pair up.
+  .choice-step__options {
+    --columns: 1;
+    display: grid;
+    grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+    gap: var(--spacing-md);
+
+    @include mx.down(sm) {
+      gap: 0.75rem;
+    }
+  }
+
+  .choice-step__options--compact,
+  .choice-step__options--dense {
+    --columns: 2;
+  }
+
+  .choice-step__options--dense {
+    @include mx.down(sm) {
+      --columns: 1;
+    }
+  }
+
+  @include mx.up(lg) {
+    .choice-step__options--2 {
+      --columns: 2;
+    }
+
+    .choice-step__options--3 {
+      --columns: 3;
+    }
+  }
+</style>

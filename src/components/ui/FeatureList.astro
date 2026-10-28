@@ -1,0 +1,82 @@
+---
+/** A bulleted list. `{ title, text }` items render as "<strong>title:</strong> text". */
+type Item = string | { title: string; text: string };
+
+interface Props {
+  items: Item[];
+  marker?: 'check' | 'dot' | 'arrow';
+  columns?: 1 | 2;
+}
+
+const { items, marker = 'check', columns = 1 } = Astro.props;
+---
+
+<ul class:list={['features', `features--${marker}`, { 'features--two-columns': columns === 2 }]}>
+  {items.map((item) => (
+    <li class="features__item">
+      {typeof item === 'string' ? (
+        item
+      ) : (
+        <>
+          <strong>{item.title}:</strong> {item.text}
+        </>
+      )}
+    </li>
+  ))}
+</ul>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .features {
+    --marker-width: 1.5rem;
+    display: grid;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .features--two-columns {
+    @include mx.up(xs) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--spacing-lg);
+    }
+  }
+
+  .features__item {
+    position: relative;
+    padding-left: var(--marker-width);
+    color: var(--color-text-muted);
+
+    &::before {
+      position: absolute;
+      left: 0;
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    strong {
+      color: var(--color-text);
+      font-weight: 700;
+    }
+  }
+
+  .features--check .features__item::before {
+    content: '✓';
+  }
+
+  .features--arrow .features__item::before {
+    content: '→';
+  }
+
+  .features--dot .features__item::before {
+    content: '';
+    top: calc(0.8em - 0.1875rem);
+    left: 0.375rem;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: var(--radius-round);
+    background-color: var(--color-primary);
+  }
+</style>

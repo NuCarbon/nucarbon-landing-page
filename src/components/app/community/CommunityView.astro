@@ -1,0 +1,54 @@
+---
+import LoadingState from '../../ui/LoadingState.astro';
+import AppError from '../AppError.astro';
+import AppPageIntro from '../AppPageIntro.astro';
+import CommunityFeed from './CommunityFeed.astro';
+import CommunityFeedSkeleton from './CommunityFeedSkeleton.astro';
+---
+
+<app-community-view class="app-page">
+  <AppPageIntro
+    eyebrow="Comunidade Nucarbon"
+    description="Acompanhe as atualizações de quem protege e restaura nossos biomas."
+  >
+    Impacto que cresce junto
+  </AppPageIntro>
+
+  <LoadingState label="Carregando publicações da comunidade">
+    <CommunityFeedSkeleton />
+  </LoadingState>
+
+  <div data-app-status hidden></div>
+
+  <div class="app-page__content" data-app-content hidden>
+    <CommunityFeed />
+    <p class="app-empty" data-feed-empty hidden>
+      Ainda não há publicações na comunidade.
+    </p>
+  </div>
+
+  <template data-app-error>
+    <AppError />
+  </template>
+</app-community-view>
+
+<script>
+  import { fillCommunityPost } from '../../../scripts/app/community-feed';
+  import { loadView } from '../../../scripts/app/load-view';
+  import { renderList } from '../../../scripts/app/render-list';
+  import { requireElement } from '../../../scripts/dom';
+  import type { CommunityResponse } from '../../../types/app';
+
+  class CommunityView extends HTMLElement {
+    connectedCallback(): void {
+      void loadView<CommunityResponse>(this, '/api/community', ({ posts }) => {
+        renderList(requireElement(this, '[data-community-feed]'), posts, fillCommunityPost);
+        requireElement(this, '[data-feed-empty]').hidden = posts.length > 0;
+      });
+    }
+  }
+
+  if (!customElements.get('app-community-view')) {
+    customElements.define('app-community-view', CommunityView);
+  }
+</script>
