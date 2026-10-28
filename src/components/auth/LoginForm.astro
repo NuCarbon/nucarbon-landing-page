@@ -1,62 +1,56 @@
 ---
-const { titleId = 'login-title' } = Astro.props;
+// Google sign-in card. Behaviour: initializeLoginForm in scripts/login-modal.ts.
+import Button from '../ui/Button.astro';
+
+interface Props {
+  /** 1 when the form is the page's main content (/entrar), 2 inside the login modal. */
+  headingLevel?: 1 | 2;
+  titleId?: string;
+}
+
+const { headingLevel = 2, titleId = 'login-title' } = Astro.props;
+const Heading = `h${headingLevel}` as 'h1' | 'h2';
 ---
 
 <section class="login-card" data-login-form aria-labelledby={titleId}>
   <p class="eyebrow">Sua jornada de impacto</p>
-  <h1 id={titleId}>Entre na Nucarbon</h1>
-  <p>Continue com Google para entrar ou criar sua conta.</p>
-  <button type="button" data-google-sign-in>
+  <Heading id={titleId} class="login-card__title">
+    Entre na Nucarbon
+  </Heading>
+  <p class="login-card__text">Continue com Google para entrar ou criar sua conta.</p>
+  <Button variant="outline" size="lg" block data-google-sign-in>
     Continuar com Google
-  </button>
-  <p data-login-error role="alert" hidden></p>
+  </Button>
+  <p class="login-card__error" data-login-error role="alert" hidden></p>
 </section>
-<style lang="scss">
+
+<style>
   .login-card {
-    width: min(100%, 480px);
-    padding: 2rem;
-    border: 1px solid #dce6da;
-    border-radius: 20px;
-    background: white;
-    box-shadow: 0 18px 50px #163b1a22;
+    width: 100%;
+    max-width: 30rem;
+    padding: var(--spacing-xl) var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
     text-align: center;
   }
-  h1 {
-    color: #1d5d2c;
-    margin: 0.25rem 0;
-    font-size: 2rem;
+
+  .login-card__title {
+    margin-bottom: var(--spacing-xs);
+    font-size: clamp(1.625rem, 4vw, 2rem);
   }
-  p {
-    color: #4f5c50;
+
+  .login-card__text {
+    margin-bottom: var(--spacing-md);
   }
-  .eyebrow {
-    color: #277739;
-    font-size: 0.8rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-  button {
-    width: 100%;
-    margin-top: 12px;
-    padding: 13px;
-    border: 1px solid #aac9ae;
-    border-radius: 100px;
-    background: #fff;
-    color: #174f24;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  button:hover,
-  button:focus-visible {
-    background: #e9f5ea;
-  }
-  button:disabled {
-    opacity: 0.6;
-    cursor: wait;
-  }
-  [data-login-error] {
-    color: #b42318;
+
+  .login-card__error {
+    margin: var(--spacing-sm) 0 0;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+    font-size: 0.875rem;
   }
 </style>

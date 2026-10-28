@@ -1,164 +1,172 @@
 ---
+// Reviews a contribution chosen on a project page. Payment is not implemented yet:
+// confirming registers interest only. Logic: scripts/checkout/checkout-page.ts.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
 ---
 
-<BaseLayout title="Revisar contribuição | Nucarbon" noindex className="checkout-page">
-  <section class="checkout-card" data-checkout aria-live="polite">
-    <h1>Revisar contribuição</h1>
-    <p>O pagamento ainda não está disponível. Nenhum valor será cobrado.</p>
-    <p data-checkout-status>Carregando sua seleção…</p>
-    <div data-order hidden>
-      <h2 data-project></h2>
-      <dl>
-        <dt>Quantidade</dt>
-        <dd data-quantity></dd>
-        <dt>Preço por tonelada</dt>
-        <dd data-price></dd>
-        <dt>Total estimado</dt>
-        <dd data-total></dd>
-      </dl>
-      <button type="button" data-confirm>
-        Registrar interesse
-      </button>
-    </div>
-    <div data-receipt hidden>
-      <h2>Interesse registrado</h2>
-      <p>
-        Seu interesse foi registrado. Ainda não houve cobrança, compensação ou emissão de
-        certificado.
+<BaseLayout title="Revisar contribuição | Nucarbon" noindex className="page">
+  <div class="container">
+    <section class="checkout" data-checkout aria-labelledby="checkout-title">
+      <p class="eyebrow">Contribuição</p>
+      <h1 id="checkout-title" class="checkout__title">
+        Revisar contribuição
+      </h1>
+      <p class="checkout__notice">
+        O pagamento ainda não está disponível. Nenhum valor será cobrado.
       </p>
-      <p>
-        Número: <strong data-order-id></strong>
+
+      <p class="checkout__status" data-checkout-status role="status">
+        Carregando sua seleção…
       </p>
-      <a href="/projetos">Explorar projetos</a>
-    </div>
-    <a href="/projetos" data-back>
-      Voltar aos projetos
-    </a>
-  </section>
+      <p class="checkout__error" data-checkout-error role="alert" hidden></p>
+
+      <div class="checkout__order" data-checkout-order hidden>
+        <h2 class="checkout__project" data-order-project></h2>
+        <dl class="checkout__summary">
+          <div>
+            <dt>Quantidade</dt>
+            <dd data-order-quantity></dd>
+          </div>
+          <div>
+            <dt>Preço por tonelada</dt>
+            <dd data-order-price></dd>
+          </div>
+          <div class="checkout__total">
+            <dt>Total estimado</dt>
+            <dd data-order-total></dd>
+          </div>
+        </dl>
+        <Button block size="lg" data-checkout-confirm hidden>
+          Registrar interesse
+        </Button>
+      </div>
+
+      <div class="checkout__receipt" data-checkout-receipt hidden>
+        <h2>Interesse registrado</h2>
+        <p>
+          Seu interesse foi registrado. Ainda não houve cobrança, compensação ou emissão de
+          certificado.
+        </p>
+        <p>
+          Número: <strong class="checkout__order-id" data-order-id></strong>
+        </p>
+        <Button href="/projetos" variant="outline" block>
+          Explorar projetos
+        </Button>
+      </div>
+
+      <a class="checkout__back" href="/projetos" data-checkout-back>
+        Voltar aos projetos
+      </a>
+    </section>
+  </div>
 </BaseLayout>
+
 <script>
-  import { authReady } from '../scripts/auth';
-  const root = document.querySelector<HTMLElement>('[data-checkout]')!;
-  const status = root.querySelector<HTMLElement>('[data-checkout-status]')!;
-  const orderBlock = root.querySelector<HTMLElement>('[data-order]')!;
-  const receipt = root.querySelector<HTMLElement>('[data-receipt]')!;
-  const money = (cents: number) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cents / 100);
-  const user = await authReady;
-  if (!user) location.replace('/entrar');
-  else {
-    try {
-      const headers = {
-        Authorization: `Bearer ${await user.getIdToken()}`,
-        'Content-Type': 'application/json',
-      };
-      let id = sessionStorage.getItem('nucarbon:checkout-order');
-      let response: Response;
-      if (id) response = await fetch(`/api/checkouts?id=${encodeURIComponent(id)}`, { headers });
-      else {
-        const intent = JSON.parse(sessionStorage.getItem('nucarbon:checkout-intent') || 'null');
-        if (
-          !intent ||
-          Date.now() - intent.createdAt > 30 * 60 * 1000 ||
-          Date.now() < intent.createdAt
-        )
-          throw new Error('Sua seleção expirou. Escolha o projeto novamente.');
-        response = await fetch('/api/checkouts', {
-          method: 'POST',
-          headers,
-          body: JSON.stringify(intent),
-        });
-      }
-      if (!response.ok)
-        throw new Error('Não foi possível carregar sua seleção. Escolha o projeto novamente.');
-      const { order } = await response.json();
-      sessionStorage.setItem('nucarbon:checkout-order', order.id);
-      sessionStorage.removeItem('nucarbon:checkout-intent');
-      status.hidden = true;
-      root.querySelector<HTMLElement>('[data-project]')!.textContent = order.projectName;
-      root.querySelector<HTMLElement>('[data-quantity]')!.textContent =
-        `${order.quantityTonnes.toLocaleString('pt-BR')} tCO₂e`;
-      root.querySelector<HTMLElement>('[data-price]')!.textContent = money(
-        order.pricePerTonneCents,
-      );
-      root.querySelector<HTMLElement>('[data-total]')!.textContent = money(order.totalCents);
-      if (order.status === 'registered') {
-        receipt.hidden = false;
-        root.querySelector<HTMLElement>('[data-order-id]')!.textContent = order.id;
-      } else if (order.expiresAt < Date.now())
-        throw new Error('Esta seleção expirou. Escolha o projeto novamente.');
-      else orderBlock.hidden = false;
-      root
-        .querySelector<HTMLButtonElement>('[data-confirm]')!
-        .addEventListener('click', async (event) => {
-          const button = event.currentTarget as HTMLButtonElement;
-          button.disabled = true;
-          try {
-            const confirmed = await fetch(`/api/checkouts?id=${encodeURIComponent(order.id)}`, {
-              method: 'POST',
-              headers,
-              body: JSON.stringify({ action: 'confirm' }),
-            });
-            if (!confirmed.ok) throw new Error('Não foi possível confirmar. Tente novamente.');
-            orderBlock.hidden = true;
-            receipt.hidden = false;
-            root.querySelector<HTMLElement>('[data-order-id]')!.textContent = order.id;
-          } catch (cause) {
-            status.textContent = cause instanceof Error ? cause.message : 'Erro ao confirmar.';
-            status.hidden = false;
-            button.disabled = false;
-          }
-        });
-    } catch (cause) {
-      status.textContent = cause instanceof Error ? cause.message : 'Checkout indisponível.';
-    }
-  }
+  import { initializeCheckoutPage } from '../scripts/checkout/checkout-page';
+
+  const root = document.querySelector<HTMLElement>('[data-checkout]');
+  if (root) void initializeCheckoutPage(root);
 </script>
-<style lang="scss">
-  :global(.checkout-page) {
-    min-height: 75vh;
+
+<style>
+  .checkout {
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .checkout__title {
+    margin-bottom: var(--spacing-xs);
+    font-size: clamp(1.625rem, 4vw, 2rem);
+  }
+
+  .checkout__notice {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-warning-soft);
+    color: var(--color-warning);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .checkout__status {
+    color: var(--color-text-muted);
+  }
+
+  .checkout__error {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+  }
+
+  .checkout__project {
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.375rem;
+  }
+
+  .checkout__summary {
     display: grid;
-    place-items: center;
-    padding: 130px 20px 80px;
-    background: #f8f9f5;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+    border-block: 1px solid var(--color-border);
   }
-  .checkout-card {
-    width: min(100%, 600px);
-    padding: 30px;
-    border-radius: 20px;
-    background: white;
-    box-shadow: 0 15px 40px #1b422119;
+
+  .checkout__summary div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
   }
-  h1,
-  h2 {
-    color: #245e2d;
+
+  .checkout__summary dt {
+    color: var(--color-text-muted);
   }
-  dl {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
+
+  .checkout__summary dd {
+    color: var(--color-text);
+    font-weight: 700;
+    text-align: right;
   }
-  dd {
-    margin: 0;
+
+  .checkout__total dt,
+  .checkout__total dd {
+    color: var(--color-text);
+    font-size: 1.0625rem;
     font-weight: 700;
   }
-  button {
-    width: 100%;
-    padding: 14px;
-    margin: 16px 0;
-    border: 0;
-    border-radius: 100px;
-    background: #287739;
-    color: white;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
+
+  .checkout__total dd {
+    color: var(--color-primary-dark);
   }
-  button:disabled {
-    opacity: 0.6;
+
+  .checkout__receipt {
+    margin-bottom: var(--spacing-md);
   }
-  a {
-    color: #267135;
+
+  .checkout__receipt h2 {
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-primary-dark);
+    font-size: 1.375rem;
+  }
+
+  .checkout__order-id {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    word-break: break-all;
+  }
+
+  .checkout__back {
+    display: inline-block;
+    margin-top: var(--spacing-md);
+    font-weight: 600;
   }
 </style>

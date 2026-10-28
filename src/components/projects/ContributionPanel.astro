@@ -1,271 +1,284 @@
 ---
+// Contribution form. Prices are previews: the checkout API recomputes the amount.
+// scripts/projects/contribution-panel.ts adds the footprint presets and enables the button.
+import Button from '../ui/Button.astro';
+import { CONTRIBUTION_PERCENTAGES, QUANTITY_TONNES } from '../../lib/checkout/amount';
+import { formatCo2e, formatMoney, formatTonnes } from '../../lib/format';
+import { projectPath } from '../../lib/projects';
 import type { Project } from '../../types/app';
-const { project } = Astro.props as { project: Project };
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const price = project.pricePerTonneCents;
+const calculatorHref = `/calculadora?returnTo=${encodeURIComponent(projectPath(project.slug))}`;
+// Shown until the script knows the visitor's footprint.
+const initialQuantity = 1;
 ---
 
 <aside
   class="panel"
+  aria-labelledby="contribution-title"
   data-contribution
   data-slug={project.slug}
-  data-price={project.pricePerTonneCents}
+  data-price={price}
 >
-  <h2>Apoie este projeto</h2>
-  <p>{project.summary}</p>
-  <p class="footprint" data-footprint-note hidden></p>
-  <fieldset data-percent-options hidden>
-    <legend>Selecione a quantidade:</legend>
-    <label>
-      <input type="radio" name="contribution-mode" value="25" /> 25%
-    </label>
-    <label>
-      <input type="radio" name="contribution-mode" value="100" checked /> 100%
-    </label>
-    <label>
-      <input type="radio" name="contribution-mode" value="custom" /> Personalizar
-    </label>
+  <h2 id="contribution-title" class="panel__title">
+    Apoie este projeto
+  </h2>
+  <p class="panel__intro">{project.summary}</p>
+
+  <p class="panel__footprint" data-footprint-note hidden></p>
+
+  <fieldset class="presets" data-presets hidden>
+    <legend>Selecione a quantidade</legend>
+    <div class="presets__options">
+      {CONTRIBUTION_PERCENTAGES.map((percentage) => (
+        <label class="preset">
+          <input class="visually-hidden" type="radio" name="contribution" value={percentage} />
+          <span data-preset-label={percentage}>{percentage}%</span>
+        </label>
+      ))}
+      <label class="preset">
+        <input class="visually-hidden" type="radio" name="contribution" value="custom" />
+        <span>Personalizar</span>
+      </label>
+    </div>
   </fieldset>
-  <label class="quantity-label" for="contribution-quantity">
+
+  <label class="panel__label" for="contribution-quantity">
     Quantidade em toneladas de CO₂e
   </label>
   <input
     id="contribution-quantity"
+    class="panel__input"
     data-quantity
     type="number"
-    min="0.01"
-    max="1000"
-    step="0.01"
-    value="1"
     inputmode="decimal"
+    min={QUANTITY_TONNES.min}
+    max={QUANTITY_TONNES.max}
+    step={QUANTITY_TONNES.step}
+    value={initialQuantity}
+    aria-describedby="contribution-quantity-hint"
   />
-  <p class="calculator-link">
-    <a href={`/calculadora?returnTo=${encodeURIComponent(`/projetos/${project.slug}`)}`}>
-      Calcular minha pegada
-    </a>{' '}
-    (opcional)
+  <p id="contribution-quantity-hint" class="panel__hint">
+    De {formatTonnes(QUANTITY_TONNES.min)} a {formatTonnes(QUANTITY_TONNES.max)} t.
+    <a href={calculatorHref}>Calcular minha pegada</a> (opcional)
   </p>
-  <div class="total">
-    <span>Valor por tCO₂e</span>
-    <strong data-unit-price></strong>
-    <span>Quantidade selecionada</span>
-    <strong data-selected-quantity>1 t</strong>
-    <span>Total estimado</span>
-    <strong data-total></strong>
-  </div>
-  <button type="button" data-participate>
+
+  <dl class="panel__summary">
+    <div>
+      <dt>Valor por tCO₂e</dt>
+      <dd>{formatMoney(price)}</dd>
+    </div>
+    <div>
+      <dt>Quantidade selecionada</dt>
+      <dd data-selected-quantity>{formatCo2e(initialQuantity)}</dd>
+    </div>
+    <div class="panel__total">
+      <dt>Total estimado</dt>
+      <dd data-total>{formatMoney(initialQuantity * price)}</dd>
+    </div>
+  </dl>
+
+  <Button block size="lg" data-participate disabled>
     Participar deste projeto
-  </button>
-  <p data-contribution-error role="alert" hidden></p>
-  <small>
+  </Button>
+  <p class="panel__error" data-contribution-error role="alert" hidden></p>
+  <p class="panel__disclaimer">
     O pagamento ainda não está disponível. Você pode registrar seu interesse; nenhum valor será
     cobrado.
-  </small>
+  </p>
 </aside>
+
 <script>
-  import { authReady } from '../../scripts/auth';
-  import { openLoginModal } from '../../scripts/login-modal';
-  import { readDraft, savePendingDraft } from '../../scripts/calculator/draft';
-  import { calculateFootprint } from '../../lib/calculator/calculate';
-  import { auth } from '../../scripts/firebase';
-  const panel = document.querySelector<HTMLElement>('[data-contribution]');
-  if (panel) {
-    const root = panel;
-    const price = Number(panel.dataset.price);
-    const input = panel.querySelector<HTMLInputElement>('[data-quantity]')!;
-    const modes = panel.querySelector<HTMLElement>('[data-percent-options]')!;
-    const note = panel.querySelector<HTMLElement>('[data-footprint-note]')!;
-    const error = panel.querySelector<HTMLElement>('[data-contribution-error]')!;
-    const money = (cents: number) =>
-      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cents / 100);
-    panel.querySelector<HTMLElement>('[data-unit-price]')!.textContent = money(price);
-    let footprint: number | null = null;
-    const draft = readDraft();
-    if (draft) footprint = calculateFootprint(draft.answers).total;
-    else {
-      const user = await authReady;
-      if (user) {
-        try {
-          const response = await fetch('/api/calculator-result', {
-            headers: { Authorization: `Bearer ${await user.getIdToken()}` },
-          });
-          if (response.ok)
-            footprint = (await response.json()).result?.footprint?.annualEmissionsTonnes ?? null;
-        } catch {
-          /* manual input remains available */
-        }
-      }
-    }
-    if (footprint !== null && footprint > 0) {
-      note.hidden = false;
-      note.textContent = `Sua pegada estimada é ${footprint.toLocaleString('pt-BR')} tCO₂e/ano.`;
-      modes.hidden = false;
-      input.value = String(Math.round(footprint * 100) / 100);
-    }
-    function mode() {
-      return (
-        root.querySelector<HTMLInputElement>('input[name="contribution-mode"]:checked')?.value ??
-        'custom'
-      );
-    }
-    function update() {
-      const selected = mode();
-      if (footprint && selected !== 'custom')
-        input.value = String(Math.round(footprint * Number(selected)) / 10000);
-      input.readOnly = Boolean(footprint && selected !== 'custom');
-      const quantity = Number(input.value);
-      const valid =
-        Number.isFinite(quantity) &&
-        quantity >= 0.01 &&
-        quantity <= 1000 &&
-        Math.abs(Math.round(quantity * 100) - quantity * 100) < 1e-8;
-      root.querySelector<HTMLElement>('[data-selected-quantity]')!.textContent = valid
-        ? `${quantity.toLocaleString('pt-BR')} t`
-        : '—';
-      root.querySelector<HTMLElement>('[data-total]')!.textContent = valid
-        ? money(Math.round(quantity * price))
-        : '—';
-      root.querySelector<HTMLButtonElement>('[data-participate]')!.disabled = !valid;
-    }
-    modes.addEventListener('change', update);
-    input.addEventListener('input', () => {
-      if (!input.readOnly) panel.querySelector<HTMLInputElement>('input[value="custom"]')?.click();
-      update();
-    });
-    update();
-    panel
-      .querySelector<HTMLButtonElement>('[data-participate]')!
-      .addEventListener('click', async () => {
-        error.hidden = true;
-        const selected = mode();
-        const intent = {
-          slug: panel.dataset.slug,
-          mode: footprint && selected !== 'custom' ? 'percentage' : 'manual',
-          percentage: selected === 'custom' ? undefined : Number(selected),
-          quantity: Number(input.value),
-          key: crypto.randomUUID(),
-          createdAt: Date.now(),
-        };
-        const continueCheckout = async () => {
-          const user = auth.currentUser;
-          if (!user) return;
-          try {
-            await savePendingDraft(user);
-            sessionStorage.removeItem('nucarbon:checkout-order');
-            sessionStorage.setItem('nucarbon:checkout-intent', JSON.stringify(intent));
-            location.assign('/checkout');
-          } catch (cause) {
-            error.textContent =
-              cause instanceof Error ? cause.message : 'Não foi possível continuar.';
-            error.hidden = false;
-          }
-        };
-        const user = await authReady;
-        if (user) await continueCheckout();
-        else await openLoginModal(continueCheckout);
-      });
-  }
+  import { initializeContributionPanel } from '../../scripts/projects/contribution-panel';
+
+  document.querySelectorAll<HTMLElement>('[data-contribution]').forEach((panel) => {
+    void initializeContributionPanel(panel);
+  });
 </script>
+
 <style lang="scss">
+  @use '../../styles/mixins' as mx;
+
   .panel {
-    position: sticky;
-    top: 110px;
-    padding: 26px;
-    border-radius: 20px;
-    background: white;
-    box-shadow: 0 16px 38px #153b1d15;
-    align-self: start;
-  }
-  h2 {
-    margin: 0 0 6px;
-    font-size: 1.4rem;
-    color: #202c22;
-  }
-  p {
-    color: #637066;
-    line-height: 1.5;
-  }
-  .footprint {
-    padding: 12px;
-    border-radius: 10px;
-    background: #e8f4e9;
-    color: #1d642c;
-    font-weight: 700;
-  }
-  fieldset {
-    border: 0;
-    padding: 0;
-    margin: 18px 0;
-  }
-  legend {
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-  fieldset label {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 14px;
-    gap: 4px;
-    cursor: pointer;
-  }
-  .quantity-label {
-    display: block;
-    font-weight: 700;
-    margin: 16px 0 6px;
-  }
-  input[type='number'] {
-    width: 100%;
-    border: 1px solid #b5c8b7;
-    border-radius: 8px;
-    padding: 10px;
-    font: inherit;
-  }
-  .calculator-link {
-    font-size: 0.85rem;
-  }
-  a {
-    color: #246f32;
-  }
-  .total {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 9px;
-    border-top: 1px solid #e0e8df;
-    padding: 20px 0;
-  }
-  .total span {
-    color: #667;
-  }
-  .total strong {
-    color: #235f2c;
-    text-align: right;
-  }
-  button[data-participate] {
-    width: 100%;
-    padding: 14px;
-    border: 0;
-    border-radius: 100px;
-    background: #287a36;
-    color: white;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  small {
-    display: block;
-    margin-top: 15px;
-    color: #718073;
-    text-align: center;
-    line-height: 1.4;
-  }
-  [role='alert'] {
-    color: #b42318;
-  }
-  @media (max-width: 850px) {
-    .panel {
-      position: static;
+    @include mx.surface;
+
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-card);
+
+    @include mx.up(lg) {
+      position: sticky;
+      top: calc(var(--header-height) + var(--spacing-md));
     }
+  }
+
+  .panel__title {
+    margin-bottom: var(--spacing-2xs);
+    font-size: 1.375rem;
+  }
+
+  .panel__intro {
+    margin-bottom: var(--spacing-sm);
+    font-size: 0.9375rem;
+  }
+
+  .panel__footprint {
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .presets {
+    margin-bottom: var(--spacing-sm);
+    border: 0;
+
+    legend {
+      margin-bottom: var(--spacing-xs);
+      color: var(--color-text);
+      font-weight: 700;
+    }
+  }
+
+  .presets__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .preset {
+    flex: 1 1 auto;
+
+    span {
+      display: block;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-pill);
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+      transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
+    }
+
+    &:hover span {
+      border-color: var(--color-primary);
+    }
+
+    input:checked + span {
+      border-color: var(--color-primary);
+      background: var(--color-primary-soft);
+      color: var(--color-primary-dark);
+    }
+
+    input:focus-visible + span {
+      @include mx.focus-ring;
+    }
+
+    input:disabled + span {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+  }
+
+  .panel__label {
+    display: block;
+    margin-bottom: var(--spacing-2xs);
+    color: var(--color-text);
+    font-weight: 700;
+  }
+
+  .panel__input {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text);
+
+    &:focus-visible {
+      border-color: var(--color-primary);
+    }
+
+    &[aria-invalid='true'] {
+      border-color: var(--color-danger);
+    }
+  }
+
+  .panel__hint {
+    margin: var(--spacing-2xs) 0 0;
+    color: var(--color-text-subtle);
+    font-size: 0.8125rem;
+
+    a {
+      font-weight: 600;
+    }
+  }
+
+  .panel__summary {
+    display: grid;
+    gap: var(--spacing-xs);
+    margin: var(--spacing-md) 0;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+
+    div {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+    }
+
+    dt {
+      color: var(--color-text-muted);
+      font-size: 0.9375rem;
+    }
+
+    dd {
+      color: var(--color-text);
+      font-weight: 700;
+      text-align: right;
+    }
+  }
+
+  .panel__total {
+    dt,
+    dd {
+      color: var(--color-text);
+      font-size: 1.0625rem;
+      font-weight: 700;
+    }
+
+    dd {
+      color: var(--color-primary-dark);
+    }
+  }
+
+  .panel__error {
+    margin: var(--spacing-sm) 0 0;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+    font-size: 0.875rem;
+  }
+
+  .panel__disclaimer {
+    margin: var(--spacing-sm) 0 0;
+    color: var(--color-text-subtle);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    text-align: center;
   }
 </style>

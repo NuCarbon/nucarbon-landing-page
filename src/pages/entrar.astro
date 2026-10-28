@@ -3,37 +3,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import LoginForm from '../components/auth/LoginForm.astro';
 ---
 
-<BaseLayout title="Entrar | Nucarbon" className="login-page">
-  <LoginForm />
+<BaseLayout title="Entrar | Nucarbon" noindex className="page">
+  <div class="container login-page" data-login-page>
+    <LoginForm headingLevel={1} />
+  </div>
 </BaseLayout>
+
 <script>
-  import { authReady, signInWithGoogle } from '../scripts/auth';
-  import { savePendingDraft } from '../scripts/calculator/draft';
-  const user = await authReady;
-  if (user) location.replace('/app');
-  const form = document.querySelector<HTMLElement>('[data-login-form]')!;
-  const button = form.querySelector<HTMLButtonElement>('[data-google-sign-in]')!;
-  const error = form.querySelector<HTMLElement>('[data-login-error]')!;
-  button.addEventListener('click', async () => {
-    button.disabled = true;
-    try {
-      await signInWithGoogle();
-      const { auth } = await import('../scripts/firebase');
-      if (auth.currentUser) await savePendingDraft(auth.currentUser);
-      location.assign('/app');
-    } catch (cause) {
-      error.textContent = cause instanceof Error ? cause.message : 'Não foi possível entrar.';
-      error.hidden = false;
-      button.disabled = false;
-    }
-  });
+  import { safeReturnTo } from '../lib/urls';
+  import { currentUser } from '../scripts/auth';
+  import { requireElement } from '../scripts/dom';
+  import { initializeLoginForm } from '../scripts/login-modal';
+
+  const returnTo = safeReturnTo(new URLSearchParams(location.search).get('returnTo'));
+
+  if (await currentUser()) {
+    location.replace(returnTo);
+  } else {
+    // BaseLayout's login modal holds a second form; use the page's own.
+    const form = requireElement(document, '[data-login-page] [data-login-form]');
+    initializeLoginForm(form, () => location.assign(returnTo));
+  }
 </script>
-<style lang="scss">
-  :global(.login-page) {
-    min-height: 75vh;
+
+<style>
+  .login-page {
     display: grid;
     place-items: center;
-    padding: 120px 20px 60px;
-    background: #f7f8f4;
+    min-height: 50vh;
   }
 </style>

@@ -93,8 +93,10 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
     box-shadow: var(--shadow-card);
   }
 
+  /* overflow keeps the image's own ratio from stretching the 16:10 box. */
   .project-card__media {
     aspect-ratio: 16 / 10;
+    overflow: hidden;
     background: var(--color-surface-muted);
   }
 

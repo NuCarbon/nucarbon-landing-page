@@ -1,5 +1,7 @@
-import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+// Browser Firebase app. Throws while loading when the PUBLIC_FIREBASE_* variables are
+// missing; auth.ts loads this module dynamically and treats that as "signed out".
+import { getApps, initializeApp } from 'firebase/app';
+import { GoogleAuthProvider, getAuth } from 'firebase/auth';
 
 const config = {
   apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,
@@ -12,7 +14,6 @@ function requireConfig() {
   if (Object.values(config).some((value) => !value)) {
     throw new Error('A autenticação ainda não foi configurada.');
   }
-
   return config;
 }
 

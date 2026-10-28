@@ -1,0 +1,86 @@
+---
+// Visible breadcrumb trail plus the matching schema.org BreadcrumbList.
+// The last item is the current page; give it an href so search engines get its URL.
+interface BreadcrumbItem {
+  label: string;
+  /** Site-relative or absolute. */
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+const origin = Astro.site ?? Astro.url;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.label,
+    ...(item.href ? { item: new URL(item.href, origin).href } : {}),
+  })),
+};
+// Project names come from the database: keep "</script>" from closing the tag early.
+const json = JSON.stringify(structuredData).replace(/</g, '\\u003c');
+---
+
+<nav class="breadcrumbs" aria-label="Caminho">
+  <ol>
+    {items.map((item, index) => {
+      const current = index === items.length - 1;
+      return (
+        <li>
+          {current || !item.href ? (
+            <span aria-current={current ? 'page' : undefined}>{item.label}</span>
+          ) : (
+            <a href={item.href}>{item.label}</a>
+          )}
+          {!current && (
+            <span class="breadcrumbs__separator" aria-hidden="true">
+              ›
+            </span>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>
+<script is:inline type="application/ld+json" set:html={json} />
+<style>
+  .breadcrumbs {
+    margin-bottom: var(--spacing-md);
+    font-size: 0.875rem;
+  }
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2xs);
+    list-style: none;
+  }
+
+  li {
+    display: inline-flex;
+    gap: var(--spacing-2xs);
+    min-width: 0;
+    color: var(--color-text-muted);
+  }
+
+  a {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+  }
+
+  .breadcrumbs__separator {
+    color: var(--color-text-subtle);
+  }
+</style>

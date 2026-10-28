@@ -23,3 +23,17 @@ export function projectCardView(project: Project) {
 }
 
 export type ProjectCardView = ReturnType<typeof projectCardView>;
+
+/**
+ * Public project pages are rendered from Firestore on request. Netlify's CDN may reuse a
+ * render for five minutes (and serve it stale while refreshing); browsers always revalidate.
+ * Errors are never cached, so a recovered database or a newly published slug shows at once.
+ */
+export function setProjectsCacheHeaders(headers: Headers, cacheable: boolean): void {
+  if (!cacheable) {
+    headers.set('Cache-Control', 'no-store');
+    return;
+  }
+  headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
+  headers.set('Netlify-CDN-Cache-Control', 'public, s-maxage=300, stale-while-revalidate=86400');
+}

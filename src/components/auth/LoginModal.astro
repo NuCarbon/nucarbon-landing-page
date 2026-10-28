@@ -1,39 +1,66 @@
 ---
+// Sign-in dialog opened by openLoginModal() (scripts/login-modal.ts) on any page.
 import LoginForm from './LoginForm.astro';
 ---
 
-<dialog data-login-modal aria-label="Entrar na Nucarbon">
-  <button type="button" class="close" data-modal-close aria-label="Fechar">
-    ×
+<dialog class="login-modal" data-login-modal aria-labelledby="modal-login-title">
+  <button type="button" class="login-modal__close" data-modal-close aria-label="Fechar">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+      <path
+        d="M6 6l12 12M18 6L6 18"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      ></path>
+    </svg>
   </button>
-  <LoginForm titleId="modal-login-title" />
+  <LoginForm headingLevel={2} titleId="modal-login-title" />
 </dialog>
+
 <script>
   import { initializeLoginModal } from '../../scripts/login-modal';
+
   initializeLoginModal();
 </script>
-<style lang="scss">
-  dialog {
-    width: min(95vw, 520px);
-    max-height: 95vh;
-    padding: 20px;
+
+<style>
+  .login-modal {
+    width: min(100% - 2 * var(--spacing-sm), 30rem);
+    max-width: none;
+    max-height: calc(100dvh - 2 * var(--spacing-sm));
+    margin: auto;
+    padding: 0;
+    overflow: auto;
     border: 0;
-    border-radius: 22px;
+    border-radius: var(--radius-lg);
     background: transparent;
-    overflow: visible;
   }
-  dialog::backdrop {
-    background: #071c0fc0;
+
+  .login-modal::backdrop {
+    background: var(--color-overlay);
   }
-  .close {
+
+  .login-modal__close {
     position: absolute;
+    top: var(--spacing-xs);
+    right: var(--spacing-xs);
     z-index: 1;
-    top: 26px;
-    right: 28px;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
     border: 0;
+    border-radius: var(--radius-round);
     background: transparent;
-    color: #315536;
-    font-size: 2rem;
+    color: var(--color-text-muted);
     cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .login-modal__close:hover {
+    background: var(--color-surface-muted);
+    color: var(--color-text);
   }
 </style>
