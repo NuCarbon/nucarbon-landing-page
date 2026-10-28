@@ -13,15 +13,13 @@ const { name, class: className } = Astro.props;
 
 <svg
   class:list={['calculator-icon', className]}
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="1.8"
-  stroke-linecap="round"
-  stroke-linejoin="round"
+  viewBox="0 -960 960 960"
+  fill="currentColor"
   aria-hidden="true"
-  set:html={icons[name]}
-/>
+  focusable="false"
+>
+  <path d={icons[name].path} />
+</svg>
 
 <style>
   .calculator-icon {

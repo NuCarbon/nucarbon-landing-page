@@ -35,3 +35,11 @@ test('steps use known icons and the shared category labels', () => {
     if (step.id in categoryDetails) assert.equal(step.label, categoryDetails[step.id].label);
   }
 });
+
+test('every icon names its Material Symbol and has path data', () => {
+  for (const [name, icon] of Object.entries(icons)) {
+    assert.ok(icon.symbol.length > 0, `${name} has no symbol`);
+    // Path data only (the official bolt path opens with a relative moveto); no SVG markup.
+    assert.match(icon.path, /^[Mm][MmLlHhVvCcSsQqTtAaZz\d.,\s-]*$/, `${name} is not path data`);
+  }
+});
