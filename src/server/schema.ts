@@ -1,6 +1,9 @@
+// Firestore document shapes and their validation. Validate on both writes and reads:
+// a TypeScript cast alone cannot validate what is stored in Firestore.
 import { GeoPoint, Timestamp } from 'firebase-admin/firestore';
-import { Biome, ProjectStatus, ReactionType } from '../types/app.ts';
-import type { Author, CommunityPost, Project, UUID } from '../types/app';
+import { Biome, MetricType, ProjectStatus, ReactionType } from '../types/app.ts';
+import type { Author, CommunityPost, Footprint, ImpactMetric, Project, UUID } from '../types/app';
+import { isSlug, isUuid } from './ids.ts';
 
 export interface ProjectDocument extends Omit<Project, 'id' | 'location'> {
   location: GeoPoint;
@@ -11,102 +14,145 @@ export interface PostDocument extends Omit<CommunityPost, 'id' | 'author' | 'cre
   createdAt: Timestamp;
 }
 export type AuthorDocument = Omit<Author, 'id'>;
-function ensure(condition: unknown, message: string): asserts condition {
-  if (!condition) {
-    console.log(message);
-    throw new Error(`Invalid document: ${message}`);
-  }
+
+type Fields = Record<string, unknown>;
+
+export const isRecord = (value: unknown): value is Fields =>
+  value !== null && typeof value === 'object' && !Array.isArray(value);
+
+/**
+ * Accepts only the numeric members of a numeric enum. `Object.values` of a numeric TS enum
+ * also lists its member names, so a plain `includes` would accept "CarbonOffset".
+ */
+export function isEnumValue<E extends object>(
+  value: unknown,
+  enumObject: E,
+): value is Extract<E[keyof E], number> {
+  return typeof value === 'number' && Object.values(enumObject).includes(value);
 }
 
-function object(value: unknown): Record<string, unknown> {
-  ensure(value !== null && typeof value === 'object' && !Array.isArray(value), 'expected object');
-  return value as Record<string, unknown>;
-}
-
-const nonnegative = (value: unknown): value is number =>
+const isNonNegative = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0;
-const count = (value: unknown) => nonnegative(value) && Number.isSafeInteger(value);
-const text = (value: unknown) => typeof value === 'string' && value.trim().length > 0;
-const uuid = (value: unknown) =>
-  typeof value === 'string' &&
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
-const enumCode = (value: unknown, codes: object) =>
-  typeof value === 'number' && Object.values(codes).includes(value);
-const safeUrl = (value: unknown) =>
+const isCount = (value: unknown): value is number =>
+  isNonNegative(value) && Number.isSafeInteger(value);
+const isText = (value: unknown): value is string =>
+  typeof value === 'string' && value.trim().length > 0;
+/** HTTPS URLs or same-origin absolute paths; rejects javascript:, data: and "//host". */
+const isSafeUrl = (value: unknown) =>
   typeof value === 'string' && (/^https:\/\/[^\s]+$/.test(value) || /^\/(?!\/)[^\s]*$/.test(value));
 
-// Validate on both writes and reads: a TS cast alone cannot validate Firestore.
-export function validateDocument(path: string, value: unknown): void {
-  const data = object(value);
-  const [collection, id, extra] = path.split('/');
-  ensure(uuid(id) && !extra, 'document UUID');
-  if (collection === 'authors') {
-    ensure(text(data.displayName), 'displayName');
-  } else if (collection === 'projects') {
-    ensure(text(data.name), 'project name');
-    ensure(enumCode(data.biome, Biome), 'biome code');
-    ensure(enumCode(data.status, ProjectStatus), 'status code');
-    ensure(data.location instanceof GeoPoint, 'location must be a GeoPoint');
-    ensure(nonnegative(data.areaHectares), 'areaHectares');
+function ensure(condition: unknown, path: string, field: string): asserts condition {
+  if (!condition) throw new Error(`Invalid document ${path}: ${field}`);
+}
+
+function fields(value: unknown, path: string, field: string): Fields {
+  ensure(isRecord(value), path, field);
+  return value;
+}
+
+function ensureList(
+  value: unknown,
+  path: string,
+  field: string,
+  isValidItem: (item: Fields) => boolean,
+) {
+  ensure(Array.isArray(value), path, field);
+  for (const item of value) ensure(isValidItem(fields(item, path, field)), path, field);
+}
+
+function validateAuthor(data: Fields, path: string) {
+  ensure(isText(data.displayName), path, 'displayName');
+}
+
+function validateProject(data: Fields, path: string) {
+  ensure(isText(data.name), path, 'name');
+  ensure(isSlug(data.slug), path, 'slug');
+  ensure(typeof data.published === 'boolean', path, 'published');
+  ensure(isEnumValue(data.biome, Biome), path, 'biome');
+  ensure(isEnumValue(data.status, ProjectStatus), path, 'status');
+  ensure(data.location instanceof GeoPoint, path, 'location must be a GeoPoint');
+  ensure(data.createdAt instanceof Timestamp, path, 'createdAt');
+  ensure(isNonNegative(data.areaHectares), path, 'areaHectares');
+  ensure(
+    isNonNegative(data.restorationProgress) && data.restorationProgress <= 1,
+    path,
+    'restorationProgress must be a 0-1 ratio',
+  );
+  ensure(
+    isCount(data.pricePerTonneCents) && data.pricePerTonneCents > 0,
+    path,
+    'pricePerTonneCents',
+  );
+  for (const key of ['summary', 'description', 'municipality', 'state', 'methodology']) {
+    ensure(isText(data[key]), path, key);
+  }
+  for (const key of ['treesPlanted', 'carbonTonnes', 'participants']) {
+    ensure(isNonNegative(data[key]), path, key);
+  }
+  ensureList(data.gallery, path, 'gallery', (item) => isSafeUrl(item.url) && isText(item.alt));
+  ensureList(
+    data.species,
+    path,
+    'species',
+    (item) => isText(item.name) && isText(item.scientificName),
+  );
+  ensureList(
+    data.impacts,
+    path,
+    'impacts',
+    (item) => isText(item.title) && isText(item.description),
+  );
+  ensureList(
+    data.timeline,
+    path,
+    'timeline',
+    (item) => isText(item.label) && isText(item.description),
+  );
+  ensureList(
+    data.documents,
+    path,
+    'documents',
+    (item) => isText(item.title) && isSafeUrl(item.url),
+  );
+}
+
+function validatePost(data: Fields, path: string) {
+  ensure(isUuid(data.authorId), path, 'authorId');
+  ensure(isText(data.body), path, 'body');
+  ensure(data.createdAt instanceof Timestamp, path, 'createdAt');
+  ensure(isCount(data.commentCount), path, 'commentCount');
+  ensure(Array.isArray(data.reactions), path, 'reactions');
+  const seen = new Set<number>();
+  for (const entry of data.reactions) {
+    const reaction = fields(entry, path, 'reactions');
     ensure(
-      nonnegative(data.restorationProgress) && data.restorationProgress <= 1,
-      'restorationProgress ratio',
+      isEnumValue(reaction.type, ReactionType) && !seen.has(reaction.type),
+      path,
+      'reaction type must be known and unique',
     );
-    ensure(data.createdAt instanceof Timestamp, 'project createdAt');
-    ensure(typeof data.slug === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.slug), 'slug');
-    ensure(typeof data.published === 'boolean', 'published');
-    ensure(
-      typeof data.pricePerTonneCents === 'number' &&
-        count(data.pricePerTonneCents) &&
-        data.pricePerTonneCents > 0,
-      'pricePerTonneCents',
-    );
-    for (const key of ['summary', 'description', 'municipality', 'state', 'methodology'])
-      ensure(text(data[key]), key);
-    for (const key of ['treesPlanted', 'carbonTonnes', 'participants'])
-      ensure(nonnegative(data[key]), key);
-    for (const key of ['gallery', 'species', 'impacts', 'timeline', 'documents'])
-      ensure(Array.isArray(data[key]), key);
-    for (const image of (data.gallery ?? []) as unknown[]) {
-      const item = object(image);
-      ensure(safeUrl(item.url) && text(item.alt), 'gallery image');
-    }
-    for (const species of (data.species ?? []) as unknown[]) {
-      const item = object(species);
-      ensure(text(item.name) && text(item.scientificName), 'species');
-    }
-    for (const impact of (data.impacts ?? []) as unknown[]) {
-      const item = object(impact);
-      ensure(text(item.title) && text(item.description), 'impact');
-    }
-    for (const event of (data.timeline ?? []) as unknown[]) {
-      const item = object(event);
-      ensure(text(item.label) && text(item.description), 'timeline');
-    }
-    for (const document of (data.documents ?? []) as unknown[]) {
-      const item = object(document);
-      ensure(text(item.title) && safeUrl(item.url), 'document');
-    }
-  } else if (collection === 'posts') {
-    ensure(uuid(data.authorId), 'authorId');
-    ensure(text(data.body), 'post body');
-    ensure(data.createdAt instanceof Timestamp, 'post createdAt');
-    ensure(count(data.commentCount), 'commentCount');
-    ensure(Array.isArray(data.reactions), 'reactions');
-    const seen = new Set();
-    for (const entry of data.reactions) {
-      const reaction = object(entry);
-      ensure(enumCode(reaction.type, ReactionType) && !seen.has(reaction.type), 'reaction type');
-      ensure(count(reaction.count), 'reaction count');
-      seen.add(reaction.type);
-    }
-  } else {
-    throw new Error('Unknown collection.');
+    ensure(isCount(reaction.count), path, 'reaction count');
+    seen.add(reaction.type);
   }
 }
 
-export function projectToJSON(id: string, project: ProjectDocument): Project {
-  validateDocument(`projects/${id}`, project);
+const validators: Record<string, (data: Fields, path: string) => void> = {
+  authors: validateAuthor,
+  projects: validateProject,
+  posts: validatePost,
+};
+
+/** Throws a descriptive error unless `value` is a valid document for the root-collection `path`. */
+export function validateDocument(path: string, value: unknown): void {
+  const [collection, id, ...rest] = path.split('/');
+  const validate = Object.hasOwn(validators, collection) ? validators[collection] : undefined;
+  if (!validate) throw new Error(`Unknown collection: ${collection}`);
+  ensure(isUuid(id) && rest.length === 0, path, 'document ID must be a UUID');
+  validate(fields(value, path, 'expected an object'), path);
+}
+
+export function projectToJSON(id: string, data: unknown): Project {
+  validateDocument(`projects/${id}`, data);
+  const project = data as ProjectDocument;
   return {
     id: id as UUID,
     name: project.name,
@@ -134,10 +180,11 @@ export function projectToJSON(id: string, project: ProjectDocument): Project {
   };
 }
 
-export function postToJSON(id: string, post: PostDocument, author: Author): CommunityPost {
-  validateDocument(`posts/${id}`, post);
+export function postToJSON(id: string, data: unknown, author: Author): CommunityPost {
+  validateDocument(`posts/${id}`, data);
   validateDocument(`authors/${author.id}`, author);
-  ensure(post.authorId === author.id, 'post author reference');
+  const post = data as PostDocument;
+  ensure(post.authorId === author.id, `posts/${id}`, 'authorId must match the author');
   return {
     id: id as UUID,
     author,
@@ -146,4 +193,23 @@ export function postToJSON(id: string, post: PostDocument, author: Author): Comm
     reactions: post.reactions,
     commentCount: post.commentCount,
   };
+}
+
+/** `users/{uid}.footprint`, or null when it is absent or malformed. */
+export function footprintToJSON(value: unknown): Footprint | null {
+  if (!isRecord(value)) return null;
+  const { annualEmissionsTonnes, updatedAt } = value;
+  return isNonNegative(annualEmissionsTonnes) && updatedAt instanceof Timestamp
+    ? { annualEmissionsTonnes, updatedAt: updatedAt.toMillis() }
+    : null;
+}
+
+/** `users/{uid}.impactMetrics`, keeping only known types with finite, non-negative values. */
+export function metricsToJSON(value: unknown): ImpactMetric[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((metric) =>
+    isRecord(metric) && isEnumValue(metric.type, MetricType) && isNonNegative(metric.value)
+      ? [{ type: metric.type, value: metric.value }]
+      : [],
+  );
 }

@@ -1,111 +1,162 @@
+// Contribution orders: users/{uid}/orders/{key}. Registering interest does not collect money.
 import { Timestamp } from 'firebase-admin/firestore';
+import {
+  CONTRIBUTION_PERCENTAGES,
+  calculateAmount,
+  isValidQuantity,
+  type AmountInput,
+  type ContributionPercentage,
+} from '../lib/checkout/amount.ts';
+import type { CheckoutRequest, Order, UUID } from '../types/app';
 import { db } from './firebase.ts';
-import { readProjectBySlug } from './repository.ts';
-import { json } from './http.ts';
-import { calculateAmount } from '../lib/checkout/amount.ts';
+import { HttpError } from './http.ts';
+import { isSlug, isUuid } from './ids.ts';
+import { readProjectBySlug, readUser } from './repository.ts';
+import { isRecord } from './schema.ts';
 
-const uuid = (value: unknown): value is string =>
-  typeof value === 'string' &&
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
-const DAY = 24 * 60 * 60 * 1000;
-export async function createOrder(uid: string, body: any) {
-  if (
-    !body ||
-    !uuid(body.key) ||
-    typeof body.slug !== 'string' ||
-    !['manual', 'percentage'].includes(body.mode)
-  )
-    return json({ error: 'Invalid checkout' }, { status: 400 });
-  const ref = db().doc(`users/${uid}/orders/${body.key}`);
-  const existing = await ref.get();
-  if (existing.exists) return json({ order: serialize(existing.id, existing.data()!) });
-  const project = await readProjectBySlug(body.slug);
-  if (!project) return json({ error: 'Project not found' }, { status: 404 });
-  let amount;
-  if (body.mode === 'percentage') {
-    if (![25, 100].includes(body.percentage))
-      return json({ error: 'Invalid percentage' }, { status: 400 });
-    const user = await db().doc(`users/${uid}`).get();
-    const annual = user.data()?.footprint?.annualEmissionsTonnes;
-    if (typeof annual !== 'number' || !Number.isFinite(annual))
-      return json({ error: 'Saved footprint required' }, { status: 400 });
-    try {
-      amount = calculateAmount(
-        { mode: 'percentage', percentage: body.percentage, annualFootprint: annual },
-        project.pricePerTonneCents,
-      );
-    } catch {
-      return json({ error: 'Invalid quantity' }, { status: 400 });
-    }
-  } else {
-    try {
-      amount = calculateAmount(
-        { mode: 'manual', quantity: body.quantity },
-        project.pricePerTonneCents,
-      );
-    } catch {
-      return json({ error: 'Invalid quantity' }, { status: 400 });
-    }
+/** A pending order can be confirmed for this long after it is created. */
+const ORDER_TTL_MS = 24 * 60 * 60 * 1000;
+
+interface OrderDocument extends Omit<Order, 'id' | 'createdAt' | 'expiresAt' | 'registeredAt'> {
+  createdAt: Timestamp;
+  expiresAt: Timestamp;
+  registeredAt?: Timestamp;
+}
+
+export type ValidCheckoutRequest = CheckoutRequest &
+  (
+    | { mode: 'manual'; quantity: number }
+    | { mode: 'percentage'; percentage: ContributionPercentage }
+  );
+
+const orderRef = (uid: string, id: string) =>
+  db().collection('users').doc(uid).collection('orders').doc(id);
+
+const isContributionPercentage = (value: unknown): value is ContributionPercentage =>
+  (CONTRIBUTION_PERCENTAGES as readonly unknown[]).includes(value);
+
+/** Validates a POST /api/checkouts body. Unknown fields (e.g. the client's createdAt) are ignored. */
+export function parseCheckoutRequest(body: unknown): ValidCheckoutRequest {
+  if (!isRecord(body) || !isUuid(body.key) || !isSlug(body.slug)) {
+    throw new HttpError(400, 'Invalid checkout');
   }
-  const order = {
+  const key = body.key;
+  const slug = body.slug;
+
+  if (body.mode === 'percentage') {
+    if (!isContributionPercentage(body.percentage)) throw new HttpError(400, 'Invalid percentage');
+    return { key, slug, mode: 'percentage', percentage: body.percentage };
+  }
+  if (body.mode === 'manual') {
+    if (typeof body.quantity !== 'number' || !isValidQuantity(body.quantity)) {
+      throw new HttpError(400, 'Invalid quantity');
+    }
+    return { key, slug, mode: 'manual', quantity: body.quantity };
+  }
+  throw new HttpError(400, 'Invalid checkout');
+}
+
+function toOrder(id: string, order: OrderDocument): Order {
+  return {
+    id: id as UUID,
+    projectId: order.projectId,
+    projectSlug: order.projectSlug,
+    projectName: order.projectName,
+    quantityTonnes: order.quantityTonnes,
+    mode: order.mode,
+    percentage: order.percentage,
+    pricePerTonneCents: order.pricePerTonneCents,
+    totalCents: order.totalCents,
+    status: order.status,
+    createdAt: order.createdAt.toMillis(),
+    expiresAt: order.expiresAt.toMillis(),
+    registeredAt: order.registeredAt?.toMillis() ?? null,
+  };
+}
+
+/** The server resolves the price and the saved footprint; the client only picks an option. */
+async function resolveAmount(
+  uid: string,
+  request: ValidCheckoutRequest,
+  pricePerTonneCents: number,
+) {
+  let input: AmountInput;
+  if (request.mode === 'manual') {
+    input = { mode: 'manual', quantity: request.quantity };
+  } else {
+    const { footprint } = await readUser(uid);
+    if (!footprint) throw new HttpError(400, 'Saved footprint required');
+    input = {
+      mode: 'percentage',
+      percentage: request.percentage,
+      annualFootprint: footprint.annualEmissionsTonnes,
+    };
+  }
+
+  try {
+    return calculateAmount(input, pricePerTonneCents);
+  } catch {
+    throw new HttpError(400, 'Invalid quantity');
+  }
+}
+
+/** Idempotent: the client-generated key becomes the order ID, so retries return the same order. */
+export async function createOrder(uid: string, request: ValidCheckoutRequest): Promise<Order> {
+  const ref = orderRef(uid, request.key);
+  // A retry must return the original order even if the project or footprint changed since.
+  const existing = await ref.get();
+  if (existing.exists) return toOrder(ref.id, existing.data() as OrderDocument);
+
+  const project = await readProjectBySlug(request.slug);
+  if (!project) throw new HttpError(404, 'Project not found');
+  const amount = await resolveAmount(uid, request, project.pricePerTonneCents);
+
+  const now = Date.now();
+  const order: OrderDocument = {
     projectId: project.id,
     projectSlug: project.slug,
     projectName: project.name,
     quantityTonnes: amount.quantityTonnes,
-    mode: body.mode,
-    percentage: body.mode === 'percentage' ? body.percentage : null,
+    mode: request.mode,
+    percentage: request.mode === 'percentage' ? request.percentage : null,
     pricePerTonneCents: project.pricePerTonneCents,
     totalCents: amount.totalCents,
     status: 'pending',
-    createdAt: Timestamp.now(),
-    expiresAt: Timestamp.fromMillis(Date.now() + DAY),
+    createdAt: Timestamp.fromMillis(now),
+    expiresAt: Timestamp.fromMillis(now + ORDER_TTL_MS),
   };
-  const result = await db().runTransaction(async (transaction) => {
+  const stored = await db().runTransaction(async (transaction) => {
     const current = await transaction.get(ref);
-    if (current.exists) return current.data()!;
+    if (current.exists) return current.data() as OrderDocument;
     transaction.create(ref, order);
     return order;
   });
-  return json({ order: serialize(ref.id, result) });
+  return toOrder(ref.id, stored);
 }
-export function serialize(id: string, data: FirebaseFirestore.DocumentData) {
-  return {
-    id,
-    projectId: data.projectId,
-    projectSlug: data.projectSlug,
-    projectName: data.projectName,
-    quantityTonnes: data.quantityTonnes,
-    mode: data.mode,
-    percentage: data.percentage,
-    pricePerTonneCents: data.pricePerTonneCents,
-    totalCents: data.totalCents,
-    status: data.status,
-    createdAt: data.createdAt.toMillis(),
-    expiresAt: data.expiresAt.toMillis(),
-    registeredAt: data.registeredAt?.toMillis() ?? null,
-  };
+
+export async function getOrder(uid: string, id: string): Promise<Order> {
+  if (!isUuid(id)) throw new HttpError(404, 'Order not found');
+  const snapshot = await orderRef(uid, id).get();
+  if (!snapshot.exists) throw new HttpError(404, 'Order not found');
+  return toOrder(id, snapshot.data() as OrderDocument);
 }
-export async function getOrder(uid: string, id: string) {
-  if (!uuid(id)) return json({ error: 'Not found' }, { status: 404 });
-  const snapshot = await db().doc(`users/${uid}/orders/${id}`).get();
-  return snapshot.exists
-    ? json({ order: serialize(id, snapshot.data()!) })
-    : json({ error: 'Not found' }, { status: 404 });
-}
-export async function confirmOrder(uid: string, id: string) {
-  if (!uuid(id)) return json({ error: 'Not found' }, { status: 404 });
-  const ref = db().doc(`users/${uid}/orders/${id}`);
-  const result = await db().runTransaction(async (transaction) => {
+
+/** Registered → 200 (idempotent); pending but expired → 410; any other status → 409. */
+export async function confirmOrder(uid: string, id: string): Promise<Order> {
+  if (!isUuid(id)) throw new HttpError(404, 'Order not found');
+  const ref = orderRef(uid, id);
+
+  return db().runTransaction(async (transaction) => {
     const snapshot = await transaction.get(ref);
-    if (!snapshot.exists) return null;
-    const data = snapshot.data()!;
-    if (data.status === 'registered') return data;
-    if (data.status !== 'pending' || data.expiresAt.toMillis() < Date.now()) return 'expired';
-    const registered = { ...data, status: 'registered', registeredAt: Timestamp.now() };
-    transaction.update(ref, { status: registered.status, registeredAt: registered.registeredAt });
-    return registered;
+    if (!snapshot.exists) throw new HttpError(404, 'Order not found');
+    const order = snapshot.data() as OrderDocument;
+
+    if (order.status === 'registered') return toOrder(id, order);
+    if (order.status !== 'pending') throw new HttpError(409, 'Order cannot be confirmed');
+    if (order.expiresAt.toMillis() <= Date.now()) throw new HttpError(410, 'Checkout expired');
+
+    const registeredAt = Timestamp.now();
+    transaction.update(ref, { status: 'registered', registeredAt });
+    return toOrder(id, { ...order, status: 'registered', registeredAt });
   });
-  if (!result) return json({ error: 'Not found' }, { status: 404 });
-  if (result === 'expired') return json({ error: 'Checkout expired' }, { status: 410 });
-  return json({ order: serialize(id, result) });
 }

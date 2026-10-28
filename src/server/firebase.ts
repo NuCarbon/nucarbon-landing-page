@@ -10,7 +10,9 @@ function firebaseApp() {
   const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
   if (!projectId || !clientEmail || !privateKey) {
-    throw new Error('Firebase Admin não está configurado.');
+    throw new Error(
+      'Firebase Admin is not configured: set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY.',
+    );
   }
 
   return initializeApp({ credential: cert({ projectId, clientEmail, privateKey }) });

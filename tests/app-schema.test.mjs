@@ -1,13 +1,19 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { GeoPoint, Timestamp } from 'firebase-admin/firestore';
-import { validateDocument, projectToJSON, postToJSON } from '../src/server/schema.ts';
+import {
+  footprintToJSON,
+  isEnumValue,
+  metricsToJSON,
+  postToJSON,
+  projectToJSON,
+  validateDocument,
+} from '../src/server/schema.ts';
 import { Biome, MetricType, ProjectStatus, ReactionType } from '../src/types/app.ts';
 import {
   formatMetric,
-  formatProgress,
+  formatPercent,
   formatReactions,
-  formatLocation,
   formatFootprint,
 } from '../src/lib/format.ts';
 
@@ -83,12 +89,66 @@ test('invalid IDs, fields, and unsafe URLs are rejected', () => {
   ])
     assert.throws(() => validateDocument(`projects/${projectId}`, { ...project, ...patch }));
   assert.throws(() => validateDocument(`posts/${postId}`, { ...post, commentCount: 1.5 }));
+  assert.throws(
+    () =>
+      validateDocument(`posts/${postId}`, {
+        ...post,
+        reactions: [
+          { type: ReactionType.Heart, count: 1 },
+          { type: ReactionType.Heart, count: 2 },
+        ],
+      }),
+    /reaction type/,
+  );
+  assert.throws(() => validateDocument(`posts/${postId}`, { ...post, authorId: 'Carlos' }));
+  assert.throws(() => validateDocument(`orders/${postId}`, {}), /Unknown collection/);
+  assert.throws(() => validateDocument(`projects/${projectId}/extra`, project));
+  assert.throws(
+    () => validateDocument(`projects/${projectId}`, { ...project, name: ' ' }),
+    new RegExp(`projects/${projectId}: name`),
+  );
+});
+
+test('enum codes accept only numeric members', () => {
+  assert.equal(isEnumValue(MetricType.CarbonOffset, MetricType), true);
+  assert.equal(isEnumValue('CarbonOffset', MetricType), false);
+  assert.equal(isEnumValue('2', MetricType), false);
+  assert.equal(isEnumValue(99, MetricType), false);
+});
+
+test('user footprint and metrics drop malformed values', () => {
+  const updatedAt = Timestamp.fromMillis(1791547200000);
+  assert.deepEqual(footprintToJSON({ annualEmissionsTonnes: 4.8, updatedAt }), {
+    annualEmissionsTonnes: 4.8,
+    updatedAt: 1791547200000,
+  });
+  for (const value of [
+    undefined,
+    { annualEmissionsTonnes: -1, updatedAt },
+    { annualEmissionsTonnes: 4.8, updatedAt: 1791547200000 },
+  ])
+    assert.equal(footprintToJSON(value), null);
+  assert.deepEqual(
+    metricsToJSON([
+      { type: MetricType.TreesSupported, value: 32 },
+      { type: 'CarbonOffset', value: 1 },
+      { type: MetricType.CarbonOffset, value: -1 },
+      { type: MetricType.CarbonOffset, value: Infinity },
+      { type: 99, value: 1 },
+      null,
+      { type: MetricType.CarbonOffset, value: 1.2, note: 'private' },
+    ]),
+    [
+      { type: MetricType.TreesSupported, value: 32 },
+      { type: MetricType.CarbonOffset, value: 1.2 },
+    ],
+  );
+  assert.deepEqual(metricsToJSON('none'), []);
 });
 
 test('units and labels remain presentation concerns', () => {
   assert.equal(formatFootprint(4.8), '4,8 tCO₂e / ano');
-  assert.equal(formatProgress(0.65), '65%');
+  assert.equal(formatPercent(0.65), '65%');
   assert.equal(formatMetric({ type: MetricType.CarbonOffset, value: 1.2 }).value, '1,2 tCO₂e');
   assert.equal(formatReactions([{ type: ReactionType.Heart, count: 2 }]), '❤️ 2');
-  assert.equal(formatLocation({ latitude: -22.53, longitude: -52.17 }), '22.5300° S, 52.1700° O');
 });

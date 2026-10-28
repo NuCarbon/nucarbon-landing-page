@@ -1,44 +1,140 @@
 # Nucarbon
 
-Astro site with public project pages, Firebase Authentication, Firestore, and Netlify Functions. Public pages render from Firestore on demand; account data is served only after Firebase token verification.
+Nucarbon's public site, carbon footprint calculator, project pages and signed-in area (`/app`).
 
-## Local setup
+- **Astro 6** with SCSS. Marketing pages are prerendered; project pages and the sitemap render
+  on demand from Firestore.
+- **Firebase Authentication** (Google sign-in) in the browser, **Firebase Admin + Firestore** on
+  the server.
+- **Netlify** hosting: Astro SSR through `@astrojs/netlify`; the JSON API lives in Netlify
+  Functions v2 under `/api/*`.
+- **Google Apps Script** stores contact form submissions in a Google Sheet.
+
+## Setup
+
+Requires Node 22.7 or newer (Netlify builds with Node 24).
 
 ```sh
 npm install
-npm run dev:netlify
+npm run dev:netlify   # http://localhost:8888, with /api/* functions
 ```
 
-Set `PUBLIC_FIREBASE_API_KEY`, `PUBLIC_FIREBASE_AUTH_DOMAIN`, `PUBLIC_FIREBASE_PROJECT_ID`, and `PUBLIC_FIREBASE_APP_ID` for the browser. Set `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY` for server functions. Enable Google sign-in in Firebase Authentication and authorize the local and deployed domains. Keep server credentials out of `PUBLIC_*` variables.
+`npm run dev` starts Astro alone (port 4321) without the API functions.
+
+### Environment variables
+
+| Variable                                                                                                         | Where                                       | Used by                                 |
+| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | --------------------------------------- |
+| `PUBLIC_FIREBASE_API_KEY`, `PUBLIC_FIREBASE_AUTH_DOMAIN`, `PUBLIC_FIREBASE_PROJECT_ID`, `PUBLIC_FIREBASE_APP_ID` | tracked `.env`                              | Browser Firebase SDK (inlined at build) |
+| `PUBLIC_GOOGLE_SCRIPT_URL`                                                                                       | tracked `.env`                              | Contact form                            |
+| `FIREBASE_PROJECT_ID`                                                                                            | tracked `.env` locally; Netlify UI deployed | Firebase Admin, seed project guard      |
+| `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`                                                                  | `.env.local` (ignored); Netlify UI deployed | Firebase Admin (server only)            |
+
+`PUBLIC_*` values are not secret and end up in the browser bundle. Never put server credentials in
+a `PUBLIC_*` variable. Deployed functions and SSR pages read `process.env` at runtime, so every
+server variable must also be set in the Netlify UI; `.env` files are only read locally. In
+Firebase Authentication, enable Google sign-in and authorize the local and deployed domains.
+
+## Scripts
+
+| Command                                    | Purpose                                                   |
+| ------------------------------------------ | --------------------------------------------------------- |
+| `npm run dev` / `npm run dev:netlify`      | Astro dev server / Netlify dev with functions             |
+| `npm run build`                            | Production build into `dist/`                             |
+| `npm run check`                            | `astro check` type checking                               |
+| `npm test`                                 | Unit tests (`node --test`, TypeScript via type stripping) |
+| `npm run format` / `npm run format:check`  | Prettier                                                  |
+| `npm run seed -- --project <id> [--apply]` | Seed the launch content into Firestore (see below)        |
+
+## Code map
+
+| Path                 | Contents                                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `src/pages`          | Routes: marketing, `/calculadora`, `/projetos`, `/app`, `/entrar`, `/checkout`, `sitemap-projetos.xml`        |
+| `src/components`     | Astro components by area (`sections`, `calculator`, `projects`, `app`, `layout`, `ui`, …)                     |
+| `src/lib`            | Isomorphic code (browser, SSR and Node tests): formatting, calculator rules, contribution pricing, URL safety |
+| `src/server`         | Server-only code: HTTP helpers and auth, Firebase Admin, Firestore schema validation and repository, checkout |
+| `src/scripts`        | Browser-only code: auth, API client, calculator controller, checkout session storage                          |
+| `src/types/app.ts`   | Domain types and API contracts shared by server and browser                                                   |
+| `netlify/functions`  | API handlers only (`api-*.ts`); shared logic stays in `src/server`                                            |
+| `scripts/seed`       | Seed fixtures; `scripts/seed.mjs` is the CLI                                                                  |
+| `google-apps-script` | Contact form backend, deployed manually                                                                       |
+| `tests`              | `node --test` suites                                                                                          |
+
+Files in `src/lib` and `src/server` are loaded directly by Node in tests and by the seed script:
+value imports there use explicit `.ts` extensions and cannot use `astro:*` or `import.meta.env`.
+
+## API
+
+All endpoints require a Firebase ID token (`Authorization: Bearer <token>`); identity comes only
+from the verified token. Responses are JSON with `cache-control: no-store`; errors are
+`{ "error": string }`.
+
+| Endpoint                 | Methods                                                                                        |
+| ------------------------ | ---------------------------------------------------------------------------------------------- |
+| `/api/dashboard`         | `GET` footprint, verified metrics, supported and suggested projects                            |
+| `/api/community`         | `GET` latest community posts                                                                   |
+| `/api/calculator-result` | `GET` saved answers and footprint; `POST { answers }` saves a calculation                      |
+| `/api/checkouts`         | `GET ?id=` reads an order; `POST` creates one; `POST ?id=` `{ action: 'confirm' }` confirms it |
+
+The server recalculates footprints and contribution totals; client totals are never trusted.
+Registering a contribution does not collect money or record verified compensation.
 
 ## Firestore
 
-The application uses one set of root collections:
+Browser access is denied by [`firestore.rules`](./firestore.rules); all reads and writes go
+through the server with Firebase Admin. Documents are validated on write and on read by
+[`src/server/schema.ts`](./src/server/schema.ts); list endpoints skip (and log) invalid records.
 
-| Path                                | Purpose                                                                                     |
-| ----------------------------------- | ------------------------------------------------------------------------------------------- |
-| `projects/{uuid}`                   | Project content, publication flag, price in cents, and Firestore coordinates and timestamps |
-| `authors/{uuid}`                    | Community author names                                                                      |
-| `posts/{uuid}`                      | Community posts and reactions                                                               |
-| `users/{firebaseUid}`               | Saved calculator answers, footprint, and any verified impact metrics                        |
-| `users/{firebaseUid}/orders/{uuid}` | Contribution selections and their status                                                    |
+| Path                                           | Purpose                                                                                     |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `projects/{uuid}`                              | Project content, publication flag, price in cents, and Firestore coordinates and timestamps |
+| `authors/{uuid}`                               | Community author names                                                                      |
+| `posts/{uuid}`                                 | Community posts and reactions                                                               |
+| `users/{firebaseUid}`                          | Saved calculator answers, footprint, and any verified impact metrics                        |
+| `users/{firebaseUid}/supportedProjects/{uuid}` | Projects the user supports (`status: 'active'`, `projectId` equal to the document ID)       |
+| `users/{firebaseUid}/orders/{uuid}`            | Contribution selections and their status; the client-generated key is the order ID          |
 
-Only published projects appear in public responses. Project records must contain the fields validated by [`_schema.ts`](./netlify/functions/_schema.ts); the API does not fill missing content with generated copy. Keep unpublished projects private while authoring them. The restrictive [`firestore.rules`](./firestore.rules) deny direct browser access, so all data access goes through Netlify Functions.
+Only published projects appear on the site. Enum fields (`biome`, `status`, metric and reaction
+types) and calculator answers are stored as numeric codes: never renumber or reuse one.
 
-Three illustrative project records are in root `projects`. Run `node --env-file=.env --env-file=.env.local --experimental-transform-types scripts/complete-projects.mjs` to preview any missing required fields, then add `--apply` to fill them without changing existing IDs, measurements, publication flags, or prices. The illustrative descriptions and images do not claim verified impacts or certification. Community content is read from the root `authors` and `posts` collections.
+## Seeding
 
-Community posts use root `authors` and `posts` documents. Supported projects are stored under `users/{uid}/supportedProjects/{projectId}` with an active status and are shown separately from verified impact and checkout orders.
-
-## Calculator and contribution flow
-
-Calculator answers are kept in browser storage for seven days and saved automatically for signed-in users. The server validates the answers and calculates the footprint. Signing out clears account-associated browser state.
-
-Project prices are stored as integer cents per tonne. The server resolves the project price and saved footprint, validates the chosen quantity, and stores an order under the authenticated user. Registering interest does not collect money or record verified compensation. The checkout page is excluded from indexing.
-
-## Checks
+`scripts/seed/fixtures.mjs` holds the launch content: three projects, two community authors and
+two posts. The seed creates missing documents and fills only absent fields of existing ones; it
+never overwrites a value, validates every resulting document and checks that no other project
+uses a fixture slug.
 
 ```sh
-npm run build
-npx astro check
-node --experimental-transform-types --test tests/*.test.mjs
+npm run seed -- --project <firebaseProjectId>          # dry run: prints the plan
+npm run seed -- --project <firebaseProjectId> --apply  # applies it in one transaction
 ```
+
+`--project` must equal `FIREBASE_PROJECT_ID`, so the target is always named explicitly.
+
+## Contact form (Google Apps Script)
+
+[`google-apps-script/Code.gs`](./google-apps-script/Code.gs) receives the form fields `nome`,
+`email`, `assunto` and `mensagem`, validates them, and appends a row (date, name, e-mail, subject,
+message) to the `Contatos` sheet. It replies `{ message, statusCode }`, which the form displays.
+Deploy changes manually:
+
+1. Open the Apps Script project at [script.google.com](https://script.google.com) and replace its
+   `Code.gs` with this file. Keep `SUBJECTS` in sync with the `assunto` options in
+   `src/components/sections/Contact.astro`.
+2. **Deploy → Manage deployments → Edit → Version: New version** (execute as yourself, access:
+   anyone). Editing the existing deployment keeps its URL.
+3. If the URL changes, update `PUBLIC_GOOGLE_SCRIPT_URL` in `.env` and redeploy the site.
+
+## Before deploying
+
+```sh
+npm run format:check
+npm run check
+npm test
+npm run build
+npm run seed -- --project <productionProjectId>   # dry run against production, if content changed
+```
+
+After a deploy, confirm that `curl -sI https://nucarbon.com.br/projetos` returns the security
+headers from `netlify.toml` and that `/api/dashboard` answers 401 without a token.
