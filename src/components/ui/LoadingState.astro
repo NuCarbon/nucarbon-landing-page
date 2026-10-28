@@ -1,4 +1,5 @@
 ---
+// The loading region of an app view; scripts/app/load-view.ts hides it once data arrives.
 interface Props {
   label: string;
 }
@@ -6,7 +7,7 @@ interface Props {
 const { label } = Astro.props;
 ---
 
-<div class="loading-state" data-app-loading role="status" aria-live="polite">
+<div class="loading-state" data-app-loading role="status">
   <span class="visually-hidden">{label}</span>
   <slot />
 </div>
@@ -14,16 +15,5 @@ const { label } = Astro.props;
 <style>
   .loading-state {
     width: 100%;
-  }
-
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
   }
 </style>

@@ -1,39 +1,53 @@
 ---
+// One navigation for every viewport: a bottom bar on small screens, a sidebar from `lg` up.
 interface Props {
-  active: 'dashboard' | 'projects' | 'community';
-  placement: 'sidebar' | 'bottom';
+  active: 'dashboard' | 'community';
 }
 
-const { active, placement } = Astro.props;
-const navItems = [
-  { key: 'dashboard', label: 'Painel', href: '/app', icon: '▦' },
-  { key: 'projects', label: 'Projetos', href: '/projetos', icon: '♣' },
-  { key: 'community', label: 'Comunidade', href: '/app/comunidade', icon: '♧' },
-] as const;
+const { active } = Astro.props;
 
-const isSidebar = placement === 'sidebar';
-const navigationClass = isSidebar ? 'app-sidebar' : 'app-bottom-nav';
-const linkClass = isSidebar ? 'app-nav-item' : 'app-bottom-link';
+// Icon paths share a 24×24 stroke grid and inherit the link color.
+const items = [
+  {
+    key: 'dashboard',
+    label: 'Painel',
+    href: '/app',
+    icon: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  },
+  {
+    key: 'projects',
+    label: 'Projetos',
+    href: '/projetos',
+    icon: '<path d="M12 2.5 5.5 11.5H9L5 17.5h14l-4-6h3.5z"/><path d="M12 17.5v4"/>',
+  },
+  {
+    key: 'community',
+    label: 'Comunidade',
+    href: '/app/comunidade',
+    icon: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/>',
+  },
+] as const;
 ---
 
-{isSidebar ? (
-  <aside class={navigationClass} aria-label="Navegação da conta">
-    <nav>
-      {navItems.map((item) => (
-        <a href={item.href} class:list={[linkClass, { active: active === item.key }]}>
-          <span aria-hidden="true">{item.icon}</span>
+<nav class="app-nav" aria-label="Navegação da conta">
+  <ul class="app-nav__list">
+    {items.map((item) => (
+      <li>
+        <a
+          class="app-nav__link"
+          href={item.href}
+          aria-current={item.key === active ? 'page' : undefined}
+        >
+          <svg
+            class="app-nav__icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+            set:html={item.icon}
+          />
           {item.label}
         </a>
-      ))}
-    </nav>
-  </aside>
-) : (
-  <nav class={navigationClass} aria-label="Navegação da conta">
-    {navItems.map((item) => (
-      <a href={item.href} class:list={[linkClass, { active: active === item.key }]}>
-        <span aria-hidden="true">{item.icon}</span>
-        {item.label}
-      </a>
+      </li>
     ))}
-  </nav>
-)}
+  </ul>
+</nav>

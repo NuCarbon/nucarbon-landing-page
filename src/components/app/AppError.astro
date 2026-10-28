@@ -1,0 +1,13 @@
+---
+// Rendered inside <template data-app-error>; scripts/app/load-view.ts shows it on failure.
+import Button from '../ui/Button.astro';
+---
+
+<div class="app-error" role="alert">
+  <p class="app-error__message" data-app-error-message>
+    Não foi possível carregar os dados. Verifique sua conexão e tente novamente.
+  </p>
+  <Button variant="outline" size="sm" data-app-retry>
+    Tentar novamente
+  </Button>
+</div>

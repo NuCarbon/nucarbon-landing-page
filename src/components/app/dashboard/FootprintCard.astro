@@ -1,19 +1,11 @@
 ---
-import { formatFootprint, formatUpdatedAt } from '../../../lib/format';
-import type { Footprint } from '../../../types/app';
-
-interface Props {
-  footprint?: Footprint;
-}
-
-const { footprint } = Astro.props;
+// Filled in the browser by scripts/app/footprint-card.ts.
+import Button from '../../ui/Button.astro';
 ---
 
 <div class="footprint-card" data-footprint-card>
-  <p>Sua Pegada Anual</p>
-  <strong data-footprint>
-    {footprint ? formatFootprint(footprint.annualEmissionsTonnes) : '—'}
-  </strong>
-  <span data-footprint-date>{footprint && formatUpdatedAt(footprint.updatedAt)}</span>
-  <a href="/calculadora">Recalcular pegada</a>
+  <p class="footprint-card__label">Sua pegada anual</p>
+  <strong class="footprint-card__value" data-footprint-value></strong>
+  <span class="footprint-card__date" data-footprint-date></span>
+  <Button href="/calculadora" variant="outline" size="sm" data-footprint-link />
 </div>

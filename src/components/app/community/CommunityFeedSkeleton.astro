@@ -1,0 +1,27 @@
+---
+// Mirrors CommunityFeed's posts while they load.
+import Skeleton from '../../ui/Skeleton.astro';
+---
+
+<div class="community-feed" aria-hidden="true">
+  {Array.from({ length: 2 }, () => (
+    <div class="community-post">
+      <div class="community-post__header">
+        <Skeleton width="2.25rem" height="2.25rem" variant="circle" />
+        <div class="skeleton-stack skeleton-stack--tight">
+          <Skeleton width="8.5rem" height="0.85rem" />
+          <Skeleton width="5rem" height="0.7rem" />
+        </div>
+      </div>
+      <div class="community-post__body skeleton-stack">
+        <Skeleton />
+        <Skeleton width="92%" />
+        <Skeleton width="68%" />
+      </div>
+      <div class="community-post__footer">
+        <Skeleton width="6rem" height="0.75rem" />
+        <Skeleton width="5.5rem" height="0.75rem" />
+      </div>
+    </div>
+  ))}
+</div>

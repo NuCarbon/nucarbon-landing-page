@@ -1,6 +1,7 @@
 ---
 interface Props {
   height?: string;
+  /** Any CSS length; prefer radius tokens such as `var(--radius-sm)`. */
   radius?: string;
   variant?: 'block' | 'circle' | 'line';
   width?: string;
@@ -19,38 +20,45 @@ const style = [
 <span class:list={['skeleton', `skeleton--${variant}`]} style={style} aria-hidden="true"></span>
 
 <style lang="scss">
+  @use '../../styles/mixins' as mx;
+
   .skeleton {
+    position: relative;
     display: block;
+    flex: none;
     width: var(--skeleton-width);
+    max-width: 100%;
     height: var(--skeleton-height);
     overflow: hidden;
-    border-radius: var(--skeleton-radius, 0.4rem);
-    background: #e7e9e3;
-    position: relative;
+    border-radius: var(--skeleton-radius, var(--radius-xs));
+    background: var(--color-border);
 
     &::after {
       position: absolute;
       inset: 0;
       content: '';
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in srgb, var(--color-surface) 65%, transparent),
+        transparent
+      );
       transform: translateX(-100%);
       animation: shimmer 1.4s ease-in-out infinite;
+
+      @include mx.reduced-motion {
+        animation: none;
+      }
     }
 
     &--circle {
-      border-radius: 50%;
+      border-radius: var(--radius-round);
     }
   }
 
   @keyframes shimmer {
     to {
       transform: translateX(100%);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .skeleton::after {
-      animation: none;
     }
   }
 </style>

@@ -1,26 +1,23 @@
 ---
-import Image from 'astro/components/Image.astro';
-import logo from '../../images/logo.png';
+import Button from '../ui/Button.astro';
+import Logo from '../ui/Logo.astro';
 import Skeleton from '../ui/Skeleton.astro';
+import UserAvatar from '../ui/UserAvatar.astro';
 ---
 
 <header class="app-header">
-  <a href="/app" class="app-brand" aria-label="Nucarbon, painel">
-    <Image src={logo} alt="" width={28} height={28} />
-    <span>Nucarbon</span>
-  </a>
+  <Logo size="sm" href="/app" aria-label="Nucarbon, painel" />
 
-  <div class="app-user-menu app-user-loading" data-auth-loading aria-hidden="true">
-    <Skeleton width="30px" height="30px" variant="circle" />
+  <div class="app-account" data-auth-loading aria-hidden="true">
+    <Skeleton width="32px" height="32px" variant="circle" />
     <Skeleton width="5rem" height="0.75rem" />
   </div>
 
-  <div class="app-user-menu" data-auth-user hidden>
-    <img data-user-avatar alt="" hidden />
-    <span class="app-user-avatar-fallback" data-user-initial hidden></span>
-    <span data-user-name>Carregando...</span>
-    <button type="button" class="app-sign-out" data-sign-out>
+  <div class="app-account" data-auth-user hidden>
+    <UserAvatar />
+    <span class="app-account__name" data-user-name></span>
+    <Button variant="ghost" size="sm" data-sign-out>
       Sair
-    </button>
+    </Button>
   </div>
 </header>

@@ -1,0 +1,16 @@
+---
+// Mirrors ImpactMetrics while the dashboard loads.
+import Skeleton from '../../ui/Skeleton.astro';
+---
+
+<div class="metric-grid" aria-hidden="true">
+  {Array.from({ length: 2 }, () => (
+    <div class="metric-card">
+      <Skeleton width="2.5rem" height="2.5rem" radius="var(--radius-sm)" variant="block" />
+      <div class="skeleton-stack skeleton-stack--tight">
+        <Skeleton width="7rem" height="0.7rem" />
+        <Skeleton width="9rem" height="0.95rem" />
+      </div>
+    </div>
+  ))}
+</div>

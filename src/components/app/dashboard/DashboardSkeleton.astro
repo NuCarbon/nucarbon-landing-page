@@ -1,0 +1,28 @@
+---
+// Mirrors DashboardView's content while it loads.
+import Skeleton from '../../ui/Skeleton.astro';
+import ProjectGridSkeleton from '../projects/ProjectGridSkeleton.astro';
+import ImpactMetricsSkeleton from './ImpactMetricsSkeleton.astro';
+---
+
+<div class="app-page__content" aria-hidden="true">
+  <div class="footprint-card">
+    <Skeleton width="8rem" height="0.85rem" />
+    <Skeleton width="14rem" height="2.25rem" />
+    <Skeleton width="10rem" height="0.75rem" />
+    <Skeleton width="8.5rem" height="2.25rem" radius="var(--radius-pill)" />
+  </div>
+
+  <section class="app-section">
+    <Skeleton width="11rem" height="1.25rem" />
+    <ImpactMetricsSkeleton />
+  </section>
+
+  <section class="app-section">
+    <div class="app-section__heading">
+      <Skeleton width="13rem" height="1.25rem" />
+      <Skeleton width="4.5rem" height="0.85rem" />
+    </div>
+    <ProjectGridSkeleton count={2} />
+  </section>
+</div>

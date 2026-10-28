@@ -7,7 +7,7 @@ import AppNavigation from '../components/app/AppNavigation.astro';
 
 interface Props {
   title: string;
-  active?: 'dashboard' | 'projects' | 'community';
+  active?: 'dashboard' | 'community';
 }
 
 const { title, active = 'dashboard' } = Astro.props;
@@ -18,14 +18,13 @@ const { title, active = 'dashboard' } = Astro.props;
   <head>
     <SiteHead title={title} noindex />
   </head>
-  <body class="app-body">
+  <body>
     <div class="app-shell">
       <AppHeader />
-      <AppNavigation active={active} placement="sidebar" />
+      <AppNavigation active={active} />
       <main class="app-main">
         <slot />
       </main>
-      <AppNavigation active={active} placement="bottom" />
     </div>
     <script>
       import { requireSignedIn, signOutUser } from '../scripts/auth';
