@@ -43,6 +43,7 @@ script 404s) until it is restarted.
 | `src/types/app.ts`  | Shared                                   | Domain types and API request/response contracts.                                                                                                              |
 | `netlify/functions` | Netlify                                  | Only `api-*.ts` handlers. Shared code goes in `src/server`; a `_helper.ts` here would be deployed as a function.                                              |
 | `src/data/site.ts`  | Shared                                   | Brand name, nav links (`mainNav`, `footerNav`, `solutionNav`), contact info.                                                                                  |
+| `src/data/flags.ts` | Components and browser scripts           | Build-time feature flags (`features.*`) from `PUBLIC_FEATURE_*`, default off; changing one needs a rebuild.                                                   |
 
 ### Server building blocks (`src/server`)
 
@@ -54,6 +55,9 @@ script 404s) until it is restarted.
 - `ids.ts` (UUID/slug checks), `schema.ts` (`validateDocument`, `isEnumValue`), `repository.ts`
   (`readProjects`, `readProjectBySlug`, `readProjectsByIds`, `readCommunityPosts`; bad records are
   skipped and logged, not 500s), `checkout.ts`, `calculator.ts`.
+- `share-image.ts` (pure: `shareImageView` → satori tree → SVG/PNG; flexbox only, no "₂" glyph in
+  Kollektif) and `share-image-assets.ts` (Vite-only `?inline` fonts, logo and resvg wasm; tests
+  read the files with fs).
 
 ### Browser building blocks (`src/scripts`)
 
@@ -74,10 +78,12 @@ script 404s) until it is restarted.
   metrics, …). Tonnes show 0–2 decimals ("4,8").
 - `calculator/`: `answers.ts` (`SUPPORTED_ANSWERS`, `DISTANCE_KM`, `isCalculatorAnswers`,
   `parseAnswers`, used by both client and server validation), `flow.ts`, `calculate.ts`,
-  `coefficients.ts`, `categories.ts`, `tips.ts`.
+  `coefficients.ts`, `categories.ts`, `tips.ts`, `share.ts` (`encodeShareCode`/`decodeShareCode`,
+  share URLs and image sizes).
 - `checkout/amount.ts` (`calculateAmount`, `QUANTITY_TONNES`, `CONTRIBUTION_PERCENTAGES`),
   `urls.ts` (`safeReturnTo`, `loginPath`), `projects.ts` (`projectPath`, `projectCardView`,
-  `setProjectsCacheHeaders`).
+  `setProjectsCacheHeaders`), `share-links.ts` (`withShareUtm`, `shareMessage`,
+  `socialShareHref`), `cache.ts` (`setDeterministicCacheHeaders` for URL-determined responses).
 
 ## Invariants — do not change
 
@@ -89,11 +95,15 @@ script 404s) until it is restarted.
   depends on them; never renumber — a test checks they cover `SUPPORTED_ANSWERS`).
 - Contact form field names `nome email assunto mensagem` (the Apps Script reads them).
 - Emission factors in `lib/calculator/coefficients.ts` are product decisions, not refactor targets.
+- Share code v1 tables in `lib/calculator/share.ts` (shared links depend on them; a new option
+  means a version 2 code).
 
 ## Styling
 
 All tokens live in `src/styles/global.scss`. **No raw hex/rgb/`white`, px radii, raw shadows or
-raw-px media queries anywhere else.**
+raw-px media queries anywhere else.** The one exception is `SHARE_IMAGE_PALETTE` in
+`src/server/share-image.ts`: satori cannot read CSS variables, so it mirrors the tokens and a test
+keeps the values equal.
 
 - Colors: `--color-primary` (#2e7d32), `-dark`, `-soft`, `-tint`, `--color-on-primary`; neutrals
   `--color-bg`, `--color-surface(-muted)`, `--color-border(-strong)`, `--color-text(-muted|-subtle)`,

@@ -1,0 +1,234 @@
+---
+// The content of /calculadora/como-funciona: how the calculator works, what a carbon
+// footprint is, the methodology and the FAQ. It gives search engines and curious visitors
+// the context the step flow leaves out, and sends them to the calculator.
+import Accordion from '../../ui/Accordion.astro';
+import Breadcrumbs from '../../ui/Breadcrumbs.astro';
+import Button from '../../ui/Button.astro';
+import Card from '../../ui/Card.astro';
+import IconTile from '../../ui/IconTile.astro';
+import JsonLd from '../../ui/JsonLd.astro';
+import SectionHeader from '../../ui/SectionHeader.astro';
+import MethodologyNote from '../results/MethodologyNote.astro';
+import MethodologyTable from './MethodologyTable.astro';
+import {
+  CALCULATOR_PATH,
+  GUIDE_NAME,
+  GUIDE_PATH,
+  calculatorFaq,
+  footprintParagraphs,
+  howItWorks,
+  methodologyFormula,
+  relatedLinks,
+} from './content';
+import { faqPageJsonLd } from '../../../lib/structured-data';
+---
+
+<div class="guide" data-track-location="calculator_guide">
+  <div class="container guide__breadcrumbs">
+    <Breadcrumbs
+      items={[
+        { label: 'Início', href: '/' },
+        { label: 'Calculadora', href: CALCULATOR_PATH },
+        { label: GUIDE_NAME, href: GUIDE_PATH },
+      ]}
+    />
+  </div>
+
+  <section
+    id="como-funciona"
+    class="section guide__section guide__section--first"
+    aria-labelledby="como-funciona-heading"
+  >
+    <div class="container">
+      <SectionHeader id="como-funciona-heading" title="Em 3 passos" align="start" />
+      <ol class="guide__steps">
+        {howItWorks.map((step, index) => (
+          <li class="guide__step">
+            <IconTile name={step.icon} tone="primary" />
+            <span class="eyebrow guide__step-number" aria-hidden="true">
+              Passo {index + 1}
+            </span>
+            <h3 class="guide__step-title">{step.title}</h3>
+            <p class="guide__step-text">{step.text}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="container__cta">
+        <Button href="/calculadora" size="lg">
+          Começar cálculo
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <section
+    id="pegada-de-carbono"
+    class="section guide__section guide__section--muted"
+    aria-labelledby="pegada-de-carbono-heading"
+  >
+    <div class="container guide__prose">
+      <SectionHeader
+        id="pegada-de-carbono-heading"
+        title="O que é pegada de carbono?"
+        align="start"
+      />
+      {footprintParagraphs.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+    </div>
+  </section>
+
+  <section
+    id="metodologia"
+    class="section guide__section guide__section--muted guide__section--continued"
+    aria-labelledby="metodologia-heading"
+  >
+    <div class="container guide__prose">
+      <SectionHeader id="metodologia-heading" title="Como calculamos" align="start" />
+      <p>
+        Cada resposta corresponde a um fator médio de emissão. A estimativa anual de cada categoria
+        é calculada assim:
+      </p>
+      <ul class="guide__formula">
+        {methodologyFormula.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
+      <MethodologyTable />
+      <div class="guide__note">
+        <MethodologyNote />
+      </div>
+    </div>
+  </section>
+
+  <section
+    id="perguntas-frequentes"
+    class="section guide__section"
+    aria-labelledby="perguntas-frequentes-heading"
+  >
+    <div class="container guide__prose">
+      <SectionHeader
+        id="perguntas-frequentes-heading"
+        title="Perguntas frequentes sobre a calculadora"
+        align="start"
+      />
+      <Accordion items={calculatorFaq} name="calculadora-faq" />
+    </div>
+    <JsonLd data={faqPageJsonLd(calculatorFaq)} />
+  </section>
+
+  <section
+    class="section guide__section guide__section--muted"
+    aria-labelledby="guide-links-heading"
+  >
+    <div class="container">
+      <SectionHeader id="guide-links-heading" title="Continue explorando" align="start" />
+      <ul class="guide__links">
+        {relatedLinks.map((link) => (
+          <li>
+            <Card title={link.title} href={link.href}>
+              <p>{link.text}</p>
+            </Card>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</div>
+
+<style lang="scss">
+  @use '../../../styles/mixins' as mx;
+
+  .guide {
+    background: var(--color-surface);
+  }
+
+  .guide__breadcrumbs {
+    padding-top: var(--spacing-lg);
+  }
+
+  .guide__section--first {
+    padding-top: var(--spacing-md);
+  }
+
+  .guide__section--muted {
+    background: var(--color-bg);
+  }
+
+  // Follows a section with the same background, so they read as one block.
+  .guide__section--continued {
+    padding-top: 0;
+  }
+
+  .guide__prose {
+    max-width: calc(48rem + 2 * var(--container-gutter));
+  }
+
+  .guide__steps {
+    display: grid;
+    gap: var(--spacing-md);
+    margin: 0 0 var(--spacing-lg);
+    padding: 0;
+    list-style: none;
+
+    @include mx.up(md) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .guide__step {
+    @include mx.surface;
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+    background: var(--color-bg);
+  }
+
+  .guide__step-number {
+    margin: var(--spacing-xs) 0 0;
+  }
+
+  .guide__step-title {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .guide__step-text {
+    margin: 0;
+  }
+
+  .guide__formula {
+    display: grid;
+    gap: var(--spacing-xs);
+    margin: 0 0 var(--spacing-lg);
+    padding-left: var(--spacing-md);
+    color: var(--color-text-muted);
+  }
+
+  .guide__note {
+    margin-top: var(--spacing-md);
+  }
+
+  .guide__links {
+    display: grid;
+    gap: var(--spacing-md);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @include mx.up(sm) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include mx.up(lg) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    > li {
+      display: grid;
+    }
+  }
+</style>

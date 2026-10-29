@@ -1,0 +1,169 @@
+---
+// Analytics consent banner (LGPD), rendered once by every layout. Its script also starts
+// analytics, so every page initializes it through this component.
+import Button from '../ui/Button.astro';
+---
+
+<section class="consent" aria-labelledby="consent-heading" data-consent-banner hidden>
+  <div class="consent__body">
+    <h2 id="consent-heading" class="consent__title" tabindex="-1">
+      Sua privacidade
+    </h2>
+    <p class="consent__text">
+      Usamos o Google Analytics (Firebase) para medir como o site e a calculadora são usados. Não
+      usamos anúncios. Se recusar, enviamos só medições básicas, sem cookies. Você pode mudar sua
+      escolha em “Preferências de cookies”, no rodapé.
+    </p>
+  </div>
+  <div class="consent__actions">
+    <Button variant="outline" size="sm" data-consent-choice="denied">
+      Recusar
+    </Button>
+    <Button size="sm" data-consent-choice="granted">
+      Aceitar
+    </Button>
+  </div>
+</section>
+
+<style is:global>
+  body {
+    padding-bottom: var(--consent-offset, 0px);
+  }
+</style>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .consent {
+    @include mx.surface(var(--radius-lg));
+
+    position: fixed;
+    z-index: var(--z-consent);
+    right: var(--spacing-sm);
+    bottom: var(--spacing-sm);
+    left: var(--spacing-sm);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm) var(--spacing-md);
+    max-width: 52rem;
+    margin-inline: auto;
+    padding: var(--spacing-sm) var(--spacing-md);
+    box-shadow: var(--shadow-raised);
+    animation: consent-in var(--transition-base) both;
+
+    @include mx.reduced-motion {
+      animation: none;
+    }
+  }
+
+  .consent__body {
+    flex: 1 1 22rem;
+  }
+
+  .consent__title {
+    margin: 0 0 var(--spacing-2xs);
+    font-size: 1rem;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .consent__text {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+
+    @include mx.up(sm) {
+      font-size: 0.875rem;
+    }
+  }
+
+  .consent__actions {
+    display: flex;
+    flex: 1 0 auto;
+    gap: var(--spacing-xs);
+    justify-content: flex-end;
+
+    @include mx.down(sm) {
+      > :global(*) {
+        flex: 1;
+      }
+    }
+
+    @include mx.up(md) {
+      flex-grow: 0;
+    }
+  }
+
+  @keyframes consent-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+  }
+</style>
+
+<script>
+  import { getConsentChoice, initAnalytics, saveConsentChoice } from '../../scripts/analytics';
+  import { isConsentChoice } from '../../lib/analytics';
+
+  initAnalytics();
+
+  const banner = document.querySelector<HTMLElement>('[data-consent-banner]');
+
+  if (banner) {
+    const root = document.documentElement;
+    const heading = banner.querySelector<HTMLElement>('#consent-heading');
+    let opener: HTMLElement | null = null;
+
+    // Lets the page (body padding, the calculator's sticky bar) keep clear of the banner.
+    const publishOffset = () => {
+      const gap = parseFloat(getComputedStyle(banner).bottom) || 0;
+      root.style.setProperty('--consent-offset', `${Math.ceil(banner.offsetHeight + gap * 2)}px`);
+    };
+    const observer = 'ResizeObserver' in window ? new ResizeObserver(publishOffset) : null;
+
+    const show = () => {
+      banner.hidden = false;
+      publishOffset();
+      observer?.observe(banner);
+    };
+
+    const hide = () => {
+      banner.hidden = true;
+      observer?.disconnect();
+      root.style.removeProperty('--consent-offset');
+    };
+
+    banner.addEventListener('click', (event) => {
+      if (!(event.target instanceof Element)) return;
+      const choice =
+        event.target.closest<HTMLElement>('[data-consent-choice]')?.dataset.consentChoice;
+      if (!isConsentChoice(choice)) return;
+
+      const hadFocus = banner.contains(document.activeElement);
+      saveConsentChoice(choice);
+      hide();
+      // Back to whatever reopened the banner; otherwise drop focus to the page, never trap it.
+      if (opener?.isConnected) opener.focus();
+      else if (hadFocus && document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+      opener = null;
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!(event.target instanceof Element)) return;
+      const trigger = event.target.closest<HTMLElement>('[data-consent-open]');
+      if (!trigger) return;
+      opener = trigger;
+      show();
+      heading?.focus();
+    });
+
+    if (getConsentChoice() === null) show();
+  }
+</script>

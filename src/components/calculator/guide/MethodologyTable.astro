@@ -1,0 +1,113 @@
+---
+// The emission factor behind every answer, generated from coefficients.ts.
+import { methodologyGroups } from './content';
+
+const groups = methodologyGroups();
+---
+
+<table class="methodology-table">
+  <caption class="methodology-table__caption">Fatores de emissão por resposta</caption>
+  <thead>
+    <tr>
+      <th scope="col">Resposta</th>
+      <th scope="col" class="methodology-table__value">
+        Fator de emissão
+      </th>
+    </tr>
+  </thead>
+  {groups.map((group) => (
+    <tbody>
+      <tr>
+        <th scope="colgroup" colspan="2" class="methodology-table__group">
+          {group.label}
+        </th>
+      </tr>
+      {group.rows.map((row) => (
+        <tr>
+          <th scope="row" class="methodology-table__answer">
+            {row.label}
+            {row.description && (
+              <span class="methodology-table__description">{row.description}</span>
+            )}
+          </th>
+          <td class="methodology-table__value">{row.value}</td>
+        </tr>
+      ))}
+    </tbody>
+  ))}
+</table>
+
+<style lang="scss">
+  @use '../../../styles/mixins' as mx;
+
+  .methodology-table {
+    @include mx.surface;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9375rem;
+  }
+
+  .methodology-table__caption {
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  th,
+  td {
+    padding: 0.75rem var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+
+    @include mx.up(md) {
+      padding-inline: var(--spacing-md);
+    }
+  }
+
+  tbody:last-child tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  thead th {
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .methodology-table__group {
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+    font-weight: 700;
+  }
+
+  .methodology-table__answer {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  .methodology-table__description {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 400;
+  }
+
+  .methodology-table__value {
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  td.methodology-table__value {
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+  }
+</style>

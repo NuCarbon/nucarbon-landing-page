@@ -1,0 +1,53 @@
+---
+// Round "X" button pinned to the top-right corner of a modal <dialog>. The dialog's script
+// closes it on click through `[data-modal-close]`. The dialog needs no positioning of its own:
+// a modal <dialog> is already a containing block for absolutely positioned children.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<button type="button" class:list={['modal-close', className]} data-modal-close aria-label="Fechar">
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+    <path
+      d="M6 6l12 12M18 6L6 18"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+    ></path>
+  </svg>
+</button>
+
+<style lang="scss">
+  @use '../../styles/mixins' as mx;
+
+  .modal-close {
+    position: absolute;
+    top: var(--spacing-xs);
+    right: var(--spacing-xs);
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 0;
+    border-radius: var(--radius-round);
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+
+    &:hover {
+      background: var(--color-surface-muted);
+      color: var(--color-text);
+    }
+
+    &:focus-visible {
+      @include mx.focus-ring;
+    }
+  }
+</style>

@@ -1,19 +1,11 @@
 ---
 // Sign-in dialog opened by openLoginModal() (scripts/login-modal.ts) on any page.
+import ModalCloseButton from '../ui/ModalCloseButton.astro';
 import LoginForm from './LoginForm.astro';
 ---
 
 <dialog class="login-modal" data-login-modal aria-labelledby="modal-login-title">
-  <button type="button" class="login-modal__close" data-modal-close aria-label="Fechar">
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-      <path
-        d="M6 6l12 12M18 6L6 18"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-      ></path>
-    </svg>
-  </button>
+  <ModalCloseButton />
   <LoginForm headingLevel={2} titleId="modal-login-title" />
 </dialog>
 
@@ -38,29 +30,5 @@ import LoginForm from './LoginForm.astro';
 
   .login-modal::backdrop {
     background: var(--color-overlay);
-  }
-
-  .login-modal__close {
-    position: absolute;
-    top: var(--spacing-xs);
-    right: var(--spacing-xs);
-    z-index: 1;
-    display: grid;
-    place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 0;
-    border-radius: var(--radius-round);
-    background: transparent;
-    color: var(--color-text-muted);
-    cursor: pointer;
-    transition:
-      background-color var(--transition-fast),
-      color var(--transition-fast);
-  }
-
-  .login-modal__close:hover {
-    background: var(--color-surface-muted);
-    color: var(--color-text);
   }
 </style>

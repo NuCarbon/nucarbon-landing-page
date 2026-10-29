@@ -13,7 +13,7 @@ const heroImageSmall = `url(${small.src})`;
 const heroImageLarge = `url(${large.src})`;
 ---
 
-<section class="hero">
+<section class="hero" data-track-location="landing_hero">
   <div class="container">
     <h1 class="hero__title">{site.name}</h1>
     <p class="hero__subtitle">
@@ -27,6 +27,11 @@ const heroImageLarge = `url(${large.src})`;
         Entre em Contato
       </Button>
     </div>
+    <p class="hero__calculator">
+      <a href="/calculadora" class="hero__calculator-link">
+        Quanto CO₂ você emite? Calcule sua pegada em 2 minutos <span aria-hidden="true">→</span>
+      </a>
+    </p>
   </div>
 </section>
 
@@ -71,5 +76,22 @@ const heroImageLarge = `url(${large.src})`;
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--spacing-md);
+  }
+
+  .hero__calculator {
+    margin: var(--spacing-lg) 0 0;
+    font-size: 1.0625rem;
+  }
+
+  .hero__calculator-link {
+    color: var(--color-on-dark);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--color-on-dark-muted);
+    text-underline-offset: 0.25em;
+
+    &:hover {
+      color: var(--color-on-dark-muted);
+    }
   }
 </style>

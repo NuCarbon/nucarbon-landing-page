@@ -1,5 +1,6 @@
-// Drives /calculadora: step navigation, the results screen, sharing, and
+// Drives /calculadora: step navigation, the results screen, sharing, funnel analytics, and
 // keeping the latest answers as a draft that is saved to the visitor's account.
+import { calculatorCompleteParams, sanitizeRef, stepParams } from '../../lib/analytics';
 import {
   SUPPORTED_ANSWERS,
   type CalculatorAnswers,
@@ -7,15 +8,16 @@ import {
 } from '../../lib/calculator/answers';
 import { calculateFootprint, type CalculationResult } from '../../lib/calculator/calculate';
 import { createCalculatorFlow } from '../../lib/calculator/flow';
-import { formatTonnes } from '../../lib/format';
+import { encodeShareCode } from '../../lib/calculator/share';
 import { safeReturnTo } from '../../lib/urls';
+import { track } from '../analytics';
 import { currentUser } from '../auth';
 import { openLoginModal } from '../login-modal';
 import { loadSavedAnswers, readDraft, savePendingDraft, writeDraft } from './draft';
 import { renderResults } from './results';
+import { isShareModalOpen, onShareModalClose, openShareModal } from './share-modal';
 
 const STEP_IDS = Object.keys(SUPPORTED_ANSWERS) as StepId[];
-const SHARE_FEEDBACK_MS = 4000;
 
 export function initializeCalculator(root: HTMLElement): void {
   const flowView = root.querySelector<HTMLElement>('[data-calculator-flow]')!;
@@ -28,11 +30,15 @@ export function initializeCalculator(root: HTMLElement): void {
   const continueButton = flowView.querySelector<HTMLButtonElement>('[data-continue]')!;
   const resultsView = root.querySelector<HTMLElement>('[data-result]')!;
   const saveError = resultsView.querySelector<HTMLElement>('[data-save-error]')!;
-  const shareFeedback = resultsView.querySelector<HTMLElement>('[data-share-feedback]')!;
+  const params = new URLSearchParams(location.search);
+  const returnTo = safeReturnTo(params.get('returnTo'), '');
+  const fromProject = returnTo.startsWith('/projetos/');
 
   const flow = createCalculatorFlow(panels.map((panel) => panel.dataset.step as StepId));
   let result: CalculationResult | null = null;
-  let shareFeedbackTimer: number | undefined;
+  /** The answers `result` was calculated from (the flow may change after it is shown). */
+  let resultAnswers: CalculatorAnswers | null = null;
+  let started = false;
 
   form.addEventListener('change', recordChoice);
   form.addEventListener('submit', (event) => {
@@ -44,8 +50,14 @@ export function initializeCalculator(root: HTMLElement): void {
   backButton.addEventListener('click', goBack);
   resultsView.querySelector('[data-recalculate]')!.addEventListener('click', restart);
   resultsView.querySelector('[data-save-retry]')!.addEventListener('click', () => void syncDraft());
-  resultsView.querySelector('[data-share]')!.addEventListener('click', () => void shareResult());
+  resultsView.querySelectorAll('[data-share]').forEach((button) => {
+    button.addEventListener('click', shareResult);
+  });
 
+  track('calculator_view', {
+    entry: fromProject ? 'project' : 'direct',
+    ref: sanitizeRef(params.get('ref')),
+  });
   applyReturnTo();
   renderStep();
   void restorePreviousResult();
@@ -57,9 +69,12 @@ export function initializeCalculator(root: HTMLElement): void {
     if (!(input instanceof HTMLInputElement) || input.type !== 'radio') return;
     if (!STEP_IDS.includes(input.name as StepId)) return;
     flow.setAnswer(input.name as StepId, input.value as CalculatorAnswers[StepId]);
+    trackStart();
   }
 
   function advance(): void {
+    trackStart();
+    track('calculator_step_complete', stepParams(flow.currentStep, flow.index));
     if (flow.isLastStep) {
       finish();
       return;
@@ -70,6 +85,7 @@ export function initializeCalculator(root: HTMLElement): void {
   }
 
   function goBack(): void {
+    track('calculator_back', stepParams(flow.currentStep, flow.index));
     if (flow.index === 0) {
       window.location.assign('/');
       return;
@@ -98,23 +114,34 @@ export function initializeCalculator(root: HTMLElement): void {
     continueButton.textContent = flow.isLastStep ? 'Ver resultado' : 'Continuar';
   }
 
+  /** The funnel start: the first answer picked or the first step completed on this page load. */
+  function trackStart(): void {
+    if (started) return;
+    started = true;
+    track('calculator_start', { step_id: flow.currentStep });
+  }
+
   // Results
 
   function finish(): void {
     writeDraft(flow.snapshot().answers);
-    showResults();
+    const shown = showResults();
+    track('calculator_complete', calculatorCompleteParams(shown));
     revealScreen(resultsView);
     void saveOrAskToSignIn();
   }
 
-  function showResults(): void {
-    result = calculateFootprint(flow.snapshot().answers);
+  function showResults(): CalculationResult {
+    resultAnswers = flow.snapshot().answers;
+    result = calculateFootprint(resultAnswers);
     renderResults(resultsView, result);
     flowView.hidden = true;
     resultsView.hidden = false;
+    return result;
   }
 
   function restart(): void {
+    track('calculator_restart', {});
     flow.restart();
     resultsView.hidden = true;
     flowView.hidden = false;
@@ -122,42 +149,25 @@ export function initializeCalculator(root: HTMLElement): void {
     revealScreen(panels[flow.index]);
   }
 
-  /** Coming from a project (?returnTo=/projetos/<slug>), the main action leads back to it. */
+  /**
+   * Coming from a project (?returnTo=/projetos/<slug>), the main action leads back to it. With
+   * the projects CTA off, sharing then moves from the main action to the secondary row.
+   */
   function applyReturnTo(): void {
-    const returnTo = safeReturnTo(new URLSearchParams(location.search).get('returnTo'), '');
-    if (!returnTo.startsWith('/projetos/')) return;
+    if (!fromProject) return;
     const link = resultsView.querySelector<HTMLAnchorElement>('[data-projects-link]')!;
     link.href = returnTo;
     link.textContent = 'Voltar ao projeto';
+    link.hidden = false;
+    const primaryShare = resultsView.querySelector<HTMLElement>('[data-share-primary]');
+    if (!primaryShare) return;
+    primaryShare.hidden = true;
+    resultsView.querySelector<HTMLElement>('[data-share-secondary]')!.hidden = false;
   }
 
-  async function shareResult(): Promise<void> {
-    if (!result) return;
-    const text = `Minha pegada de carbono estimada é ${formatTonnes(result.total)} tCO₂e por ano.`;
-    const url = new URL('/calculadora', location.origin).href;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: 'Minha pegada de carbono', text, url });
-        return;
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
-        // Other failures (e.g. not allowed) fall back to copying.
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(`${text} ${url}`);
-      showShareFeedback('Link copiado');
-    } catch {
-      showShareFeedback('Não foi possível copiar o link.');
-    }
-  }
-
-  function showShareFeedback(message: string): void {
-    shareFeedback.textContent = message;
-    window.clearTimeout(shareFeedbackTimer);
-    shareFeedbackTimer = window.setTimeout(() => {
-      shareFeedback.textContent = '';
-    }, SHARE_FEEDBACK_MS);
+  function shareResult(): void {
+    if (!result || !resultAnswers) return;
+    openShareModal({ code: encodeShareCode(resultAnswers), total: result.total });
   }
 
   // Draft and account
@@ -168,6 +178,7 @@ export function initializeCalculator(root: HTMLElement): void {
     if (draft) {
       restoreAnswers(draft.answers);
       showResults();
+      track('calculator_result_restored', { source: 'draft' });
       await syncDraft();
       return;
     }
@@ -177,6 +188,7 @@ export function initializeCalculator(root: HTMLElement): void {
       if (!saved || readDraft() || flow.index > 0 || !resultsView.hidden) return;
       restoreAnswers(saved);
       showResults();
+      track('calculator_result_restored', { source: 'account' });
     } catch {
       // The calculator still works from the first step.
     }
@@ -196,7 +208,13 @@ export function initializeCalculator(root: HTMLElement): void {
   }
 
   async function saveOrAskToSignIn(): Promise<void> {
-    if (await currentUser()) await syncDraft();
+    if (await currentUser()) {
+      await syncDraft();
+      return;
+    }
+    track('login_prompt_shown', { context: 'calculator_result' });
+    // Dialogs never stack: if the visitor opened the share modal meanwhile, ask after it closes.
+    if (isShareModalOpen()) onShareModalClose(() => void openLoginModal());
     else await openLoginModal();
   }
 
@@ -216,5 +234,5 @@ export function initializeCalculator(root: HTMLElement): void {
 /** Scrolls to the top and focuses the screen's heading so screen readers announce it. */
 function revealScreen(screen: HTMLElement): void {
   window.scrollTo({ top: 0 });
-  screen.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true });
+  screen.querySelector<HTMLElement>('[data-screen-heading]')?.focus({ preventScroll: true });
 }

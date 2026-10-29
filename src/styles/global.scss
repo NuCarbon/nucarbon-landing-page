@@ -68,6 +68,8 @@
   --container-gutter: 1rem;
   --header-height: 4.5rem;
   --z-sticky: 10;
+  /* Consent banner: above sticky bars, below the header (so its mobile menu covers it) and modals. */
+  --z-consent: 900;
   --z-header: 1000;
   --z-modal: 1100;
 
@@ -185,6 +187,11 @@ textarea {
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 var(--container-gutter);
+
+  &__cta{
+    width: 100%;
+    text-align: center;
+  }
 }
 
 /** Top-level content below the fixed header. */

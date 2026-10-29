@@ -20,8 +20,8 @@ export const mainNav: NavLink[] = [
   { label: 'Quem Somos', href: '/#quem-somos' },
   { label: 'Soluções', href: '/#solucoes' },
   { label: 'Projetos', href: '/projetos' },
+  { label: 'Calculadora', href: '/calculadora' },
   { label: 'Créditos de Carbono', href: '/#creditos-carbono' },
-  { label: 'Dúvidas', href: '/#faq' },
   { label: 'Contato', href: '/#contato' },
 ];
 
@@ -31,6 +31,7 @@ export const footerNav: NavLink[] = [
   { label: 'Créditos de Carbono', href: '/#creditos-carbono' },
   { label: 'Projetos', href: '/projetos' },
   { label: 'Calculadora de carbono', href: '/calculadora' },
+  { label: 'Como funciona a calculadora', href: '/calculadora/como-funciona' },
   { label: 'Dúvidas', href: '/#faq' },
   { label: 'Contato', href: '/#contato' },
 ];

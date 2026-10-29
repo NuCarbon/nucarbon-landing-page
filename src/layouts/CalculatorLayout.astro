@@ -4,25 +4,51 @@
 import SiteHead from '../components/layout/SiteHead.astro';
 import '../styles/global.scss';
 import LoginModal from '../components/auth/LoginModal.astro';
+import ConsentBanner from '../components/layout/ConsentBanner.astro';
 
 interface Props {
   title: string;
   description?: string;
+  canonical?: string;
+  image?: string;
+  imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  noindex?: boolean;
+  follow?: boolean;
 }
 
 const {
   title,
   description = 'Calcule sua pegada de carbono e descubra maneiras de reduzir seu impacto.',
+  canonical,
+  image,
+  imageAlt,
+  imageWidth,
+  imageHeight,
+  noindex = false,
+  follow = false,
 } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <SiteHead title={title} description={description} />
+    <SiteHead
+      title={title}
+      description={description}
+      canonical={canonical}
+      image={image}
+      imageAlt={imageAlt}
+      imageWidth={imageWidth}
+      imageHeight={imageHeight}
+      noindex={noindex}
+      follow={follow}
+    />
   </head>
   <body>
     <slot />
     <LoginModal />
+    <ConsentBanner />
   </body>
 </html>

@@ -1,31 +1,15 @@
 ---
 // Visible breadcrumb trail plus the matching schema.org BreadcrumbList.
 // The last item is the current page; give it an href so search engines get its URL.
-interface BreadcrumbItem {
-  label: string;
-  /** Site-relative or absolute. */
-  href?: string;
-}
+import JsonLd from './JsonLd.astro';
+import { breadcrumbListJsonLd, type BreadcrumbItem } from '../../lib/structured-data';
 
 interface Props {
   items: BreadcrumbItem[];
 }
 
 const { items } = Astro.props;
-const origin = Astro.site ?? Astro.url;
-
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: items.map((item, index) => ({
-    '@type': 'ListItem',
-    position: index + 1,
-    name: item.label,
-    ...(item.href ? { item: new URL(item.href, origin).href } : {}),
-  })),
-};
-// Project names come from the database: keep "</script>" from closing the tag early.
-const json = JSON.stringify(structuredData).replace(/</g, '\\u003c');
+const structuredData = breadcrumbListJsonLd(items, Astro.site ?? Astro.url);
 ---
 
 <nav class="breadcrumbs" aria-label="Caminho">
@@ -49,7 +33,7 @@ const json = JSON.stringify(structuredData).replace(/</g, '\\u003c');
     })}
   </ol>
 </nav>
-<script is:inline type="application/ld+json" set:html={json} />
+<JsonLd data={structuredData} />
 <style>
   .breadcrumbs {
     margin-bottom: var(--spacing-md);

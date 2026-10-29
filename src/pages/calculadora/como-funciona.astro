@@ -1,0 +1,41 @@
+---
+// Explains the calculator for search engines and curious visitors, so /calculadora can stay
+// a focused step flow. Aims at informational queries ("como calcular a pegada de carbono");
+// the calculator itself targets "calculadora de pegada de carbono".
+import CalculatorGuide from '../../components/calculator/guide/CalculatorGuide.astro';
+import { GUIDE_PATH } from '../../components/calculator/guide/content';
+import { calculatorSteps } from '../../components/calculator/steps';
+import CTA from '../../components/ui/CTA.astro';
+import PageHeader from '../../components/ui/PageHeader.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SHARE_IMAGE_SIZES } from '../../lib/calculator/share';
+
+const stepCount = calculatorSteps.length;
+---
+
+<BaseLayout
+  title="Como calcular sua pegada de carbono: metodologia e dúvidas | Nucarbon"
+  description={`Entenda como a calculadora de pegada de carbono da Nucarbon funciona: as ${stepCount} perguntas, os fatores de emissão usados, o que significa tCO₂e e como reduzir suas emissões.`}
+  canonical={GUIDE_PATH}
+  image="/calculadora/og.png"
+  imageAlt="Calculadora de pegada de carbono da Nucarbon"
+  imageWidth={SHARE_IMAGE_SIZES.og.width}
+  imageHeight={SHARE_IMAGE_SIZES.og.height}
+  transparentHeader
+>
+  <PageHeader
+    heading="Como funciona a calculadora de pegada de carbono"
+    subtitle="O que medimos, de onde vêm os fatores de emissão e como ler o seu resultado."
+  />
+  <CalculatorGuide />
+  <div class="section" data-track-location="calculator_guide_cta">
+    <div class="container">
+      <CTA
+        title="Pronto para calcular a sua?"
+        subtitle={`Responda ${stepCount} perguntas rápidas e veja sua estimativa anual em 2 minutos.`}
+        label="Calcular minha pegada"
+        href="/calculadora"
+      />
+    </div>
+  </div>
+</BaseLayout>

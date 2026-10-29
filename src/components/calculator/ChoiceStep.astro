@@ -22,9 +22,9 @@ const titleId = `${step.id}-title`;
   hidden={!active}
   aria-labelledby={titleId}
 >
-  <h1 class="choice-step__title" id={titleId} tabindex="-1">
+  <h2 class="choice-step__title" id={titleId} tabindex="-1" data-screen-heading>
     {step.title}
-  </h1>
+  </h2>
   <div
     class:list={[
       'choice-step__options',

@@ -1,0 +1,31 @@
+---
+import { shareIcons, type ShareIconName } from './share-icons';
+
+export type { ShareIconName };
+
+interface Props {
+  name: ShareIconName;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+const icon = shareIcons[name];
+---
+
+<svg
+  class:list={['share-icon', className]}
+  viewBox={icon.viewBox}
+  fill="currentColor"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={icon.path} />
+</svg>
+
+<style>
+  .share-icon {
+    flex-shrink: 0;
+    width: var(--icon-size, 1.5rem);
+    height: var(--icon-size, 1.5rem);
+  }
+</style>

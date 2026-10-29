@@ -5,73 +5,99 @@ import Logo from '../components/ui/Logo.astro';
 import ChoiceStep from '../components/calculator/ChoiceStep.astro';
 import DistanceRange from '../components/calculator/DistanceRange.astro';
 import CalculatorResults from '../components/calculator/results/CalculatorResults.astro';
+import ShareModal from '../components/calculator/share/ShareModal.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
 import { calculatorSteps } from '../components/calculator/steps';
+import { CALCULATOR_NAME, CALCULATOR_PATH } from '../components/calculator/guide/content';
 import { DISTANCE_KM, initialAnswers } from '../lib/calculator/answers';
+import { webApplicationJsonLd } from '../lib/structured-data';
 
 const [firstStep] = calculatorSteps;
 const stepCount = calculatorSteps.length;
+
+const title = 'Calculadora de pegada de carbono gratuita | Nucarbon';
+const description = `Calcule sua pegada de carbono em 2 minutos: responda ${stepCount} perguntas sobre moradia, transporte, energia, alimentação e resíduos e veja quanto CO₂ você emite por ano.`;
+const application = webApplicationJsonLd({
+  url: new URL(CALCULATOR_PATH, Astro.site ?? Astro.url).href,
+  name: CALCULATOR_NAME,
+  description,
+});
 ---
 
-<CalculatorLayout title="Calculadora de carbono | Nucarbon">
+<CalculatorLayout
+  title={title}
+  description={description}
+  canonical={CALCULATOR_PATH}
+  image="/calculadora/og.png"
+  imageAlt="Calculadora de pegada de carbono da Nucarbon"
+  imageWidth={1200}
+  imageHeight={630}
+>
   <div class="calculator" data-calculator>
     <div class="calculator__flow" data-calculator-flow>
-      <header class="calculator__header container">
-        <div class="calculator__bar">
-          <Logo />
-          <p class="calculator__step-label">
-            Etapa <span data-current-step>1</span> de {stepCount}
-            <strong data-step-name>{firstStep.label}</strong>
-          </p>
-        </div>
-        <div
-          class="calculator__progress"
-          role="progressbar"
-          aria-label="Progresso do cálculo"
-          aria-valuemin="1"
-          aria-valuemax={stepCount}
-          aria-valuenow="1"
-          aria-valuetext={`Etapa 1: ${firstStep.label}`}
-          style={`--progress: ${100 / stepCount}%`}
-          data-progress
-        >
-          <span class="calculator__progress-value"></span>
-        </div>
-        <div class="calculator__dots" aria-hidden="true">
-          {calculatorSteps.map(({ id }, index) => (
-            <span
-              class:list={['calculator__dot', { 'calculator__dot--active': index === 0 }]}
-              data-dot={id}
-            ></span>
-          ))}
-        </div>
-      </header>
+      <div class="calculator__screen">
+        <header class="calculator__header container">
+          <div class="calculator__bar">
+            <Logo />
+            <p class="calculator__step-label">
+              Etapa <span data-current-step>1</span> de {stepCount}
+              <strong data-step-name>{firstStep.label}</strong>
+            </p>
+          </div>
+          <div
+            class="calculator__progress"
+            role="progressbar"
+            aria-label="Progresso do cálculo"
+            aria-valuemin="1"
+            aria-valuemax={stepCount}
+            aria-valuenow="1"
+            aria-valuetext={`Etapa 1: ${firstStep.label}`}
+            style={`--progress: ${100 / stepCount}%`}
+            data-progress
+          >
+            <span class="calculator__progress-value"></span>
+          </div>
+          <div class="calculator__dots" aria-hidden="true">
+            {calculatorSteps.map(({ id }, index) => (
+              <span
+                class:list={['calculator__dot', { 'calculator__dot--active': index === 0 }]}
+                data-dot={id}
+              ></span>
+            ))}
+          </div>
+        </header>
 
-      <main class="calculator__main container">
-        <form class="calculator__form" autocomplete="off" data-calculator-form>
-          {calculatorSteps.map((step, index) => (
-            <ChoiceStep step={step} value={initialAnswers[step.id]} active={index === 0}>
-              {step.id === 'transport' && (
-                <DistanceRange value={initialAnswers.distance} {...DISTANCE_KM} />
-              )}
-            </ChoiceStep>
-          ))}
-        </form>
-      </main>
+        <main class="calculator__main container">
+          <h1 class="calculator__heading">Calculadora de pegada de carbono</h1>
+          <form class="calculator__form" autocomplete="off" data-calculator-form>
+            {calculatorSteps.map((step, index) => (
+              <ChoiceStep step={step} value={initialAnswers[step.id]} active={index === 0}>
+                {step.id === 'transport' && (
+                  <DistanceRange value={initialAnswers.distance} {...DISTANCE_KM} />
+                )}
+              </ChoiceStep>
+            ))}
+          </form>
+        </main>
 
-      <nav class="calculator__actions" aria-label="Navegação da calculadora">
-        <div class="calculator__actions-inner container">
-          <Button variant="ghost" size="lg" data-back>
-            Voltar
-          </Button>
-          <Button size="lg" class="calculator__continue" data-continue>
-            Continuar
-          </Button>
-        </div>
-      </nav>
+        <nav class="calculator__actions" aria-label="Navegação da calculadora">
+          <div class="calculator__actions-inner container">
+            <Button variant="ghost" size="lg" data-back>
+              Voltar
+            </Button>
+            <Button size="lg" class="calculator__continue" data-continue>
+              Continuar
+            </Button>
+          </div>
+        </nav>
+      </div>
     </div>
 
     <CalculatorResults />
+    <ShareModal />
   </div>
+
+  <JsonLd data={application} />
 </CalculatorLayout>
 
 <script>
@@ -83,10 +109,22 @@ const stepCount = calculatorSteps.length;
 <style lang="scss">
   @use '../styles/mixins' as mx;
 
-  .calculator__flow {
+  // The step screen fills the viewport, with the action bar stuck to its bottom.
+  .calculator__screen {
     display: flex;
     flex-direction: column;
     min-height: 100svh;
+  }
+
+  .calculator__heading {
+    margin: 0 auto var(--spacing-sm);
+    color: var(--color-primary);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
   }
 
   .calculator__header {
@@ -188,7 +226,8 @@ const stepCount = calculatorSteps.length;
   .calculator__actions {
     position: sticky;
     z-index: var(--z-sticky);
-    bottom: 0;
+    // Stays above the consent banner while it is open.
+    bottom: var(--consent-offset, 0px);
     border-top: 1px solid var(--color-border);
     background: var(--color-surface);
   }
