@@ -6,8 +6,6 @@ import ChoiceStep from '../components/calculator/ChoiceStep.astro';
 import DistanceRange from '../components/calculator/DistanceRange.astro';
 import CalculatorResults from '../components/calculator/results/CalculatorResults.astro';
 import ShareModal from '../components/calculator/share/ShareModal.astro';
-import CalculatorGuide from '../components/calculator/guide/CalculatorGuide.astro';
-import Footer from '../components/layout/Footer.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import { calculatorSteps } from '../components/calculator/steps';
 import { CALCULATOR_NAME, CALCULATOR_PATH } from '../components/calculator/guide/content';
@@ -35,7 +33,7 @@ const application = webApplicationJsonLd({
   imageWidth={1200}
   imageHeight={630}
 >
-  <div class="calculator" id="calculadora" data-calculator>
+  <div class="calculator" data-calculator>
     <div class="calculator__flow" data-calculator-flow>
       <div class="calculator__screen">
         <header class="calculator__header container">
@@ -99,8 +97,6 @@ const application = webApplicationJsonLd({
     <ShareModal />
   </div>
 
-  <CalculatorGuide />
-  <Footer />
   <JsonLd data={application} />
 </CalculatorLayout>
 
@@ -113,8 +109,7 @@ const application = webApplicationJsonLd({
 <style lang="scss">
   @use '../styles/mixins' as mx;
 
-  // The step screen fills the viewport; its sticky action bar scrolls away with
-  // it once the guide below comes into view.
+  // The step screen fills the viewport, with the action bar stuck to its bottom.
   .calculator__screen {
     display: flex;
     flex-direction: column;

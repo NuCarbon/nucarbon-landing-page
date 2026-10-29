@@ -187,6 +187,11 @@ textarea {
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 var(--container-gutter);
+
+  &__cta{
+    width: 100%;
+    text-align: center;
+  }
 }
 
 /** Top-level content below the fixed header. */

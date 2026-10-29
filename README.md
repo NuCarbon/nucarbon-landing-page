@@ -52,18 +52,18 @@ Google sign-in and authorize the local and deployed domains.
 
 ## Code map
 
-| Path                 | Contents                                                                                                      |
-| -------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `src/pages`          | Routes: marketing, `/calculadora`, `/projetos`, `/app`, `/entrar`, `/checkout`, `sitemap-projetos.xml`        |
-| `src/components`     | Astro components by area (`sections`, `calculator`, `projects`, `app`, `layout`, `ui`, …)                     |
-| `src/lib`            | Isomorphic code (browser, SSR and Node tests): formatting, calculator rules, contribution pricing, URL safety |
-| `src/server`         | Server-only code: HTTP helpers and auth, Firebase Admin, Firestore schema validation and repository, checkout |
-| `src/scripts`        | Browser-only code: auth, API client, calculator controller, checkout session storage                          |
-| `src/types/app.ts`   | Domain types and API contracts shared by server and browser                                                   |
-| `netlify/functions`  | API handlers only (`api-*.ts`); shared logic stays in `src/server`                                            |
-| `scripts/seed`       | Seed fixtures; `scripts/seed.mjs` is the CLI                                                                  |
-| `google-apps-script` | Contact form backend, deployed manually                                                                       |
-| `tests`              | `node --test` suites                                                                                          |
+| Path                 | Contents                                                                                                                    |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `src/pages`          | Routes: marketing, `/calculadora` (+ `/como-funciona`), `/projetos`, `/app`, `/entrar`, `/checkout`, `sitemap-projetos.xml` |
+| `src/components`     | Astro components by area (`sections`, `calculator`, `projects`, `app`, `layout`, `ui`, …)                                   |
+| `src/lib`            | Isomorphic code (browser, SSR and Node tests): formatting, calculator rules, contribution pricing, URL safety               |
+| `src/server`         | Server-only code: HTTP helpers and auth, Firebase Admin, Firestore schema validation and repository, checkout               |
+| `src/scripts`        | Browser-only code: auth, API client, calculator controller, checkout session storage                                        |
+| `src/types/app.ts`   | Domain types and API contracts shared by server and browser                                                                 |
+| `netlify/functions`  | API handlers only (`api-*.ts`); shared logic stays in `src/server`                                                          |
+| `scripts/seed`       | Seed fixtures; `scripts/seed.mjs` is the CLI                                                                                |
+| `google-apps-script` | Contact form backend, deployed manually                                                                                     |
+| `tests`              | `node --test` suites                                                                                                        |
 
 Files in `src/lib` and `src/server` are loaded directly by Node in tests and by the seed script:
 value imports there use explicit `.ts` extensions and cannot use `astro:*` or `import.meta.env`.

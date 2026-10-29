@@ -30,12 +30,13 @@ export default defineConfig({
   ],
   integrations: [
     sitemap({
-      // Shared results and share images under /calculadora/ are not indexed; the page itself is.
+      // Shared results and share images under /calculadora/ are not indexed; the calculator and
+      // its explainer page are.
       filter: (page) =>
         !page.includes('/app') &&
         !page.includes('/entrar') &&
         !page.includes('/checkout') &&
-        !/^\/calculadora\/.+/.test(new URL(page).pathname),
+        !/^\/calculadora\/(resultado\/|.+\.png$)/.test(new URL(page).pathname),
     }),
   ],
   vite: {

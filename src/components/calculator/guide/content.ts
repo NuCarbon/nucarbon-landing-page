@@ -1,6 +1,6 @@
-// Copy and data of the guide below the calculator (how it works, what a carbon
-// footprint is, the methodology table and the FAQ). Plain TypeScript so tests can
-// check it against the calculator's own factors and steps.
+// Copy and data of the calculator guide at /calculadora/como-funciona (how it works,
+// what a carbon footprint is, the methodology table and the FAQ). Plain TypeScript so
+// tests can check it against the calculator's own factors and steps.
 import {
   SUPPORTED_ANSWERS,
   initialAnswers,
@@ -25,6 +25,9 @@ import type { IconName } from '../icons.ts';
 /** The calculator page. Matches the sitemap URL, which has a trailing slash. */
 export const CALCULATOR_PATH = '/calculadora/';
 export const CALCULATOR_NAME = 'Calculadora de pegada de carbono';
+/** The page that explains the calculator (how it works, methodology, FAQ). */
+export const GUIDE_PATH = '/calculadora/como-funciona/';
+export const GUIDE_NAME = 'Como funciona';
 
 const stepCount = calculatorSteps.length;
 

@@ -31,6 +31,7 @@ export const footerNav: NavLink[] = [
   { label: 'Créditos de Carbono', href: '/#creditos-carbono' },
   { label: 'Projetos', href: '/projetos' },
   { label: 'Calculadora de carbono', href: '/calculadora' },
+  { label: 'Como funciona a calculadora', href: '/calculadora/como-funciona' },
   { label: 'Dúvidas', href: '/#faq' },
   { label: 'Contato', href: '/#contato' },
 ];

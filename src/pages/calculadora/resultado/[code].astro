@@ -6,6 +6,7 @@ export const prerender = false;
 import CategoryBreakdown from '../../../components/calculator/results/CategoryBreakdown.astro';
 import MethodologyNote from '../../../components/calculator/results/MethodologyNote.astro';
 import ResultTotal from '../../../components/calculator/results/ResultTotal.astro';
+import { GUIDE_PATH } from '../../../components/calculator/guide/content';
 import CTA from '../../../components/ui/CTA.astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { setDeterministicCacheHeaders } from '../../../lib/cache';
@@ -64,7 +65,7 @@ setDeterministicCacheHeaders(Astro.response.headers);
           label="Calcule a sua"
           href="/calculadora?ref=shared_result"
         />
-        <a class="shared-result__method" href="/calculadora#metodologia">
+        <a class="shared-result__method" href={`${GUIDE_PATH}#metodologia`}>
           Como calculamos
         </a>
       </div>

@@ -1,7 +1,7 @@
 ---
-// Static content below the calculator: how it works, what a carbon footprint is,
-// the methodology and the FAQ. It gives search engines and curious visitors the
-// context the step flow leaves out, without pushing step 1 down.
+// The content of /calculadora/como-funciona: how the calculator works, what a carbon
+// footprint is, the methodology and the FAQ. It gives search engines and curious visitors
+// the context the step flow leaves out, and sends them to the calculator.
 import Accordion from '../../ui/Accordion.astro';
 import Breadcrumbs from '../../ui/Breadcrumbs.astro';
 import Button from '../../ui/Button.astro';
@@ -12,8 +12,9 @@ import SectionHeader from '../../ui/SectionHeader.astro';
 import MethodologyNote from '../results/MethodologyNote.astro';
 import MethodologyTable from './MethodologyTable.astro';
 import {
-  CALCULATOR_NAME,
   CALCULATOR_PATH,
+  GUIDE_NAME,
+  GUIDE_PATH,
   calculatorFaq,
   footprintParagraphs,
   howItWorks,
@@ -23,12 +24,13 @@ import {
 import { faqPageJsonLd } from '../../../lib/structured-data';
 ---
 
-<div class="guide">
+<div class="guide" data-track-location="calculator_guide">
   <div class="container guide__breadcrumbs">
     <Breadcrumbs
       items={[
         { label: 'Início', href: '/' },
-        { label: CALCULATOR_NAME, href: CALCULATOR_PATH },
+        { label: 'Calculadora', href: CALCULATOR_PATH },
+        { label: GUIDE_NAME, href: GUIDE_PATH },
       ]}
     />
   </div>
@@ -39,7 +41,7 @@ import { faqPageJsonLd } from '../../../lib/structured-data';
     aria-labelledby="como-funciona-heading"
   >
     <div class="container">
-      <SectionHeader id="como-funciona-heading" title="Como funciona a calculadora" align="start" />
+      <SectionHeader id="como-funciona-heading" title="Em 3 passos" align="start" />
       <ol class="guide__steps">
         {howItWorks.map((step, index) => (
           <li class="guide__step">
@@ -52,9 +54,11 @@ import { faqPageJsonLd } from '../../../lib/structured-data';
           </li>
         ))}
       </ol>
-      <Button href="#calculadora" size="lg">
-        Começar cálculo
-      </Button>
+      <div class="container__cta">
+        <Button href="/calculadora" size="lg">
+          Começar cálculo
+        </Button>
+      </div>
     </div>
   </section>
 
@@ -137,7 +141,6 @@ import { faqPageJsonLd } from '../../../lib/structured-data';
   @use '../../../styles/mixins' as mx;
 
   .guide {
-    border-top: 1px solid var(--color-border);
     background: var(--color-surface);
   }
 

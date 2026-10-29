@@ -1,8 +1,8 @@
 ---
 // The results screen. Rendered with the initial answers and hidden; the
-// controller fills in the visitor's result before showing it. The page renders
-// the site footer once, below both screens.
+// controller fills in the visitor's result before showing it.
 import Header from '../../layout/Header.astro';
+import Footer from '../../layout/Footer.astro';
 import SaveStatus from './SaveStatus.astro';
 import ResultTotal from './ResultTotal.astro';
 import CategoryBreakdown from './CategoryBreakdown.astro';
@@ -12,6 +12,7 @@ import ResultActions from './ResultActions.astro';
 import MethodologyNote from './MethodologyNote.astro';
 import { calculateFootprint } from '../../../lib/calculator/calculate';
 import { initialAnswers } from '../../../lib/calculator/answers';
+import { GUIDE_PATH } from '../guide/content';
 
 const result = calculateFootprint(initialAnswers);
 ---
@@ -36,9 +37,13 @@ const result = calculateFootprint(initialAnswers);
         <ReductionTips tips={result.tips} />
         <ResultActions />
         <MethodologyNote />
+        <a class="results__guide-link" href={`${GUIDE_PATH}#metodologia`}>
+          Entenda como calculamos
+        </a>
       </div>
     </div>
   </main>
+  <Footer />
 </div>
 
 <style lang="scss">
@@ -62,6 +67,11 @@ const result = calculateFootprint(initialAnswers);
     @include mx.down(sm) {
       gap: var(--spacing-md);
     }
+  }
+
+  .results__guide-link {
+    justify-self: start;
+    font-weight: 600;
   }
 
   .results__title {
